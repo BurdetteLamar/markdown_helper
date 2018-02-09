@@ -40,7 +40,7 @@ module MarkdownHelper
         )
         included_text = File.read(include_file_path)
         unless included_text.match("\n")
-          message = "File has no trailing newline: #{include_file_path}"
+          message = "Warning:  Included file has no trailing newline: #{include_file_path}"
           warn(message)
         end
         extname = File.extname(include_file_path)

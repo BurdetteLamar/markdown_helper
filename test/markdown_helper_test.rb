@@ -45,7 +45,7 @@ class MarkdownHelperTest < Minitest::Test
     {
         :nothing_included => nil,
         :text_included => nil,
-        :no_newline_included => nil,
+        :text_no_newline_included => nil,
         :ruby_included => nil,
         :xml_included => nil,
     }.each_pair do |convention_name, options|
