@@ -1,11 +1,7 @@
 <!--- GENERATED FILE, DO NOT EDIT --->
-class MyClass:
-    variable = "blah"
+# Markdown Page with Python Included
 
-    def function(self):
-        print("This is a message inside the class.")
-
-# Include Python
+This code will be in a code block, but not highlighted.
 
 class MyClass:
     variable = "blah"

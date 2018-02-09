@@ -1,5 +1,5 @@
-[include_file](../include/python.py)
+# Markdown Page with Python Included
 
-# Include Python
+This code will be in a code block, but not highlighted.
 
 [include_file](../include/python.py)

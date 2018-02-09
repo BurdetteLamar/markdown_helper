@@ -1,23 +1,15 @@
 <!--- GENERATED FILE, DO NOT EDIT --->
-<code>ruby.rb</code>
-```ruby
-class RubyCode
+# Markdown Page with Ruby Included
 
-  def initialize
-
-  end
-
-end
-```
-
-# Include Ruby
+This code will be in a code block, and will be highlighted.
 
 <code>ruby.rb</code>
 ```ruby
 class RubyCode
 
-  def initialize
+  attr_accessor :foo, :bar
 
+  def initialize(foo, bar)
   end
 
 end

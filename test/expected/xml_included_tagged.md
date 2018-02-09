@@ -1,16 +1,7 @@
 <!--- GENERATED FILE, DO NOT EDIT --->
-<code>xml.xml</code>
-```xml
-<root>
-  <element attribute="value">
-    <sub_element>
-      This included file is XML.
-    </sub_element>
-  </element>
-</root>
-```
+# Markdown Page with XML Included
 
-# Include XML
+This code will be in a code block, and will be highlighted.
 
 <code>xml.xml</code>
 ```xml
