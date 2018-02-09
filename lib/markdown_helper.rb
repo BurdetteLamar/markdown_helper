@@ -8,7 +8,12 @@ module MarkdownHelper
       :code_block,
       :tag_as_generated
 
-    def initialize(code_block: nil, tag_as_generated: nil)
+    DEFAULT_CODE_BLOCK = {
+        :rb => 'ruby',
+        :xml => 'xml',
+        }
+
+    def initialize(code_block = DEFAULT_CODE_BLOCK, tag_as_generated: false)
       self.code_block = code_block
       self.tag_as_generated = tag_as_generated
     end
@@ -17,15 +22,7 @@ module MarkdownHelper
 
   FILE_SOURCE_TAG = '[include_file]'
 
-  DEFAULT_OPTIONS = Options.new(
-      code_block: {
-          :rb => 'ruby',
-          :xml => 'xml',
-      },
-      tag_as_generated: false
-  )
-
-  def self.include(template_file_path, markdown_file_path, options = DEFAULT_OPTIONS)
+  def self.include(template_file_path, markdown_file_path, options = Options.new)
     output_lines = []
     File.open(template_file_path, 'r') do |template_file|
       if options.tag_as_generated

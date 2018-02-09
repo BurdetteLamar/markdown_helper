@@ -10,22 +10,31 @@ ACTUAL_DIR_PATH = File.join(THIS_DIR_PATH, 'actual')
 class MarkdownHelperTest < Minitest::Test
 
   def test_version
-    refute_nil ::MarkdownHelper::VERSION
+    refute_nil MarkdownHelper::VERSION
   end
 
   def conventional_test(convention_name, options)
-    file_name = "#{convention_name}.md"
-    template_file_path = File.join(INPUT_DIR_PATH, file_name)
-    markdown_file_path = File.join(ACTUAL_DIR_PATH, file_name)
-    expected_file_path = File.join(EXPECTED_DIR_PATH, file_name)
-    args = [
-        template_file_path,
-        markdown_file_path,
-    ]
-    args.push(options) if options
-    MarkdownHelper.include(*args)
-    diffs = MarkdownHelperTest.diff_files(expected_file_path, markdown_file_path)
-    assert_empty(diffs)
+    options = MarkdownHelper::Options.new if options.nil?
+    [
+        true,
+        false,
+    ].each do |tag_as_generated|
+      options.tag_as_generated = tag_as_generated
+      file_name = "#{convention_name}.md"
+      suffix = tag_as_generated ? '_tagged' : ''
+      suffixed_file_name = "#{convention_name}#{suffix}.md"
+      template_file_path = File.join(INPUT_DIR_PATH, file_name)
+      markdown_file_path = File.join(ACTUAL_DIR_PATH, suffixed_file_name)
+      expected_file_path = File.join(EXPECTED_DIR_PATH, suffixed_file_name)
+      MarkdownHelper.include(
+          template_file_path,
+          markdown_file_path,
+          options,
+      )
+      diffs = MarkdownHelperTest.diff_files(expected_file_path, markdown_file_path)
+      assert_empty(diffs)
+    end
+
   end
 
   def test_conventionally
@@ -33,7 +42,6 @@ class MarkdownHelperTest < Minitest::Test
         :nothing_included => nil,
         :text_included => nil,
         :ruby_included => nil,
-        :tagged_as_generated => MarkdownHelper::Options.new(tag_as_generated: true)
     }.each_pair do |convention_name, options|
       conventional_test(convention_name, options)
     end
