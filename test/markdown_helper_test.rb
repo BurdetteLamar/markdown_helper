@@ -13,21 +13,22 @@ class MarkdownHelperTest < Minitest::Test
     refute_nil ::MarkdownHelper::VERSION
   end
 
-  def conventional_test(input_file_name)
-    template_file_path = File.join(INPUT_DIR_PATH, input_file_name)
-    markdown_file_path = File.join(ACTUAL_DIR_PATH, input_file_name)
-    expected_file_path = File.join(EXPECTED_DIR_PATH, input_file_name)
+  def conventional_test(test_method)
+    file_name = test_method.to_s.sub('test_', '') + '.md'
+    template_file_path = File.join(INPUT_DIR_PATH, file_name)
+    markdown_file_path = File.join(ACTUAL_DIR_PATH, file_name)
+    expected_file_path = File.join(EXPECTED_DIR_PATH, file_name)
     MarkdownHelper.include(template_file_path, markdown_file_path)
     diffs = MarkdownHelperTest.diff_files(expected_file_path, markdown_file_path)
     assert_empty(diffs)
   end
 
   def test_nothing_included
-    conventional_test('nothing_included.md')
+    conventional_test(__method__)
   end
 
   def test_text_included
-    conventional_test('text_included.md')
+    conventional_test(__method__)
   end
 
   def self.diff_files(expected_file_path, actual_file_path)
