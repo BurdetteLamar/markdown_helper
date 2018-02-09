@@ -1,6 +1,7 @@
 [include_file](../input/text.txt)
 
 Make sure it works on the first line, above.
+
 # Include Text
 
 [include_file](../input/text.txt)

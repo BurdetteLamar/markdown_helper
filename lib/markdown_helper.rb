@@ -43,15 +43,15 @@ module MarkdownHelper
         )
         file_source = File.read(include_file_path)
         extname = File.extname(include_file_path)
-        highlight_language = options.code_block[extname.to_sym]
+        highlight_language = options.code_block[extname.sub('.', '').to_sym]
         if highlight_language
           # Treat as code block.
           # Label the block with its file name.
-          file_name_line = format('<code>%s</code>', File.basename(include_file_path))
+          file_name_line = format("<code>%s</code>\n", File.basename(include_file_path))
           output_lines.push(file_name_line)
-          output_lines.push("```#{highlight_language}")
+          output_lines.push("```#{highlight_language}\n")
           output_lines.push(file_source)
-          output_lines.push('```')
+          output_lines.push("```\n")
         else
           # Pass through unadorned.
           output_lines.push(file_source)

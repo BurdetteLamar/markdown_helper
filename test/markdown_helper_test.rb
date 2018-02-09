@@ -32,6 +32,7 @@ class MarkdownHelperTest < Minitest::Test
     {
         :nothing_included => nil,
         :text_included => nil,
+        :ruby_included => nil,
         :tagged_as_generated => MarkdownHelper::Options.new(tag_as_generated: true)
     }.each_pair do |convention_name, options|
       conventional_test(convention_name, options)
