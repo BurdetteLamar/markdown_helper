@@ -48,6 +48,7 @@ class MarkdownHelperTest < Minitest::Test
         :text_no_newline_included => nil,
         :ruby_included => nil,
         :xml_included => nil,
+        :python_included => nil,
     }.each_pair do |convention_name, options|
       conventional_test(convention_name, options)
     end
