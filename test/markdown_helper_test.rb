@@ -26,13 +26,17 @@ class MarkdownHelperTest < Minitest::Test
       template_file_path = File.join(INPUT_DIR_PATH, file_name)
       markdown_file_path = File.join(ACTUAL_DIR_PATH, suffixed_file_name)
       expected_file_path = File.join(EXPECTED_DIR_PATH, suffixed_file_name)
-      MarkdownHelper.include(
+      output = MarkdownHelper.include(
           template_file_path,
           markdown_file_path,
           options,
       )
       diffs = MarkdownHelperTest.diff_files(expected_file_path, markdown_file_path)
-      assert_empty(diffs)
+      unless diffs.empty?
+        puts"Failed output in #{markdown_file_path}:"
+        puts output
+      end
+      assert_empty(diffs, markdown_file_path)
     end
 
   end
@@ -41,7 +45,9 @@ class MarkdownHelperTest < Minitest::Test
     {
         :nothing_included => nil,
         :text_included => nil,
+        :no_newline_included => nil,
         :ruby_included => nil,
+        :xml_included => nil,
     }.each_pair do |convention_name, options|
       conventional_test(convention_name, options)
     end

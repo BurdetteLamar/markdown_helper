@@ -38,7 +38,11 @@ module MarkdownHelper
             File.dirname(template_file_path),
             relative_path,
         )
-        file_source = File.read(include_file_path)
+        included_text = File.read(include_file_path)
+        unless included_text.match("\n")
+          message = "File has no trailing newline: #{include_file_path}"
+          warn(message)
+        end
         extname = File.extname(include_file_path)
         highlight_language = options.code_block[extname.sub('.', '').to_sym]
         if highlight_language
@@ -47,17 +51,19 @@ module MarkdownHelper
           file_name_line = format("<code>%s</code>\n", File.basename(include_file_path))
           output_lines.push(file_name_line)
           output_lines.push("```#{highlight_language}\n")
-          output_lines.push(file_source)
+          output_lines.push(included_text)
           output_lines.push("```\n")
         else
           # Pass through unadorned.
-          output_lines.push(file_source)
+          output_lines.push(included_text)
         end
       end
     end
+    output = output_lines.join('')
     File.open(markdown_file_path, 'w') do |md_file|
-      md_file.write(output_lines.join(''))
+      md_file.write(output)
     end
+    output
   end
 
 end
