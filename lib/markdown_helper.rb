@@ -2,7 +2,7 @@ require 'markdown_helper/version'
 
 module MarkdownHelper
 
-  class Features
+  class Options
 
     attr_accessor \
       :code_block,
@@ -17,7 +17,7 @@ module MarkdownHelper
 
   FILE_SOURCE_TAG = '[include_file]'
 
-  DEFAULT_FEATURES = Features.new(
+  DEFAULT_OPTIONS = Options.new(
       code_block: {
           :rb => 'ruby',
           :xml => 'xml',
@@ -25,10 +25,10 @@ module MarkdownHelper
       tag_as_generated: false
   )
 
-  def self.include(template_file_path, markdown_file_path, features = DEFAULT_FEATURES)
+  def self.include(template_file_path, markdown_file_path, options = DEFAULT_OPTIONS)
     output_lines = []
     File.open(template_file_path, 'r') do |template_file|
-      if features.tag_as_generated
+      if options.tag_as_generated
         output_lines.push("<!--- GENERATED FILE, DO NOT EDIT --->\n")
       end
       template_file.each_line do |input_line|
@@ -43,7 +43,7 @@ module MarkdownHelper
         )
         file_source = File.read(include_file_path)
         extname = File.extname(include_file_path)
-        highlight_language = features.code_block[extname.to_sym]
+        highlight_language = options.code_block[extname.to_sym]
         if highlight_language
           # Treat as code block.
           # Label the block with its file name.

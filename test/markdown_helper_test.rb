@@ -13,7 +13,7 @@ class MarkdownHelperTest < Minitest::Test
     refute_nil ::MarkdownHelper::VERSION
   end
 
-  def conventional_test(convention_name, features)
+  def conventional_test(convention_name, options)
     file_name = "#{convention_name}.md"
     template_file_path = File.join(INPUT_DIR_PATH, file_name)
     markdown_file_path = File.join(ACTUAL_DIR_PATH, file_name)
@@ -22,7 +22,7 @@ class MarkdownHelperTest < Minitest::Test
         template_file_path,
         markdown_file_path,
     ]
-    args.push(features) if features
+    args.push(options) if options
     MarkdownHelper.include(*args)
     diffs = MarkdownHelperTest.diff_files(expected_file_path, markdown_file_path)
     assert_empty(diffs)
@@ -32,9 +32,9 @@ class MarkdownHelperTest < Minitest::Test
     {
         :nothing_included => nil,
         :text_included => nil,
-        :tagged_as_generated => MarkdownHelper::Features.new(tag_as_generated: true)
-    }.each_pair do |convention_name, features|
-      conventional_test(convention_name, features)
+        :tagged_as_generated => MarkdownHelper::Options.new(tag_as_generated: true)
+    }.each_pair do |convention_name, options|
+      conventional_test(convention_name, options)
     end
   end
 
