@@ -14,7 +14,7 @@ class MarkdownHelperTest < Minitest::Test
   end
 
   def conventional_test(file_stem)
-    markdown_helper = MarkdownHelper.new
+    markdown_helper = MarkdownHelper.new(:py => 'python')
     [
         true,
         false,
