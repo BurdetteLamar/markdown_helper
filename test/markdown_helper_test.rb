@@ -49,6 +49,7 @@ class MarkdownHelperTest < Minitest::Test
         :ruby_included => nil,
         :xml_included => nil,
         :python_included => nil,
+        :markdown_included => nil,
     }.each_pair do |convention_name, options|
       conventional_test(convention_name, options)
     end

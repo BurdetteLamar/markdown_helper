@@ -9,12 +9,14 @@ module MarkdownHelper
       :tag_as_generated
 
     DEFAULT_CODE_BLOCK = {
+        :md => nil,
         :rb => 'ruby',
         :xml => 'xml',
         }
 
     def initialize(code_block = DEFAULT_CODE_BLOCK, tag_as_generated: false)
-      self.code_block = code_block
+      self.code_block = code_block.clone
+      self.code_block.default = ''
       self.tag_as_generated = tag_as_generated
     end
 
@@ -44,8 +46,12 @@ module MarkdownHelper
           warn(message)
         end
         extname = File.extname(include_file_path)
-        highlight_language = options.code_block[extname.sub('.', '').to_sym]
-        if highlight_language
+        code_block_key = extname.sub('.', '').to_sym
+        highlight_language = options.code_block[code_block_key]
+        if highlight_language.nil?
+          # Pass through unadorned.
+          output_lines.push(included_text)
+        else
           # Treat as code block.
           # Label the block with its file name.
           file_name_line = format("<code>%s</code>\n", File.basename(include_file_path))
@@ -53,9 +59,6 @@ module MarkdownHelper
           output_lines.push("```#{highlight_language}\n")
           output_lines.push(included_text)
           output_lines.push("```\n")
-        else
-          # Pass through unadorned.
-          output_lines.push(included_text)
         end
       end
     end

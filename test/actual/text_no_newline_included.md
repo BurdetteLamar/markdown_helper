@@ -2,4 +2,6 @@
 
 This text will be in a code block, but not highlighted.
 
-This included text has no newline.
+<code>text_no_newline.txt</code>
+```
+This included text has no newline.```
