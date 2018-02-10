@@ -13,6 +13,7 @@ This code will be in a code block, and will be highlighted.
 
 [include_file](../include/xml.xml)
 ```
+____
 into this:
 ____
 # Markdown Page with XML Included
