@@ -7,7 +7,9 @@ This helper supports markdown file inclusion in GitHub markdown files, with code
 It lets you turn this:
 ____
 ```
-# Include XML
+# Markdown Page with XML Included
+
+This code will be in a code block, and will be highlighted.
 
 [include_file](../include/xml.xml)
 ```
