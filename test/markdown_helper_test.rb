@@ -13,23 +13,22 @@ class MarkdownHelperTest < Minitest::Test
     refute_nil MarkdownHelper::VERSION
   end
 
-  def conventional_test(convention_name, options)
-    options = MarkdownHelper::Options.new if options.nil?
+  def conventional_test(file_stem)
+    markdown_helper = MarkdownHelper.new
     [
         true,
         false,
     ].each do |tag_as_generated|
-      options.tag_as_generated = tag_as_generated
-      file_name = "#{convention_name}.md"
+      markdown_helper.tag_as_generated = tag_as_generated
+      file_name = "#{file_stem}.md"
       suffix = tag_as_generated ? '_tagged' : ''
-      suffixed_file_name = "#{convention_name}#{suffix}.md"
+      suffixed_file_name = "#{file_stem}#{suffix}.md"
       template_file_path = File.join(INPUT_DIR_PATH, file_name)
       markdown_file_path = File.join(ACTUAL_DIR_PATH, suffixed_file_name)
       expected_file_path = File.join(EXPECTED_DIR_PATH, suffixed_file_name)
-      output = MarkdownHelper.include(
+      output = markdown_helper.include(
           template_file_path,
           markdown_file_path,
-          options,
       )
       diffs = MarkdownHelperTest.diff_files(expected_file_path, markdown_file_path)
       unless diffs.empty?
@@ -42,16 +41,16 @@ class MarkdownHelperTest < Minitest::Test
   end
 
   def test_conventionally
-    {
-        :nothing_included => nil,
-        :text_included => nil,
-        :text_no_newline_included => nil,
-        :ruby_included => nil,
-        :xml_included => nil,
-        :python_included => nil,
-        :markdown_included => nil,
-    }.each_pair do |convention_name, options|
-      conventional_test(convention_name, options)
+    %w/
+        nothing_included
+        text_included
+        text_no_newline_included
+        ruby_included
+        xml_included
+        python_included
+        markdown_included
+    /.each do |file_stem|
+      conventional_test(file_stem)
     end
   end
 
