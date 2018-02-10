@@ -2,25 +2,39 @@
 
 ## File Inclusion
 
-This helper supports file inclusion in GitHub markdown files, with code highlighting.
+This helper supports markdown file inclusion in GitHub markdown files, with code highlighting.
 
-[Convenience tip: open link in a new tab using ```Ctrl-click```, close using```Ctrl-w```.]
- 
 It lets you turn this:
-
+____
 ```
-[include_file](../include/xml.xml)
-
 # Include XML
 
 [include_file](../include/xml.xml)
 ```
+into this:
+____
+# Markdown Page with XML Included
 
-into markdown with inlined and highlighted code, [thus](test/actual/xml_included.md).
+This code will be in a code block, and will be highlighted.
 
-Optionally, you can add a generated-file warning, [thus](test/actual/xml_included_tagged.md).
+<code>xml.xml</code>
+```xml
+<root>
+  <element attribute="value">
+    <sub_element>
+      This included file is XML.
+    </sub_element>
+  </element>
+</root>
+```
+____
+By default:
+ 
+  * Highlighted code blocks are supported for Ruby and XML.  Your program can add others.
+  * Markdown code in a ```.md``` file is not disturbed, and falls through for the usual markdown formatting.
+  * Any other included code is made into a code block without highlighting.
+  
 
-Highlighting for included code is supported for Ruby and XML (though it's very to extend the support to others).  Other code is included as generic code, without highlighting, [thus](test/actual/python_included.md).
 
 
 
