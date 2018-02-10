@@ -1,5 +1,5 @@
-[include_file](../include/text.txt)
+# Markdown Page with Text Included
 
-# Include Text
+This text will be in a code block, but not highlighted.
 
 [include_file](../include/text.txt)

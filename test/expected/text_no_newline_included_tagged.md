@@ -1,5 +1,8 @@
 <!--- GENERATED FILE, DO NOT EDIT --->
-This included text has no newline.
-# Include Text with No Newline
+# Markdown Page with Text (Lacking Trailing Newline) Included
 
-This included text has no newline.
+This text will be in a code block, but not highlighted.
+
+<code>text_no_newline.txt</code>
+```
+This included text has no newline.```

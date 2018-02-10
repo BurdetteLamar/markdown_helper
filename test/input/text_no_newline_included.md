@@ -1,5 +1,5 @@
-[include_file](../include/text_no_newline.txt)
+# Markdown Page with Text (Lacking Trailing Newline) Included
 
-# Include Text with No Newline
+This text will be in a code block, but not highlighted.
 
 [include_file](../include/text_no_newline.txt)

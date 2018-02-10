@@ -1,5 +1,5 @@
-[include_file](../include/ruby.rb)
+# Markdown Page with Ruby Included
 
-# Include Ruby
+This code will be in a code block, and will be highlighted.
 
 [include_file](../include/ruby.rb)

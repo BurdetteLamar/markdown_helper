@@ -1,5 +1,5 @@
-[include_file](../include/xml.xml)
+# Markdown Page with XML Included
 
-# Include XML
+This code will be in a code block, and will be highlighted.
 
 [include_file](../include/xml.xml)

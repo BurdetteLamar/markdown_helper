@@ -1,7 +1,8 @@
 class RubyCode
 
-  def initialize
+  attr_accessor :foo, :bar
 
+  def initialize(foo, bar)
   end
 
 end

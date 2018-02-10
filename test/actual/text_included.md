@@ -1,5 +1,8 @@
-This included file is text.
+# Markdown Page with Text Included
 
-# Include Text
+This text will be in a code block, but not highlighted.
 
+<code>text.txt</code>
+```
 This included file is text.
+```
