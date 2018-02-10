@@ -4,9 +4,8 @@ class MarkdownHelper
 
   FILE_SOURCE_TAG = '[include_file]'
 
-  attr_accessor \
-    :language_for_file_ext,
-    :tag_as_generated
+  attr_accessor :tag_as_generated
+  attr_reader :language_for_file_ext
 
   DEFAULT_LANGUAGE_FOR_FILE_EXT = {
       :md => nil,
@@ -14,9 +13,11 @@ class MarkdownHelper
       :xml => 'xml',
       }
 
+  # Instantiate self.
+  # 
   def initialize(language_for_file_ext = {}, tag_as_generated = false)
-    self.language_for_file_ext = DEFAULT_LANGUAGE_FOR_FILE_EXT.merge(language_for_file_ext)
-    self.language_for_file_ext.default = ''
+    @language_for_file_ext = DEFAULT_LANGUAGE_FOR_FILE_EXT.merge(language_for_file_ext)
+    @language_for_file_ext.default = ''
     self.tag_as_generated = tag_as_generated
   end
 
