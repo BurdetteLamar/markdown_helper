@@ -32,7 +32,7 @@ ____
 By default:
  
   * Highlighting is provided for file types ```.rb``` (Ruby) and ```.xml``` (XML}.  Your program can add other file types.
-  * Text from an ```.md``` (markdown) file is included verbatim, with no code block or highlighting.
+  * Text from a markdown file (extension ```.md```) is included verbatim, with no code block or highlighting.
   * Any other included file is made into a code block, but not highlighted.
   
 ## Usage
