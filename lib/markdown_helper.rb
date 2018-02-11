@@ -43,7 +43,8 @@ class MarkdownHelper
           output_lines.push(input_line)
           next
         end
-        relative_path = input_line.sub(FILE_SOURCE_TAG, '').gsub(/[()]/, '').strip
+        relative_path, handling_token = input_line.sub(FILE_SOURCE_TAG, '').gsub(/[()]/, '').strip.split('|')
+        handling = handling_token ? handling_token.to_sym : nil
         include_file_path = File.join(
             File.dirname(template_file_path),
             relative_path,
@@ -55,7 +56,9 @@ class MarkdownHelper
         end
         extname = File.extname(include_file_path)
         file_ext_key = extname.sub('.', '').to_sym
-        handling = @handling_for_file_ext[file_ext_key]
+        handling ||= @handling_for_file_ext[file_ext_key]
+        p relative_path
+        p handling
         if handling == :verbatim
           # Pass through unadorned.
           output_lines.push(included_text)

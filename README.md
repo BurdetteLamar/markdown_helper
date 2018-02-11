@@ -9,28 +9,35 @@
 This helper enables file inclusion in GitHub markdown, with code highlighting.
 
 Using it, you can turn this:
-____
-```
-This code will be in a code block, and will be highlighted.
 
-[include_file](../include/foo.xml)
+<code>ruby.rb</code>
 ```
-____
+class RubyCode
+
+  attr_accessor :foo, :bar
+
+  def initialize(foo, bar)
+    puts('This is Ruby.')
+  end
+
+end
+```
+
 into this:
-____
-This code will be in a code block, and will be highlighted.
 
-<code>foo.xml</code>
-```xml
-<root>
-  <element attribute="value">
-    <sub_element>
-      This included file is XML.
-    </sub_element>
-  </element>
-</root>
+<code>ruby.rb</code>
+```ruby
+class RubyCode
+
+  attr_accessor :foo, :bar
+
+  def initialize(foo, bar)
+    puts('This is Ruby.')
+  end
+
+end
 ```
-____
+
 By default:
  
   * Highlighting is provided for file types ```.rb``` (Ruby) and ```.xml``` (XML}.  Your program can add other file types.
@@ -41,6 +48,7 @@ By default:
 
 In the code below, file ```template.md``` may contain file inclusions, and file ```markdown.md``` is the output markdown with the files included.
 
+<code>usage.rb</code>
 ```ruby
 require 'markdown_helper'
 
@@ -60,3 +68,4 @@ markdown_helper.verbatim_file_type(:xml)
 # Add warning comment ''<!--- GENERATED FILE, DO NOT EDIT --->'' to each output file.
 markdown_helper.tag_as_generated = true
 ```
+
