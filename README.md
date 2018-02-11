@@ -9,20 +9,16 @@ This helper enables file inclusion in GitHub markdown files, with code highlight
 It lets you turn this:
 ____
 ```
-# Markdown Page with XML Included
-
 This code will be in a code block, and will be highlighted.
 
-[include_file](../include/xml.xml)
+[include_file](../include/foo.xml)
 ```
 ____
 into this:
 ____
-# Markdown Page with XML Included
-
 This code will be in a code block, and will be highlighted.
 
-<code>xml.xml</code>
+<code>foo.xml</code>
 ```xml
 <root>
   <element attribute="value">
