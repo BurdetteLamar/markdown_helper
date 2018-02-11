@@ -51,7 +51,7 @@ class MarkdownHelper
         else
           # Treat as code block.
           # Label the block with its file name.
-          file_name_line = format("<code>%s</code>\n", File.basename(include_file_path))
+          file_name_line = format("File <code>%s</code>:\n", File.basename(include_file_path))
           output_lines.push(file_name_line)
           output_lines.push("```#{language}\n")
           output_lines.push(included_text)
