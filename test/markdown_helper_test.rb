@@ -3,7 +3,7 @@ require 'test_helper'
 require 'diff-lcs'
 
 THIS_DIR_PATH = File.dirname(__FILE__)
-INPUT_DIR_PATH = File.join(THIS_DIR_PATH, 'input')
+TEMPLATES_DIR_PATH = File.join(THIS_DIR_PATH, 'templates')
 EXPECTED_DIR_PATH = File.join(THIS_DIR_PATH, 'expected')
 ACTUAL_DIR_PATH = File.join(THIS_DIR_PATH, 'actual')
 
@@ -13,48 +13,65 @@ class MarkdownHelperTest < Minitest::Test
     refute_nil MarkdownHelper::VERSION
   end
 
-  def conventional_test(convention_name, options)
-    options = MarkdownHelper::Options.new if options.nil?
-    [
-        true,
-        false,
-    ].each do |tag_as_generated|
-      options.tag_as_generated = tag_as_generated
-      file_name = "#{convention_name}.md"
-      suffix = tag_as_generated ? '_tagged' : ''
-      suffixed_file_name = "#{convention_name}#{suffix}.md"
-      template_file_path = File.join(INPUT_DIR_PATH, file_name)
-      markdown_file_path = File.join(ACTUAL_DIR_PATH, suffixed_file_name)
-      expected_file_path = File.join(EXPECTED_DIR_PATH, suffixed_file_name)
-      output = MarkdownHelper.include(
-          template_file_path,
-          markdown_file_path,
-          options,
-      )
-      diffs = MarkdownHelperTest.diff_files(expected_file_path, markdown_file_path)
-      unless diffs.empty?
-        puts"Failed output in #{markdown_file_path}:"
-        puts output
-      end
-      assert_empty(diffs, markdown_file_path)
+  def common_test(markdown_helper, file_stem, handling)
+    template_file_name = "#{file_stem}_included.md"
+    markdown_file_name = nil
+    if markdown_helper.tag_as_generated
+      markdown_file_name = "#{file_stem}_included_#{handling}_tagged.md"
+    else
+      markdown_file_name = "#{file_stem}_included_#{handling}.md"
     end
-
+    template_file_path = File.join(TEMPLATES_DIR_PATH, template_file_name)
+    markdown_file_path = File.join(ACTUAL_DIR_PATH, markdown_file_name)
+    expected_file_path = File.join(EXPECTED_DIR_PATH, markdown_file_name)
+    output = markdown_helper.include(
+        template_file_path,
+        markdown_file_path,
+    )
+    diffs = MarkdownHelperTest.diff_files(expected_file_path, markdown_file_path)
+    unless diffs.empty?
+      puts"Failed output in #{markdown_file_path}:"
+      puts output
+    end
+    assert_empty(diffs, markdown_file_path)
   end
 
-  def test_conventionally
+  def test_handling
     {
-        :nothing_included => nil,
-        :text_included => nil,
-        :text_no_newline_included => nil,
-        :ruby_included => nil,
-        :xml_included => nil,
-        :python_included => nil,
-        :markdown_included => nil,
-    }.each_pair do |convention_name, options|
-      conventional_test(convention_name, options)
+        :markdown => :md,
+        :python => :py,
+        :ruby => :rb,
+        :text => :txt,
+        :text_no_newline => :txt,
+        :xml => :xml,
+    }.each_pair do |file_stem, file_type|
+      markdown_helper = MarkdownHelper.new
+      handling_for_file_type = markdown_helper.get_handling(file_type)
+      language = handling_for_file_type.kind_of?(String) ? handling_for_file_type : ''
+      [
+          :verbatim,
+          :code_block,
+          language,
+      ].each do |handling|
+        markdown_helper.set_handling(file_type, handling)
+        common_test(markdown_helper, file_stem, handling)
+      end
     end
   end
 
+  def test_tag_as_generated
+    [
+        :verbatim,
+        :code_block,
+        'xml',
+    ].each do |handling|
+      markdown_helper = MarkdownHelper.new
+      markdown_helper.set_handling(:xml, handling)
+      markdown_helper.tag_as_generated = true
+      common_test(markdown_helper, :xml, handling)
+    end
+  end
+  
   def self.diff_files(expected_file_path, actual_file_path)
     diffs = nil
     File.open(expected_file_path) do |expected_file|

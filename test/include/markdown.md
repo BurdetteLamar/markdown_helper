@@ -1,3 +1,0 @@
-## Included Markdown
-
-Markdown text.

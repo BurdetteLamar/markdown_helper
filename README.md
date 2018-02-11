@@ -1,26 +1,62 @@
 # MarkdownHelper
 
-## File Inclusion
+## Highlighted Include Files
 
-This helper supports file inclusion in GitHub markdown files, with code highlighting.
+<kbd>
+  <img src="/images/include.png" width="50">
+</kbd>
 
-[Convenience tip: open link in a new tab using ```Ctrl-click```, close using```Ctrl-w```.]
+This helper enables file inclusion in GitHub markdown, with code highlighting.
+
+Using it, you can turn this:
+____
+```
+This code will be in a code block, and will be highlighted.
+
+[include_file](../include/foo.xml)
+```
+____
+into this:
+____
+This code will be in a code block, and will be highlighted.
+
+<code>foo.xml</code>
+```xml
+<root>
+  <element attribute="value">
+    <sub_element>
+      This included file is XML.
+    </sub_element>
+  </element>
+</root>
+```
+____
+By default:
  
-It lets you turn this:
+  * Highlighting is provided for file types ```.rb``` (Ruby) and ```.xml``` (XML}.  Your program can add other file types.
+  * Text from a markdown file (extension ```.md```) is included verbatim, with no code block or highlighting.
+  * Any other included file is made into a code block, but not highlighted.
+  
+## Usage
 
+In the code below, file ```template.md``` may contain file inclusions, and file ```markdown.md``` is the output markdown with the files included.
+
+```ruby
+require 'markdown_helper'
+
+# Include files.
+markdown_helper = MarkdownHelper.new
+markdown_helper.include('template.md', 'markdown.md')
+
+# Enable highlighting for a file type.
+markdown_helper.highlight_file_type(:py, 'python')
+
+# Disable highlighting for a file type.
+markdown_helper.code_block_file_type(:xml)
+
+# Disable code blocking for a file type.
+markdown_helper.verbatim_file_type(:xml)
+
+# Add warning comment ''<!--- GENERATED FILE, DO NOT EDIT --->'' to each output file.
+markdown_helper.tag_as_generated = true
 ```
-[include_file](../include/xml.xml)
-
-# Include XML
-
-[include_file](../include/xml.xml)
-```
-
-into markdown with inlined and highlighted code, [thus](test/actual/xml_included.md).
-
-Optionally, you can add a generated-file warning, [thus](test/actual/xml_included_tagged.md).
-
-Highlighting for included code is supported for Ruby and XML (though it's very to extend the support to others).  Other code is included as generic code, without highlighting, [thus](test/actual/python_included.md).
-
-
-

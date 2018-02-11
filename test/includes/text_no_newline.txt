@@ -1,0 +1,1 @@
+This is text (with no trailing newline).
