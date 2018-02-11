@@ -2,7 +2,9 @@
 
 ## Highlighted Include Files
 
-<img src="/images/include.png" width="50">
+<kbd>
+  <img src="/images/include.png" width="50">
+</kbd>
 
 This helper enables file inclusion in GitHub markdown, with code highlighting.
 
