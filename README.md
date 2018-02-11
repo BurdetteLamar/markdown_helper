@@ -39,7 +39,6 @@ By default:
 
 In the code below, file ```template.md``` may contain file inclusions, and file ```markdown.md``` is the output markdown with the files included.
 
-
 ```ruby
 require 'markdown_helper'
 
@@ -56,6 +55,6 @@ markdown_helper = MarkdownHelper.new(:xml => '')
 # Disable code blocking for a file type.
 markdown_helper = MarkdownHelper.new(:xml => nil)
 
-# Add warning comment <!--- GENERATED FILE, DO NOT EDIT ---> to each output file.
-markdown_helper.tag_as_generated
+# Add warning comment ''<!--- GENERATED FILE, DO NOT EDIT --->'' to each output file.
+markdown_helper.tag_as_generated = true
 ```
