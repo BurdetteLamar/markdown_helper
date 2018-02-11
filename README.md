@@ -44,4 +44,16 @@ markdown_helper = MarkdownHelper.new
 markdown_helper.include('template.md', 'markdown.md')
 ```
 
+where ```template.md``` may contain file inclusions, and ```markdown.md``` is the finished markdown with the files included.
 
+To add highlighting for an additional file type:
+
+```ruby
+markdown_helper = MarkdownHelper.new(:py => 'python')
+```
+
+To add warning ```<!--- GENERATED FILE, DO NOT EDIT --->``` to each output file:
+
+```ruby
+markdown_helper.tag_as_generated
+```
