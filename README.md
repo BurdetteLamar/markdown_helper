@@ -6,7 +6,7 @@
 
 This helper enables file inclusion in GitHub markdown, with code highlighting.
 
-It lets you turn this:
+Using it, you can turn this:
 ____
 ```
 This code will be in a code block, and will be highlighted.
@@ -31,7 +31,7 @@ File <code>foo.xml</code>:
 ____
 By default:
  
-  * Highlighting is provided for Ruby and XML.  Your program can add other file types.
+  * Highlighting is provided for file types ```.rb``` (Ruby) and ```.xml``` (XML}.  Your program can add other file types.
   * Text in an ```.md``` file is not disturbed, and falls through for ordinary markdown rendering.
   * Any other included text is made into a code block, without highlighting.
   
