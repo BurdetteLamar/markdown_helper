@@ -40,11 +40,8 @@ By default:
 ```ruby
 require 'markdown_helper'
 
-template_file_path = 'template.md'
-markdown_file_path = 'markdown.md'
-
 markdown_helper = MarkdownHelper.new
-markdown_helper.include(template_file_path, markdown_file_path)
+markdown_helper.include('template.md', 'markdown.md')
 ```
 
 
