@@ -1,6 +1,6 @@
 # MarkdownHelper
 
-## Include Files
+## Highlighted Include Files
 
 <img src="/images/include.png" width="150">
 
@@ -37,23 +37,24 @@ By default:
   
 ## Usage
 
+In the code below, file ```template.md``` may contain file inclusions, and file ```markdown.md``` is the output markdown with the files included.
+
+
 ```ruby
 require 'markdown_helper'
 
 markdown_helper = MarkdownHelper.new
 markdown_helper.include('template.md', 'markdown.md')
-```
 
-where ```template.md``` may contain file inclusions, and ```markdown.md``` is the finished markdown with the files included.
+# Enable highlighting for a file type.
+markdown_helper = MarkdownHelper.new(:py, 'python')
 
-To add highlighting for an additional file type:
+# Disable highlighting for a file type.
+markdown_helper = MarkdownHelper.new(:xml, '')
 
-```ruby
-markdown_helper = MarkdownHelper.new(:py => 'python')
-```
+# Disable code blocking for a file type.
+markdown_helper = MarkdownHelper.new(:xml, '')
 
-To add warning ```<!--- GENERATED FILE, DO NOT EDIT --->``` to each output file:
-
-```ruby
+# Add warning comment <!--- GENERATED FILE, DO NOT EDIT ---> to each output file.
 markdown_helper.tag_as_generated
 ```
