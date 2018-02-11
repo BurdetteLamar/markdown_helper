@@ -15,7 +15,12 @@ class MarkdownHelperTest < Minitest::Test
 
   def common_test(markdown_helper, file_stem, handling)
     template_file_name = "#{file_stem}_included.md"
-    markdown_file_name = "#{file_stem}_included_#{handling}.md"
+    markdown_file_name = nil
+    if markdown_helper.tag_as_generated
+      markdown_file_name = "#{file_stem}_included_#{handling}_tagged.md"
+    else
+      markdown_file_name = "#{file_stem}_included_#{handling}.md"
+    end
     template_file_path = File.join(TEMPLATES_DIR_PATH, template_file_name)
     markdown_file_path = File.join(ACTUAL_DIR_PATH, markdown_file_name)
     expected_file_path = File.join(EXPECTED_DIR_PATH, markdown_file_name)
@@ -51,6 +56,19 @@ class MarkdownHelperTest < Minitest::Test
         markdown_helper.set_handling(file_type, handling)
         common_test(markdown_helper, file_stem, handling)
       end
+    end
+  end
+
+  def test_tag_as_generated
+    [
+        :verbatim,
+        :code_block,
+        'xml',
+    ].each do |handling|
+      markdown_helper = MarkdownHelper.new
+      markdown_helper.set_handling(:xml, handling)
+      markdown_helper.tag_as_generated = true
+      common_test(markdown_helper, :xml, handling)
     end
   end
   
