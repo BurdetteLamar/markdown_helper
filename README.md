@@ -37,7 +37,6 @@ By default:
   
 ## Usage
 
-
 ```ruby
 require 'markdown_helper'
 
@@ -47,29 +46,5 @@ markdown_file_path = 'markdown.md'
 markdown_helper = MarkdownHelper.new
 markdown_helper.include(template_file_path, markdown_file_path)
 ```
-
-Template markdown, ```template.md```:
-```
-Show some highlighted Ruby code:
-
-[include_file](include.rb)
-```
-Include file, ```include.rb```:
-```ruby
-def hello
- puts 'Hello!'
-end
-```
-The output file, ```markdown.md```, rendered as markdown)=:
-
-Show some highlighted Ruby code:
-
-File <code>include.rb</code>:
-```ruby
-def hello
- puts 'Hello!'
-end
-```
-
 
 
