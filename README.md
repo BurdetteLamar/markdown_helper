@@ -2,7 +2,7 @@
 
 ## File Inclusion
 
-![include](images/include.jpg)
+![include](/images/include.jpg)
 
 This helper supports markdown file inclusion in GitHub markdown files, with code highlighting.
 
