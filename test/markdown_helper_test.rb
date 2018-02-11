@@ -13,8 +13,7 @@ class MarkdownHelperTest < Minitest::Test
     refute_nil MarkdownHelper::VERSION
   end
 
-  def conventional_test(file_stem)
-    markdown_helper = MarkdownHelper.new(:py => 'python')
+  def common_test(file_stem, markdown_helper = MarkdownHelper.new)
     [
         true,
         false,
@@ -47,11 +46,16 @@ class MarkdownHelperTest < Minitest::Test
         text_no_newline_included
         ruby_included
         xml_included
-        python_included
         markdown_included
     /.each do |file_stem|
-      conventional_test(file_stem)
+      common_test(file_stem)
     end
+  end
+  
+  def test_python
+    markdown_helper = MarkdownHelper.new
+    markdown_helper.highlight_file_type(:py, 'python')
+    common_test('python_included', markdown_helper)
   end
 
   def self.diff_files(expected_file_path, actual_file_path)

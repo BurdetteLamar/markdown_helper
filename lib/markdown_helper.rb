@@ -5,21 +5,34 @@ class MarkdownHelper
   FILE_SOURCE_TAG = '[include_file]'
 
   attr_accessor :tag_as_generated
-  attr_reader :language_for_file_ext
+  attr_reader :handling_for_file_ext
 
-  DEFAULT_LANGUAGE_FOR_FILE_EXT = {
-      :md => nil,
+  VERBATIM = nil
+  CODE_BLOCK = ''
+
+  DEFAULT_HANDLING_FOR_FILE_EXT = {
+      :md => VERBATIM,
       :rb => 'ruby',
       :xml => 'xml',
       :html => 'html'
       }
 
-  # Instantiate self.
-  # 
-  def initialize(language_for_file_ext = {}, tag_as_generated = false)
-    @language_for_file_ext = DEFAULT_LANGUAGE_FOR_FILE_EXT.merge(language_for_file_ext)
-    @language_for_file_ext.default = ''
-    self.tag_as_generated = tag_as_generated
+  def initialize
+    @handling_for_file_ext = DEFAULT_HANDLING_FOR_FILE_EXT
+    @handling_for_file_ext.default = CODE_BLOCK
+    self.tag_as_generated = false
+  end
+
+  def highlight_file_type(file_type, language)
+    @handling_for_file_ext[file_type] = language
+  end
+
+  def code_block_file_type(file_type)
+    @handling_for_file_ext[file_type] = CODE_BLOCK
+  end
+
+  def verbatim_file_type(file_type)
+    @handling_for_file_ext[file_type] = VERBATIM
   end
 
   def include(template_file_path, markdown_file_path)
@@ -44,15 +57,15 @@ class MarkdownHelper
           warn(message)
         end
         extname = File.extname(include_file_path)
-        language_for_file_ext_key = extname.sub('.', '').to_sym
-        language = language_for_file_ext[language_for_file_ext_key]
+        handling_for_file_ext_key = extname.sub('.', '').to_sym
+        language = @handling_for_file_ext[handling_for_file_ext_key]
         if language.nil?
           # Pass through unadorned.
           output_lines.push(included_text)
         else
           # Treat as code block.
           # Label the block with its file name.
-          file_name_line = format("File <code>%s</code>:\n", File.basename(include_file_path))
+          file_name_line = format("<code>%s</code>\n", File.basename(include_file_path))
           output_lines.push(file_name_line)
           output_lines.push("```#{language}\n")
           output_lines.push(included_text)
