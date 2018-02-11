@@ -11,6 +11,7 @@ class MarkdownHelper
       :md => nil,
       :rb => 'ruby',
       :xml => 'xml',
+      :html => 'html'
       }
 
   # Instantiate self.
