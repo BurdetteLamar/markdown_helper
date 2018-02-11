@@ -31,11 +31,12 @@ File <code>foo.xml</code>:
 ____
 By default:
  
-  * Highlighted code blocks are supported for Ruby and XML.  Your program can add others.
+  * Highlighting is provided for Ruby and XML.  Your program can add other file types.
   * Text in an ```.md``` file is not disturbed, and falls through for ordinary markdown rendering.
   * Any other included text is made into a code block, without highlighting.
   
 ## Usage
+
 
 ```ruby
 require 'markdown_helper'
@@ -47,19 +48,19 @@ markdown_helper = MarkdownHelper.new
 markdown_helper.include(template_file_path, markdown_file_path)
 ```
 
-Template file, ```template.md```:
+Template markdown, ```template.md```:
 ```
 Show some highlighted Ruby code:
 
 [include_file](include.rb)
 ```
-File to be included, ```include.rb```:
+Include file, ```include.rb```:
 ```ruby
 def hello
  puts 'Hello!'
 end
 ```
-The output file, ```markdown.md``` (rendered as markdown):
+The output file, ```markdown.md```, rendered as markdown)=:
 
 Show some highlighted Ruby code:
 
