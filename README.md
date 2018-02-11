@@ -18,7 +18,7 @@ into this:
 ____
 This code will be in a code block, and will be highlighted.
 
-<code>foo.xml</code>
+File <code>foo.xml</code>:
 ```xml
 <root>
   <element attribute="value">
@@ -63,7 +63,7 @@ The output file, ```markdown.md``` (rendered as markdown):
 
 Show some highlighted Ruby code:
 
-<code>include.rb</code>
+File <code>include.rb</code>:
 ```ruby
 def hello
  puts 'Hello!'
