@@ -48,13 +48,13 @@ markdown_helper = MarkdownHelper.new
 markdown_helper.include('template.md', 'markdown.md')
 
 # Enable highlighting for a file type.
-markdown_helper = MarkdownHelper.new(:py, 'python')
+markdown_helper = MarkdownHelper.new(:py => 'python')
 
 # Disable highlighting for a file type.
-markdown_helper = MarkdownHelper.new(:xml, '')
+markdown_helper = MarkdownHelper.new(:xml => '')
 
 # Disable code blocking for a file type.
-markdown_helper = MarkdownHelper.new(:xml, nil)
+markdown_helper = MarkdownHelper.new(:xml => nil)
 
 # Add warning comment <!--- GENERATED FILE, DO NOT EDIT ---> to each output file.
 markdown_helper.tag_as_generated
