@@ -2,7 +2,7 @@
 
 ## Highlighted Include Files
 
-<img src="/images/include.png" width="150">
+<img src="/images/include.png" width="50">
 
 This helper enables file inclusion in GitHub markdown, with code highlighting.
 
@@ -32,8 +32,8 @@ ____
 By default:
  
   * Highlighting is provided for file types ```.rb``` (Ruby) and ```.xml``` (XML}.  Your program can add other file types.
-  * Text in an ```.md``` file is not disturbed, and falls through for ordinary markdown rendering.
-  * Any other included text is made into a code block, without highlighting.
+  * Text from an ```.md``` (markdown) file is included verbatim, with no code block or highlighting.
+  * Any other included file is made into a code block, but not highlighted.
   
 ## Usage
 

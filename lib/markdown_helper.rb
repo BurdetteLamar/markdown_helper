@@ -5,7 +5,6 @@ class MarkdownHelper
   FILE_SOURCE_TAG = '[include_file]'
 
   attr_accessor :tag_as_generated
-  attr_reader :handling_for_file_ext
 
   VERBATIM = nil
   CODE_BLOCK = ''
@@ -14,7 +13,6 @@ class MarkdownHelper
       :md => VERBATIM,
       :rb => 'ruby',
       :xml => 'xml',
-      :html => 'html'
       }
 
   def initialize
