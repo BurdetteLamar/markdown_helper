@@ -1,10 +1,10 @@
 # MarkdownHelper
 
-## File Inclusion
+## Include Files
 
 <img src="/images/include.png" width="150">
 
-This helper enables file inclusion in GitHub markdown files, with code highlighting.
+This helper enables file inclusion in GitHub markdown, with code highlighting.
 
 It lets you turn this:
 ____
@@ -32,8 +32,8 @@ ____
 By default:
  
   * Highlighted code blocks are supported for Ruby and XML.  Your program can add others.
-  * Markdown code in a ```.md``` file is not disturbed, and falls through for the usual markdown formatting.
-  * Any other included code is made into a code block without highlighting.
+  * Text in an ```.md``` file is not disturbed, and falls through for ordinary markdown rendering.
+  * Any other included text is made into a code block, without highlighting.
   
 ## Usage
 
