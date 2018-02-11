@@ -18,7 +18,7 @@ into this:
 ____
 This code will be in a code block, and will be highlighted.
 
-File <code>foo.xml</code>:
+<code>foo.xml</code>
 ```xml
 <root>
   <element attribute="value">
