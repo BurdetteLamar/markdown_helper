@@ -1,1 +1,1 @@
-[include_file](../includes/ruby.rb)
+@[include](../includes/ruby.rb)

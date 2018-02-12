@@ -1,1 +1,1 @@
-[include_file](../includes/python.py)
+@[include](../includes/python.py)

@@ -1,1 +1,1 @@
-[include_file](../includes/markdown.md)
+@[include](../includes/markdown.md)

@@ -1,1 +1,1 @@
-[include_file](../includes/text_no_newline.txt)
+@[include](../includes/text_no_newline.txt)

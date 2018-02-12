@@ -2,7 +2,7 @@ require 'markdown_helper/version'
 
 class MarkdownHelper
 
-  FILE_SOURCE_TAG = '[include_file]'
+  FILE_SOURCE_TAG = '@[include]'
 
   attr_accessor :tag_as_generated
 

@@ -1,1 +1,1 @@
-[include_file](../includes/xml.xml)
+@[include](../includes/xml.xml)
