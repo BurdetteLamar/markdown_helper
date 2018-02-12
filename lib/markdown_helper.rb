@@ -57,8 +57,6 @@ class MarkdownHelper
         extname = File.extname(include_file_path)
         file_ext_key = extname.sub('.', '').to_sym
         handling ||= @handling_for_file_ext[file_ext_key]
-        p relative_path
-        p handling
         if handling == :verbatim
           # Pass through unadorned.
           output_lines.push(included_text)
