@@ -10,9 +10,7 @@ This helper enables file inclusion in GitHub markdown, with code highlighting.
 
 Using it, you can turn this:
 
-___
 <code>ruby.rb</code>
-___
 ```
 class RubyCode
 
@@ -24,7 +22,6 @@ class RubyCode
 
 end
 ```
-___
 
 into this:
 
@@ -51,9 +48,7 @@ By default:
 
 In the code below, file ```template.md``` may contain file inclusions, and file ```markdown.md``` is the output markdown with the files included.
 
-___
 <code>usage.rb</code>
-___
 ```ruby
 require 'markdown_helper'
 
@@ -73,5 +68,4 @@ markdown_helper.verbatim_file_type(:xml)
 # Add warning comment ''<!--- GENERATED FILE, DO NOT EDIT --->'' to each output file.
 markdown_helper.tag_as_generated = true
 ```
-___
 
