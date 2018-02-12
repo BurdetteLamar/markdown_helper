@@ -10,11 +10,11 @@ This helper enables file inclusion in GitHub markdown, with code highlighting.
 
 Using it, you can turn this:
 
-@[include](test/includes/ruby.rb|code_block)
+@[:code_block](test/includes/ruby.rb)
 
 into this:
 
-@[include](test/actual/ruby_included_ruby.md)
+@[:verbatim](test/actual/ruby_included_ruby.md)
 
 By default:
  
@@ -26,5 +26,5 @@ By default:
 
 In the code below, file ```template.md``` may contain file inclusions, and file ```markdown.md``` is the output markdown with the files included.
 
-@[include](examples/usage/usage.rb)
+@[ruby](examples/usage/usage.rb)
 
