@@ -22,7 +22,7 @@ end
 or plain in a code block:
 
 <code>include.rb</code>
-```:code_block
+```
 class RubyCode
   def initialize
     raise RuntimeError.new('I am only an example!')
@@ -32,14 +32,11 @@ end
 
 or verbatim (which GitHub renders however it likes):
 
-<code>include.rb</code>
-```:verbatim
 class RubyCode
   def initialize
     raise RuntimeError.new('I am only an example!')
   end
 end
-```
 
 ## Usage
 
