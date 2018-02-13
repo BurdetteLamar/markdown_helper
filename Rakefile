@@ -13,7 +13,8 @@ namespace :build do
   task :readme do
     require_relative 'lib/markdown_helper'
     markdown_helper = MarkdownHelper.new
-    markdown_helper.include('README.template.md', 'README.md')
+    markdown_helper.include('readme/highlight_ruby_template.md', 'readme/highlighted_ruby.md')
+    markdown_helper.include('readme/README.template.md', 'README.md')
   end
 
 end

@@ -1,71 +1,54 @@
 # MarkdownHelper
 
-## Highlighted Include Files
-
 <kbd>
   <img src="/images/include.png" width="50">
 </kbd>
 
-This helper enables file inclusion in GitHub markdown, with code highlighting.
+This helper enables file inclusion in GitHub markdown.
 
-Using it, you can turn this:
+You can use it to merge external files into a markdown (```.md```) file.
 
-<code>ruby.rb</code>
-```
-class RubyCode
+The merged text can be highlighted in a code block:
 
-  attr_accessor :foo, :bar
-
-  def initialize(foo, bar)
-    puts('This is Ruby.')
-  end
-
-end
-```
-
-into this:
-
-<code>ruby.rb</code>
+<code>include.rb</code>
 ```ruby
 class RubyCode
-
-  attr_accessor :foo, :bar
-
-  def initialize(foo, bar)
-    puts('This is Ruby.')
+  def initialize
+    raise RuntimeError.new('I am only an example!')
   end
-
 end
 ```
 
-By default:
- 
-  * Highlighting is provided for file types ```.rb``` (Ruby) and ```.xml``` (XML}.  Your program can add other file types.
-  * Text from a markdown file (extension ```.md```) is included verbatim, with no code block or highlighting.
-  * Any other included file is made into a code block, but not highlighted.
-  
-## Usage
+or plain in a code block:
 
-In the code below, file ```template.md``` may contain file inclusions, and file ```markdown.md``` is the output markdown with the files included.
+<code>include.rb</code>
+```:code_block
+class RubyCode
+  def initialize
+    raise RuntimeError.new('I am only an example!')
+  end
+end
+```
+
+or verbatim (which GitHub renders however it likes):
+
+<code>include.rb</code>
+```:verbatim
+class RubyCode
+  def initialize
+    raise RuntimeError.new('I am only an example!')
+  end
+end
+```
+
+## Usage
 
 <code>usage.rb</code>
 ```ruby
 require 'markdown_helper'
 
-# Include files.
 markdown_helper = MarkdownHelper.new
-markdown_helper.include('template.md', 'markdown.md')
-
-# Enable highlighting for a file type.
-markdown_helper.highlight_file_type(:py, 'python')
-
-# Disable highlighting for a file type.
-markdown_helper.code_block_file_type(:xml)
-
-# Disable code blocking for a file type.
-markdown_helper.verbatim_file_type(:xml)
-
-# Add warning comment ''<!--- GENERATED FILE, DO NOT EDIT --->'' to each output file.
-markdown_helper.tag_as_generated = true
+template_file_path = 'highlight_ruby_template.md'
+markdown_file_path = 'highlighted_ruby.rb'
+markdown_helper.include(template_file_path, markdown_file_path)
 ```
-
