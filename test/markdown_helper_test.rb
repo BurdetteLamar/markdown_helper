@@ -13,31 +13,22 @@ class MarkdownHelperTest < Minitest::Test
     refute_nil MarkdownHelper::VERSION
   end
 
-  def common_test(markdown_helper, file_stem, handling)
-    template_file_name = "#{file_stem}_included.md"
-    markdown_file_name = nil
-    if markdown_helper.tag_as_generated
-      markdown_file_name = "#{file_stem}_included_#{handling}_tagged.md"
-    else
-      markdown_file_name = "#{file_stem}_included_#{handling}.md"
-    end
-    template_file_path = File.join(TEMPLATES_DIR_PATH, template_file_name)
-    markdown_file_path = File.join(ACTUAL_DIR_PATH, markdown_file_name)
-    expected_file_path = File.join(EXPECTED_DIR_PATH, markdown_file_name)
+  def common_test(markdown_helper, template_file_path, expected_file_path, actual_file_path)
     output = markdown_helper.include(
         template_file_path,
-        markdown_file_path,
+        actual_file_path,
     )
-    diffs = MarkdownHelperTest.diff_files(expected_file_path, markdown_file_path)
+    diffs = MarkdownHelperTest.diff_files(expected_file_path, actual_file_path)
     unless diffs.empty?
-      puts"Failed output in #{markdown_file_path}:"
+      puts"Failed output in #{actual_file_path}:"
       puts output
     end
-    assert_empty(diffs, markdown_file_path)
+    assert_empty(diffs, actual_file_path)
   end
 
-  def test_handling
+  def test_treatment
     {
+        :nothing => :txt,
         :markdown => :md,
         :python => :py,
         :ruby => :rb,
@@ -46,29 +37,46 @@ class MarkdownHelperTest < Minitest::Test
         :xml => :xml,
     }.each_pair do |file_stem, file_type|
       markdown_helper = MarkdownHelper.new
-      handling_for_file_type = markdown_helper.get_handling(file_type)
-      language = handling_for_file_type.kind_of?(String) ? handling_for_file_type : ''
+      treatment_for_file_type = markdown_helper.get_treatment(file_type)
+      language = treatment_for_file_type.kind_of?(String) ? treatment_for_file_type : ''
       [
           :verbatim,
           :code_block,
-          language,
-      ].each do |handling|
-        markdown_helper.set_handling(file_type, handling)
-        common_test(markdown_helper, file_stem, handling)
+          file_stem,
+      ].each do |treatment|
+        file_basename = "#{file_stem}_#{treatment}"
+        md_file_name = "#{file_basename}.md"
+        template_file_path = File.join(TEMPLATES_DIR_PATH, md_file_name)
+        expected_file_path = File.join(EXPECTED_DIR_PATH, md_file_name)
+        actual_file_path = File.join(ACTUAL_DIR_PATH, md_file_name)
+        include_file_path = "../includes/#{file_stem}.#{file_type}"
+        create_template(template_file_path, include_file_path, file_stem, treatment)
+        common_test(markdown_helper, template_file_path, expected_file_path, actual_file_path)
       end
     end
   end
 
-  def test_tag_as_generated
-    [
-        :verbatim,
-        :code_block,
-        'xml',
-    ].each do |handling|
-      markdown_helper = MarkdownHelper.new
-      markdown_helper.set_handling(:xml, handling)
-      markdown_helper.tag_as_generated = true
-      common_test(markdown_helper, :xml, handling)
+  # def test_tag_as_generated
+  #   [
+  #       :verbatim,
+  #       :code_block,
+  #       'xml',
+  #   ].each do |treatment|
+  #     markdown_helper = MarkdownHelper.new
+  #     markdown_helper.set_treatment(:xml, treatment)
+  #     markdown_helper.tag_as_generated = true
+  #     common_test(markdown_helper, :xml, treatment)
+  #   end
+  # end
+
+  def create_template(template_file_path, include_file_path, file_stem, treatment)
+    File.open(template_file_path, 'w') do |file|
+      if file_stem == :nothing
+        file.puts 'This file includes nothing.'
+      else
+        include_line = "@[#{treatment}](#{include_file_path})"
+        file.puts(include_line)
+      end
     end
   end
   

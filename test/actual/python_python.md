@@ -1,5 +1,5 @@
 <code>python.py</code>
-```
+```python
 
 class MyClass:
     variable = "blah"

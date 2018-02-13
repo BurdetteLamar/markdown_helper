@@ -2,7 +2,7 @@ require 'markdown_helper/version'
 
 class MarkdownHelper
 
-  FILE_SOURCE_TAG_REGEX = /^@\[(:code_block|:verbatim|\w+)\]/
+  INCLUDE_REGEXP = /^@\[(:code_block|:verbatim|\w+)\]/
 
   attr_accessor :tag_as_generated
 
@@ -39,26 +39,28 @@ class MarkdownHelper
         output_lines.push("<!--- GENERATED FILE, DO NOT EDIT --->\n")
       end
       template_file.each_line do |input_line|
-        match_data = input_line.match(FILE_SOURCE_TAG_REGEX)
+        match_data = input_line.match(INCLUDE_REGEXP)
         unless match_data
           output_lines.push(input_line)
           next
         end
+        # Anomaly:
+        # I was expecting ':code_block' and ':verbatim' as possible results,
+        # and indeed over in irb that's so.
+        # But here, I'm not getting the leading colon, so won't look for it.
         treatment = case match_data[1]
-                      when ':code_block'
+                      when 'code_block'
                         :code_block
-                      when ':verbatim'
+                      when 'verbatim'
                         :verbatim
                       else
                         match_data[1]
                     end
-        p treatment
-        file_path_in_parens =  input_line.sub(FILE_SOURCE_TAG_REGEX, '')
+        file_path_in_parens =  input_line.sub(INCLUDE_REGEXP, '')
         unless file_path_in_parens.start_with?('(') && file_path_in_parens.end_with?(")\n")
           raise RuntimeError.new
         end
         relative_file_path = file_path_in_parens.sub('(', '').sub(")\n", '')
-        p relative_file_path
         include_file_path = File.join(
             File.dirname(template_file_path),
             relative_file_path,
