@@ -1,6 +1,10 @@
-# MarkdownHelper <img src="/images/include.png" width="50">
+# MarkdownHelper
 
-This helper enables file inclusion in GitHub markdown.
+## File Inclusion  <img src="/images/include.png" width="50">
+
+This markdown helper enables file inclusion in GitHub markdown.
+
+(Actually this README file is built using the file inclusion.)
 
 You can use it to merge external files into a markdown (```.md```) file.
 
