@@ -1,8 +1,4 @@
-# MarkdownHelper
-
-<kbd>
-  <img src="/images/include.png" width="50">
-</kbd>
+# MarkdownHelper <img src="/images/include.png" width="50">
 
 This helper enables file inclusion in GitHub markdown.
 
