@@ -1,3 +1,5 @@
+<code>ruby.rb</code>
+```
 class RubyCode
 
   def initialize
@@ -5,3 +7,4 @@ class RubyCode
   end
 
 end
+```
