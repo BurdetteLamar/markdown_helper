@@ -47,11 +47,11 @@ or verbatim (which GitHub renders however it likes).
 @[:verbatim](include.rb)
 ```
 
-Each inclusion line:
+Each inclusion line has:
 
-* Starts with ```@```.
-* Has a *treatment* in square brackets, one of:
-  * A language name such as ```ruby'```, to include a highlighted code block.  This can be any ```ace_mode``` mentioned in [GitHub Languages](https://github.com/github/linguist/blob/master/lib/linguist/languages.yml).
+* A leading ```@``` character.
+* A *treatment* in square brackets, one of:
+  * Highlighting mode such as ```ruby```, to include a highlighted code block.  This can be any Ace mode mentioned in [GitHub Languages](https://github.com/github/linguist/blob/master/lib/linguist/languages.yml).
   * ```:code_block```, to include a plain code block.
   * ```:verbatim```, to include text verbatim (to be rendered as markdown).
 * Has a relative file path in parentheses, pointing to the file to be included.
