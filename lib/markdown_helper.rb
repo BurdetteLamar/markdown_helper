@@ -44,10 +44,6 @@ class MarkdownHelper
           output_lines.push(input_line)
           next
         end
-        # Anomaly:
-        # I was expecting ':code_block' and ':verbatim' as possible results,
-        # and indeed over in irb that's so.
-        # But here, I'm not getting the leading colon, so won't look for it.
         treatment = case match_data[1]
                       when ':code_block'
                         :code_block

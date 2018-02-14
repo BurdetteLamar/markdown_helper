@@ -34,19 +34,7 @@ or verbatim (which GitHub renders however it likes).
 
 ## Usage
 
-### The Markdown Helper
-
-<code>usage.rb</code>
-```ruby
-require 'markdown_helper'
-
-markdown_helper = MarkdownHelper.new
-template_file_path = 'highlight_ruby_template.md'
-markdown_file_path = 'highlighted_ruby.rb'
-markdown_helper.include(template_file_path, markdown_file_path)
-```
-
-### Including Files
+### Including Files in Markdown
 
 <code>include.md</code>
 ```verbatim
@@ -61,4 +49,25 @@ markdown_helper.include(template_file_path, markdown_file_path)
 # Include verbatim.
 
 @[:verbatim](include.rb)
+```
+
+Each inclusion line:
+
+* Starts with ```@```.
+* Has a *treatment* in square brackets, one of:
+  * A language name such as ```ruby'``, to include a highlighted code block.
+  * ```:code_block```, to include a plain code block.
+  * ```:verbatim```, to include text verbatim (to be rendered as markdown).
+* Has a relative file path in parentheses, pointing to the file to be included.
+
+### Including the Files
+
+<code>usage.rb</code>
+```ruby
+require 'markdown_helper'
+
+markdown_helper = MarkdownHelper.new
+template_file_path = 'highlight_ruby_template.md'
+markdown_file_path = 'highlighted_ruby.rb'
+markdown_helper.include(template_file_path, markdown_file_path)
 ```
