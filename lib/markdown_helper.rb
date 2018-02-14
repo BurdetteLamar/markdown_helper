@@ -49,9 +49,9 @@ class MarkdownHelper
         # and indeed over in irb that's so.
         # But here, I'm not getting the leading colon, so won't look for it.
         treatment = case match_data[1]
-                      when 'code_block'
+                      when ':code_block'
                         :code_block
-                      when 'verbatim'
+                      when ':verbatim'
                         :verbatim
                       else
                         match_data[1]

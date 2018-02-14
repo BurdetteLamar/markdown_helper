@@ -1,1 +1,1 @@
-@[verbatim](../includes/xml.xml)
+@[:verbatim](../includes/xml.xml)

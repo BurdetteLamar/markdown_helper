@@ -1,1 +1,1 @@
-@[code_block](../includes/xml.xml)
+@[:code_block](../includes/xml.xml)

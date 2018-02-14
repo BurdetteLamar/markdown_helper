@@ -1,1 +1,1 @@
-@[verbatim](../includes/text_no_newline.txt)
+@[:verbatim](../includes/text_no_newline.txt)

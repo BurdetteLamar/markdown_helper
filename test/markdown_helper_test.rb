@@ -36,13 +36,10 @@ class MarkdownHelperTest < Minitest::Test
         :text_no_newline => :txt,
         :xml => :xml,
     }.each_pair do |file_stem, file_type|
-      markdown_helper = MarkdownHelper.new
-      treatment_for_file_type = markdown_helper.get_treatment(file_type)
-      language = treatment_for_file_type.kind_of?(String) ? treatment_for_file_type : ''
       [
           :verbatim,
           :code_block,
-          file_stem,
+          file_stem.to_s,
       ].each do |treatment|
         file_basename = "#{file_stem}_#{treatment}"
         md_file_name = "#{file_basename}.md"
@@ -51,7 +48,7 @@ class MarkdownHelperTest < Minitest::Test
         actual_file_path = File.join(ACTUAL_DIR_PATH, md_file_name)
         include_file_path = "../includes/#{file_stem}.#{file_type}"
         create_template(template_file_path, include_file_path, file_stem, treatment)
-        common_test(markdown_helper, template_file_path, expected_file_path, actual_file_path)
+        common_test(MarkdownHelper.new, template_file_path, expected_file_path, actual_file_path)
       end
     end
   end
@@ -74,7 +71,9 @@ class MarkdownHelperTest < Minitest::Test
       if file_stem == :nothing
         file.puts 'This file includes nothing.'
       else
-        include_line = "@[#{treatment}](#{include_file_path})"
+        # Inspect, in case it's a symbol, and remove double quotes after inspection.
+        treatment_for_include = treatment.inspect.gsub('"','')
+        include_line = "@[#{treatment_for_include}](#{include_file_path})"
         file.puts(include_line)
       end
     end

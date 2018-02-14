@@ -1,1 +1,1 @@
-@[code_block](../includes/python.py)
+@[:code_block](../includes/python.py)

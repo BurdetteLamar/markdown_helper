@@ -1,1 +1,1 @@
-@[verbatim](../includes/text.txt)
+@[:verbatim](../includes/text.txt)

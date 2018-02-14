@@ -1,1 +1,1 @@
-@[code_block](../includes/markdown.md)
+@[:code_block](../includes/markdown.md)

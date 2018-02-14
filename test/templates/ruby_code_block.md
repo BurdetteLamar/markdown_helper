@@ -1,1 +1,1 @@
-@[code_block](../includes/ruby.rb)
+@[:code_block](../includes/ruby.rb)

@@ -1,1 +1,1 @@
-@[verbatim](../includes/python.py)
+@[:verbatim](../includes/python.py)

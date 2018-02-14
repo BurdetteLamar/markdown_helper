@@ -1,1 +1,1 @@
-@[verbatim](../includes/ruby.rb)
+@[:verbatim](../includes/ruby.rb)

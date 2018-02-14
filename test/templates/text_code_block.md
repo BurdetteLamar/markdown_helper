@@ -1,1 +1,1 @@
-@[code_block](../includes/text.txt)
+@[:code_block](../includes/text.txt)
