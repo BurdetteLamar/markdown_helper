@@ -34,15 +34,9 @@ or verbatim (which GitHub renders however it likes).
 
 <code>include.md</code>
 ```verbatim
-# Include as highlighted code block.
-
 @[ruby](include.rb)
 
-# Include as plain code block.
-
 @[:code_block](include.rb)
-
-# Include verbatim.
 
 @[:verbatim](include.rb)
 ```
