@@ -30,15 +30,11 @@ class RubyCode
 end
 ```
 
-or verbatim (which GitHub renders however it likes):
-
-class RubyCode
-  def initialize
-    raise RuntimeError.new('I am only an example!')
-  end
-end
+or verbatim (which GitHub renders however it likes).
 
 ## Usage
+
+### The Markdown Helper
 
 <code>usage.rb</code>
 ```ruby
@@ -48,4 +44,21 @@ markdown_helper = MarkdownHelper.new
 template_file_path = 'highlight_ruby_template.md'
 markdown_file_path = 'highlighted_ruby.rb'
 markdown_helper.include(template_file_path, markdown_file_path)
+```
+
+### Including Files
+
+<code>include.md</code>
+```verbatim
+# Include as highlighted code block.
+
+@[ruby](include.rb)
+
+# Include as plain code block.
+
+@[:code_block](include.rb)
+
+# Include verbatim.
+
+@[:verbatim](include.rb)
 ```

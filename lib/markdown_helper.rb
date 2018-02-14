@@ -58,7 +58,7 @@ class MarkdownHelper
                     end
         file_path_in_parens =  input_line.sub(INCLUDE_REGEXP, '')
         unless file_path_in_parens.start_with?('(') && file_path_in_parens.end_with?(")\n")
-          raise RuntimeError.new
+          raise RuntimeError.new(file_path_in_parens.inspect)
         end
         relative_file_path = file_path_in_parens.sub('(', '').sub(")\n", '')
         include_file_path = File.join(

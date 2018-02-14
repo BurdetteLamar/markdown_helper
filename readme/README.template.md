@@ -16,10 +16,14 @@ or plain in a code block:
 
 @[:code_block](include.rb)
 
-or verbatim (which GitHub renders however it likes):
-
-@[:verbatim](include.rb)
+or verbatim (which GitHub renders however it likes).
 
 ## Usage
 
+### The Markdown Helper
+
 @[ruby](usage.rb)
+
+### Including Files
+
+@[verbatim](include.md)
