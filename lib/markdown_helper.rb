@@ -6,14 +6,14 @@ class MarkdownHelper
 
   attr_accessor :tag_as_generated
 
-    DEFAULT_treatment_FOR_FILE_EXT = {
+    DEFAULT_TREATMENT_FOR_FILE_EXT = {
       :md => :verbatim,
       :rb => 'ruby',
       :xml => 'xml',
       }
 
   def initialize
-    @treatment_for_file_ext = DEFAULT_treatment_FOR_FILE_EXT
+    @treatment_for_file_ext = DEFAULT_TREATMENT_FOR_FILE_EXT
     @treatment_for_file_ext.default = :code_block
     self.tag_as_generated = false
   end

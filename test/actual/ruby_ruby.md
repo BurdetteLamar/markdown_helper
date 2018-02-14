@@ -2,9 +2,7 @@
 ```ruby
 class RubyCode
 
-  attr_accessor :foo, :bar
-
-  def initialize(foo, bar)
+  def initialize
     puts('This is Ruby.')
   end
 
