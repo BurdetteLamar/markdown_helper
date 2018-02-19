@@ -18,21 +18,24 @@ or plain in a code block:
 
 or verbatim (which GitHub renders however it likes).
 
-## Usage
+### Usage
 
-### Including Files in Markdown
+#### Specify Include Files with Pragmas
 
 @[verbatim](include.md)
 
-Each inclusion line has:
+An inclusion pragma has the form:
 
-* A leading ```@``` character.
-* A *treatment* in square brackets, one of:
+```@[```*treatment*```](```*relative_file_path*```)```
+
+where:
+
+* *treatment* (in square brackets) is one of the following:
   * Highlighting mode such as ```[ruby]```, to include a highlighted code block.  This can be any Ace mode mentioned in [GitHub Languages](https://github.com/github/linguist/blob/master/lib/linguist/languages.yml).
   * ```[:code_block]```, to include a plain code block.
   * ```[:verbatim]```, to include text verbatim (to be rendered as markdown).
-* A relative file path in parentheses, pointing to the file to be included.
+* *relative_file_path* points to the file to be included.
 
-### Including the Files
+#### Include the Files with ```MarkdownHelper#include```
 
 @[ruby](usage.rb)

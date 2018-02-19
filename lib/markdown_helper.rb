@@ -1,43 +1,51 @@
 require 'markdown_helper/version'
 
+# Helper class for working with GitHub markdown.
+#  Supports file inclusion.
+#
+# @author Burdette Lamar
 class MarkdownHelper
 
   INCLUDE_REGEXP = /^@\[(:code_block|:verbatim|\w+)\]/
 
-  attr_accessor :tag_as_generated
+  # For later.
+  # attr_accessor :tag_as_generated
 
-    DEFAULT_TREATMENT_FOR_FILE_EXT = {
-      :md => :verbatim,
-      :rb => 'ruby',
-      :xml => 'xml',
-      }
+  # For later.
+  # DEFAULT_TREATMENT_FOR_FILE_EXT = {
+  #     :md => :verbatim,
+  #     :rb => 'ruby',
+  #     :xml => 'xml',
+  # }
 
   def initialize
-    @treatment_for_file_ext = DEFAULT_TREATMENT_FOR_FILE_EXT
-    @treatment_for_file_ext.default = :code_block
-    self.tag_as_generated = false
+    # For later.
+    # @treatment_for_file_ext = DEFAULT_TREATMENT_FOR_FILE_EXT
+    # @treatment_for_file_ext.default = :code_block
+    # self.tag_as_generated = false
   end
 
-  def get_treatment(file_type)
-    @treatment_for_file_ext[file_type]
-  end
-
-  def set_treatment(file_type, treatment)
-    treatment_symbols = [:verbatim, :code_block]
-    if treatment_symbols.include?(treatment) || treatment.kind_of?(String)
-      @treatment_for_file_ext[file_type] = treatment
-    else
-      message = "treatment must be a single word or must be in #{treatment_symbols.inspect}, not #{treatment.inspect}"
-      raise ArgumentError.new(message)
-    end
-  end
-
+  # Merges external files into markdown text.
+  # @param template_file_path [String] the path to the input template markdown file, usually containing include pragmas.
+  # @param markdown_file_path [String] the path to the output merged markdown file.
+  # @raise [RuntimeError] if an include pragma parsing error occurs.
+  # @return [String] the resulting markdown text.
+  #
+  # @example Pragma to include text as a highlighted code block.
+  #   @[ruby](foo.rb)
+  #
+  # @example Pragma to include text as a plain code block.
+  #   @[:code_block](foo.xyz)
+  #
+  # @example Pragma to include text verbatim, to be rendered as markdown.
+  #   @[:verbatim](foo.md)
   def include(template_file_path, markdown_file_path)
     output_lines = []
     File.open(template_file_path, 'r') do |template_file|
-      if tag_as_generated
-        output_lines.push("<!--- GENERATED FILE, DO NOT EDIT --->\n")
-      end
+      # For later.
+      # if tag_as_generated
+      #   output_lines.push("<!--- GENERATED FILE, DO NOT EDIT --->\n")
+      # end
       template_file.each_line do |input_line|
         match_data = input_line.match(INCLUDE_REGEXP)
         unless match_data
@@ -90,5 +98,20 @@ class MarkdownHelper
     end
     output
   end
+
+  # For later.
+  # def get_treatment(file_type)
+  #   @treatment_for_file_ext[file_type]
+  # end
+  #
+  # def set_treatment(file_type, treatment)
+  #   treatment_symbols = [:verbatim, :code_block]
+  #   if treatment_symbols.include?(treatment) || treatment.kind_of?(String)
+  #     @treatment_for_file_ext[file_type] = treatment
+  #   else
+  #     message = "treatment must be a single word or must be in #{treatment_symbols.inspect}, not #{treatment.inspect}"
+  #     raise ArgumentError.new(message)
+  #   end
+  # end
 
 end
