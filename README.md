@@ -1,6 +1,6 @@
 # MarkdownHelper
 
-## File Inclusion  <img src="/images/include.png" width="50">
+## File Inclusion  <img src="https://github.com/BurdetteLamar/MarkdownHelper/blob/master/images/include.png" width="50">
 
 This markdown helper enables file inclusion in GitHub markdown.
 
