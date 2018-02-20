@@ -1,6 +1,6 @@
 # MarkdownHelper
 
-## File Inclusion  <img src="https://github.com/BurdetteLamar/MarkdownHelper/blob/master/images/include.png" width="50">
+## File Inclusion  <img src="https://raw.githubusercontent.com/BurdetteLamar/MarkdownHelper/master/images/include.png" width="50">
 
 This markdown helper enables file inclusion in GitHub markdown.
 
@@ -17,6 +17,8 @@ or plain in a code block:
 @[:code_block](include.rb)
 
 or verbatim (which GitHub renders however it likes).
+
+[Note:  RubyGems.org chooses to highlight both code blocks above.  Go figure.]
 
 ### Usage
 
@@ -35,6 +37,7 @@ where:
   * ```[:code_block]```, to include a plain code block.
   * ```[:verbatim]```, to include text verbatim (to be rendered as markdown).
 * *relative_file_path* points to the file to be included.
+
 
 #### Include the Files with ```MarkdownHelper#include```
 
