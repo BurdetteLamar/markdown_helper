@@ -1,3 +1,5 @@
+[![Gem Version](https://badge.fury.io/rb/markdown_helper.svg)](https://badge.fury.io/rb/markdown_helper)
+
 # MarkdownHelper
 
 ## File Inclusion  <img src="https://raw.githubusercontent.com/BurdetteLamar/MarkdownHelper/master/images/include.png" width="50">
@@ -75,7 +77,7 @@ markdown_helper.include(template_file_path, markdown_file_path)
 
 Specify each file inclusion via an *include pragma*, which has the form:
 
-<code>@[</code>*format*<code>](</code>*relative_file_path*<code>)</code>
+<code>@[format](relative_file_path)</code>
 
 where:
 
