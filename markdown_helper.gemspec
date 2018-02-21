@@ -9,8 +9,8 @@ Gem::Specification.new do |spec|
   spec.authors       = ['burdettelamar']
   spec.email         = ['BurdetteLamar@Yahoo.com']
 
-  spec.summary       = 'Module to help with GitHub markdown.'
-  spec.description   = 'Module to help with GitHub markdown.  So far:  file inclusion.'
+  spec.summary       = 'Class to help with GitHub markdown.'
+  spec.description   = 'Class to help with GitHub markdown.  So far:  file inclusion.'
   spec.homepage      = 'https://rubygems.org/gems/markdown_helper'
   spec.license       = 'MIT'
 
