@@ -1,5 +1,5 @@
-@[ruby](include.rb)
+@[ruby](my_ruby.rb)
 
-@[:code_block](include.rb)
+@[:code_block](my_language.xyzzy)
 
-@[:verbatim](include.rb)
+@[:verbatim](my_markdown.md)
