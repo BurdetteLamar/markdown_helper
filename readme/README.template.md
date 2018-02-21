@@ -8,19 +8,21 @@ This markdown helper enables file inclusion in GitHub markdown.
 
 You can use it to merge external files into a markdown (</code>.md</code>) file.
 
-### Formats
+### Merged Text Formats
 
-The merged text can be highlighted in a code block:
+#### Highlighted Code Block
 
 @[ruby](include.rb)
 
-or plain in a code block:
+#### Plain Code Block
 
 @[:code_block](include.rb)
 
-or verbatim (which GitHub renders however it likes).
+[Note:  For the gem's documentation, RubyDoc.info chooses to highlight this code block regardless.  Go figure.]
 
-[Note:  RubyDoc.info chooses to highlight both code blocks above.  Go figure.]
+#### Verbatim
+
+Verbatim text becomes part of markdown page, and is rendered on GitHub in the usual manner.
 
 ### Usage
 
