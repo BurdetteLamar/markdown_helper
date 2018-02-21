@@ -4,9 +4,9 @@
 
 This markdown helper enables file inclusion in GitHub markdown.
 
-(Actually this README file is built using the file inclusion.)
+(Actually, this README file itself is built using file inclusion.)
 
-You can use it to merge external files into a markdown (</code>.md</code>) file.
+Use the markdown helper to merge external files into a markdown (</code>.md</code>) file.
 
 ### Merged Text Formats
 
@@ -32,11 +32,11 @@ class RubyCode
 end
 ```
 
-[Note:  For the gem's documentation, RubyDoc.info chooses to highlight this code block regardless.  Go figure.]
+[Note:  In the gem documentation, RubyDoc.info chooses to highlight this code block regardless.  Go figure.]
 
 #### Verbatim
 
-Verbatim text becomes part of markdown page, and is rendered on GitHub in the usual manner.
+Verbatim text is included unadorned.  Most often, verbatim text is markdown to be rendered as part of the markdown page.
 
 ### Usage
 
@@ -73,7 +73,7 @@ markdown_helper.include(template_file_path, markdown_file_path)
 
 #### Include Pragmas
 
-An include pragma has the form:
+Specify each file inclusion via an *include pragma*, which has the form:
 
 <code>@[</code>*format*<code>](</code>*relative_file_path*<code>)</code>
 
@@ -85,7 +85,7 @@ where:
   * <code>[:verbatim]</code>, to include text verbatim (to be rendered as markdown).
 * *relative_file_path* points to the file to be included.
 
-##### Examples
+##### Example Include Pragmas
 
 <code>include.md</code>
 ```verbatim
