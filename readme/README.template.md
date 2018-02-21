@@ -18,7 +18,7 @@ or plain in a code block:
 
 or verbatim (which GitHub renders however it likes).
 
-[Note:  RubyGems.org chooses to highlight both code blocks above.  Go figure.]
+[Note:  RubyDoc.info chooses to highlight both code blocks above.  Go figure.]
 
 ### Usage
 
