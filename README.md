@@ -8,6 +8,8 @@ This markdown helper enables file inclusion in GitHub markdown.
 
 You can use it to merge external files into a markdown (</code>.md</code>) file.
 
+### Formats
+
 The merged text can be highlighted in a code block:
 
 <code>include.rb</code>
@@ -32,35 +34,30 @@ end
 
 or verbatim (which GitHub renders however it likes).
 
-[Note:  RubyGems.org chooses to highlight both code blocks above.  Go figure.]
+[Note:  RubyDoc.info chooses to highlight both code blocks above.  Go figure.]
 
 ### Usage
 
-#### Specify Include Files with Pragmas
+#### CLI
 
-<code>include.md</code>
-```verbatim
-@[ruby](include.rb)
+<code>include.txt</code>
+```
+Usage:
 
-@[:code_block](include.rb)
+  include template_file_path markdown_file_page
 
-@[:verbatim](include.rb)
+  where
+
+    * template_file_path is the path to an existing file.
+    * markdown_file_path is the path to a file to be created.
+
+  Typically:
+
+    * Both file types are .md.
+    * The template file contains file inclusion pragmas.  See README.md.
 ```
 
-An inclusion pragma has the form:
-
-<code>@[</code>*treatment*<code>](</code>*relative_file_path*<code>)</code>
-
-where:
-
-* *treatment* (in square brackets) is one of the following:
-  * Highlighting mode such as <code>[ruby]</code>, to include a highlighted code block.  This can be any Ace mode mentioned in [GitHub Languages](https://github.com/github/linguist/blob/master/lib/linguist/languages.yml).
-  * <code>[:code_block]</code>, to include a plain code block.
-  * <code>[:verbatim]</code>, to include text verbatim (to be rendered as markdown).
-* *relative_file_path* points to the file to be included.
-
-
-#### Include the Files with <code>MarkdownHelper#include</code>
+#### API
 
 <code>usage.rb</code>
 ```ruby
@@ -71,3 +68,30 @@ template_file_path = 'highlight_ruby_template.md'
 markdown_file_path = 'highlighted_ruby.rb'
 markdown_helper.include(template_file_path, markdown_file_path)
 ```
+
+#### Include Pragmas
+
+An include pragma has the form:
+
+<code>@[</code>*format*<code>](</code>*relative_file_path*<code>)</code>
+
+where:
+
+* *format* (in square brackets) is one of the following:
+  * Highlighting mode such as <code>[ruby]</code>, to include a highlighted code block.  This can be any Ace mode mentioned in [GitHub Languages](https://github.com/github/linguist/blob/master/lib/linguist/languages.yml).
+  * <code>[:code_block]</code>, to include a plain code block.
+  * <code>[:verbatim]</code>, to include text verbatim (to be rendered as markdown).
+* *relative_file_path* points to the file to be included.
+
+##### Examples
+
+<code>include.md</code>
+```verbatim
+@[ruby](include.rb)
+
+@[:code_block](include.rb)
+
+@[:verbatim](include.rb)
+```
+
+

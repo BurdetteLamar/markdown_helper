@@ -1,0 +1,13 @@
+Usage:
+
+  include template_file_path markdown_file_page
+
+  where
+
+    * template_file_path is the path to an existing file.
+    * markdown_file_path is the path to a file to be created.
+
+  Typically:
+
+    * Both file types are .md.
+    * The template file contains file inclusion pragmas.  See README.md.

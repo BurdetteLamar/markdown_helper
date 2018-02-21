@@ -8,6 +8,8 @@ This markdown helper enables file inclusion in GitHub markdown.
 
 You can use it to merge external files into a markdown (</code>.md</code>) file.
 
+### Formats
+
 The merged text can be highlighted in a code block:
 
 @[ruby](include.rb)
@@ -22,23 +24,30 @@ or verbatim (which GitHub renders however it likes).
 
 ### Usage
 
-#### Specify Include Files with Pragmas
+#### CLI
 
-@[verbatim](include.md)
+@[:code_block](../bin/usage/include.txt)
 
-An inclusion pragma has the form:
+#### API
 
-<code>@[</code>*treatment*<code>](</code>*relative_file_path*<code>)</code>
+@[ruby](usage.rb)
+
+#### Include Pragmas
+
+An include pragma has the form:
+
+<code>@[</code>*format*<code>](</code>*relative_file_path*<code>)</code>
 
 where:
 
-* *treatment* (in square brackets) is one of the following:
+* *format* (in square brackets) is one of the following:
   * Highlighting mode such as <code>[ruby]</code>, to include a highlighted code block.  This can be any Ace mode mentioned in [GitHub Languages](https://github.com/github/linguist/blob/master/lib/linguist/languages.yml).
   * <code>[:code_block]</code>, to include a plain code block.
   * <code>[:verbatim]</code>, to include text verbatim (to be rendered as markdown).
 * *relative_file_path* points to the file to be included.
 
+##### Examples
 
-#### Include the Files with <code>MarkdownHelper#include</code>
+@[verbatim](include.md)
 
-@[ruby](usage.rb)
+
