@@ -74,9 +74,10 @@ class MarkdownHelper
           message = "Warning:  Included file has no trailing newline: #{include_file_path}"
           warn(message)
         end
-        extname = File.extname(include_file_path)
-        file_ext_key = extname.sub('.', '').to_sym
-        treatment ||= @treatment_for_file_ext[file_ext_key]
+        # For later.
+        # extname = File.extname(include_file_path)
+        # file_ext_key = extname.sub('.', '').to_sym
+        # treatment ||= @treatment_for_file_ext[file_ext_key]
         if treatment == :verbatim
           # Pass through unadorned.
           output_lines.push(included_text)
