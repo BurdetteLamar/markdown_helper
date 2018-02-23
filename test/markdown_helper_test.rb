@@ -3,33 +3,82 @@ require 'test_helper'
 require 'diff-lcs'
 
 THIS_DIR_PATH = File.dirname(__FILE__)
-INPUT_DIR_PATH = File.join(THIS_DIR_PATH, 'input')
+TEMPLATES_DIR_PATH = File.join(THIS_DIR_PATH, 'templates')
 EXPECTED_DIR_PATH = File.join(THIS_DIR_PATH, 'expected')
 ACTUAL_DIR_PATH = File.join(THIS_DIR_PATH, 'actual')
 
 class MarkdownHelperTest < Minitest::Test
 
   def test_version
-    refute_nil ::MarkdownHelper::VERSION
+    refute_nil MarkdownHelper::VERSION
   end
 
-  def conventional_test(input_file_name)
-    template_file_path = File.join(INPUT_DIR_PATH, input_file_name)
-    markdown_file_path = File.join(ACTUAL_DIR_PATH, input_file_name)
-    expected_file_path = File.join(EXPECTED_DIR_PATH, input_file_name)
-    MarkdownHelper.include(template_file_path, markdown_file_path)
-    diffs = MarkdownHelperTest.diff_files(expected_file_path, markdown_file_path)
-    assert_empty(diffs)
+  def common_test(markdown_helper, template_file_path, expected_file_path, actual_file_path)
+    output = markdown_helper.include(
+        template_file_path,
+        actual_file_path,
+    )
+    diffs = MarkdownHelperTest.diff_files(expected_file_path, actual_file_path)
+    unless diffs.empty?
+      puts"Failed output in #{actual_file_path}:"
+      puts output
+    end
+    assert_empty(diffs, actual_file_path)
   end
 
-  def test_nothing_included
-    conventional_test('nothing_included.md')
+  def test_treatment
+    {
+        :nothing => :txt,
+        :markdown => :md,
+        :python => :py,
+        :ruby => :rb,
+        :text => :txt,
+        :text_no_newline => :txt,
+        :xml => :xml,
+    }.each_pair do |file_stem, file_type|
+      [
+          :verbatim,
+          :code_block,
+          file_stem.to_s,
+      ].each do |treatment|
+        file_basename = "#{file_stem}_#{treatment}"
+        md_file_name = "#{file_basename}.md"
+        template_file_path = File.join(TEMPLATES_DIR_PATH, md_file_name)
+        expected_file_path = File.join(EXPECTED_DIR_PATH, md_file_name)
+        actual_file_path = File.join(ACTUAL_DIR_PATH, md_file_name)
+        include_file_path = "../includes/#{file_stem}.#{file_type}"
+        create_template(template_file_path, include_file_path, file_stem, treatment)
+        common_test(MarkdownHelper.new, template_file_path, expected_file_path, actual_file_path)
+      end
+    end
   end
 
-  def test_text_included
-    conventional_test('text_included.md')
-  end
+  # def test_tag_as_generated
+  #   [
+  #       :verbatim,
+  #       :code_block,
+  #       'xml',
+  #   ].each do |treatment|
+  #     markdown_helper = MarkdownHelper.new
+  #     markdown_helper.set_treatment(:xml, treatment)
+  #     markdown_helper.tag_as_generated = true
+  #     common_test(markdown_helper, :xml, treatment)
+  #   end
+  # end
 
+  def create_template(template_file_path, include_file_path, file_stem, treatment)
+    File.open(template_file_path, 'w') do |file|
+      if file_stem == :nothing
+        file.puts 'This file includes nothing.'
+      else
+        # Inspect, in case it's a symbol, and remove double quotes after inspection.
+        treatment_for_include = treatment.inspect.gsub('"','')
+        include_line = "@[#{treatment_for_include}](#{include_file_path})"
+        file.puts(include_line)
+      end
+    end
+  end
+  
   def self.diff_files(expected_file_path, actual_file_path)
     diffs = nil
     File.open(expected_file_path) do |expected_file|

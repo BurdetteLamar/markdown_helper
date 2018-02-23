@@ -14,25 +14,11 @@ Use the markdown helper to merge external files into a markdown (</code>.md</cod
 
 #### Highlighted Code Block
 
-<code>include.rb</code>
-```ruby
-class RubyCode
-  def initialize
-    raise RuntimeError.new('I am only an example!')
-  end
-end
-```
+@[ruby](include.rb)
 
 #### Plain Code Block
 
-<code>include.rb</code>
-```
-class RubyCode
-  def initialize
-    raise RuntimeError.new('I am only an example!')
-  end
-end
-```
+@[:code_block](include.rb)
 
 [Note:  In the gem documentation, RubyDoc.info chooses to highlight this code block regardless.  Go figure.]
 
@@ -44,34 +30,11 @@ Verbatim text is included unadorned.  Most often, verbatim text is markdown to b
 
 #### CLI
 
-<code>include.txt</code>
-```
-Usage:
-
-  include template_file_path markdown_file_page
-
-  where
-
-    * template_file_path is the path to an existing file.
-    * markdown_file_path is the path to a file to be created.
-
-  Typically:
-
-    * Both file types are .md.
-    * The template file contains file inclusion pragmas.  See README.md.
-```
+@[:code_block](../bin/usage/include.txt)
 
 #### API
 
-<code>usage.rb</code>
-```ruby
-require 'markdown_helper'
-
-markdown_helper = MarkdownHelper.new
-template_file_path = 'highlight_ruby_template.md'
-markdown_file_path = 'highlighted_ruby.rb'
-markdown_helper.include(template_file_path, markdown_file_path)
-```
+@[ruby](usage.rb)
 
 #### Include Pragmas
 
@@ -89,13 +52,6 @@ where:
 
 ##### Example Include Pragmas
 
-<code>include.md</code>
-```verbatim
-@[ruby](my_ruby.rb)
-
-@[:code_block](my_language.xyzzy)
-
-@[:verbatim](my_markdown.md)
-```
+@[verbatim](include.md)
 
 

@@ -1,0 +1,23 @@
+#!/usr/bin/env ruby
+
+require 'markdown_helper'
+
+def usage
+  dir_path = File.dirname(File.absolute_path(__FILE__))
+  file_path = File.join(
+                      dir_path,
+                      'usage',
+                      'include.txt'
+  )
+  puts File.read(file_path)
+  exit
+end
+
+template_file_path, markdown_file_path = ARGV
+
+usage unless ARGV.size == 2
+usage unless File.readable?(template_file_path)
+usage unless File.writable?(File.dirname(markdown_file_path))
+
+MarkdownHelper.new.include(template_file_path, markdown_file_path)
+
