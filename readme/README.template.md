@@ -40,7 +40,7 @@ Verbatim text is included unadorned.  Most often, verbatim text is markdown to b
 
 Specify each file inclusion via an *include pragma*, which has the form:
 
-<code>@[</code>*format*<code>](</code>*relative_file_path*<code>)</code>
+<code>@[</code>*format*<code>]\(</code>*relative_file_path*<code>)</code>
 
 where:
 
