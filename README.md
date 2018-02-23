@@ -77,7 +77,7 @@ markdown_helper.include(template_file_path, markdown_file_path)
 
 Specify each file inclusion via an *include pragma*, which has the form:
 
-<code>@[</code>*format*<code>](</code>*relative_file_path*<code>)</code>
+<code>@[</code>*format*<code>]\(</code>*relative_file_path*<code>)</code>
 
 where:
 
