@@ -8,23 +8,6 @@ class MarkdownHelper
 
   INCLUDE_REGEXP = /^@\[(:code_block|:verbatim|\w+)\]/
 
-  # For later.
-  # attr_accessor :tag_as_generated
-
-  # For later.
-  # DEFAULT_TREATMENT_FOR_FILE_EXT = {
-  #     :md => :verbatim,
-  #     :rb => 'ruby',
-  #     :xml => 'xml',
-  # }
-
-  def initialize
-    # For later.
-    # @treatment_for_file_ext = DEFAULT_TREATMENT_FOR_FILE_EXT
-    # @treatment_for_file_ext.default = :code_block
-    # self.tag_as_generated = false
-  end
-
   # Merges external files into markdown text.
   # @param template_file_path [String] the path to the input template markdown file, usually containing include pragmas.
   # @param markdown_file_path [String] the path to the output merged markdown file.
@@ -98,20 +81,5 @@ class MarkdownHelper
     end
     output
   end
-
-  # For later.
-  # def get_treatment(file_type)
-  #   @treatment_for_file_ext[file_type]
-  # end
-  #
-  # def set_treatment(file_type, treatment)
-  #   treatment_symbols = [:verbatim, :code_block]
-  #   if treatment_symbols.include?(treatment) || treatment.kind_of?(String)
-  #     @treatment_for_file_ext[file_type] = treatment
-  #   else
-  #     message = "treatment must be a single word or must be in #{treatment_symbols.inspect}, not #{treatment.inspect}"
-  #     raise ArgumentError.new(message)
-  #   end
-  # end
 
 end
