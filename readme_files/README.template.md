@@ -2,7 +2,9 @@
 
 [![Gem Version](https://badge.fury.io/rb/markdown_helper.svg)](https://badge.fury.io/rb/markdown_helper)
 
-## File Inclusion  <img src="https://raw.githubusercontent.com/BurdetteLamar/MarkdownHelper/master/images/include.png" width="50">
+## File Inclusion 
+
+<img src="https://raw.githubusercontent.com/BurdetteLamar/MarkdownHelper/master/images/include.png" width="50">
 
 This markdown helper enables file inclusion in GitHub markdown.
 

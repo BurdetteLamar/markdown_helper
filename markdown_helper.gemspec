@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
 
   spec.summary       = 'Class to help with GitHub markdown.'
   spec.description   = 'Class to help with GitHub markdown.  So far:  file inclusion.'
-  spec.homepage      = 'https://rubygems.org/gems/markdown_helper'
+  spec.homepage      = 'https://github.com/BurdetteLamar/MarkdownHelper'
   spec.license       = 'MIT'
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
