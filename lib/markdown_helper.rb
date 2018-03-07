@@ -6,7 +6,7 @@ require 'markdown_helper/version'
 # @author Burdette Lamar
 class MarkdownHelper
 
-  INCLUDE_REGEXP = /^@\[(:code_block|:verbatim|\w+)\]/
+  INCLUDE_REGEXP = /^@\[([^\[]+)\]\(([^\)]+)\)/
 
   # Merges external files into markdown text.
   # @param template_file_path [String] the path to the input template markdown file, usually containing include pragmas.
@@ -43,11 +43,7 @@ class MarkdownHelper
                       else
                         match_data[1]
                     end
-        file_path_in_parens =  input_line.sub(INCLUDE_REGEXP, '')
-        unless file_path_in_parens.start_with?('(') && file_path_in_parens.end_with?(")\n")
-          raise RuntimeError.new(file_path_in_parens.inspect)
-        end
-        relative_file_path = file_path_in_parens.sub('(', '').sub(")\n", '')
+        relative_file_path = match_data[2]
         include_file_path = File.join(
             File.dirname(template_file_path),
             relative_file_path,
