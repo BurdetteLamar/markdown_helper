@@ -92,7 +92,7 @@ where:
 ##### Example Include Pragmas
 
 <code>include.md</code>
-```verbatim
+```code_block
 @[ruby](my_ruby.rb)
 
 @[:code_block](my_language.xyzzy)
@@ -160,11 +160,11 @@ where:
 ##### Example Image Pragmas
 
 <code>resolve_image_urls.md</code>
-```verbatim
-<img src="https://raw.githubusercontent.com/BurdetteLamar/MarkdownHelper/master/image/image.png" alt="my_alt">
+```code_block
+ ![my_alt](image/image.png)
 
-<img src="https://raw.githubusercontent.com/BurdetteLamar/MarkdownHelper/master/image/image.png" alt="my_alt" width="50">
+ ![my_alt](image/image.png | width=50)
 
-<img src="https://raw.githubusercontent.com/BurdetteLamar/MarkdownHelper/master/image/image.png" alt="my_alt" width="50" height="50">
+ ![my_alt](image/image.png| width=50 height=50)
 ```
 
