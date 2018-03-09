@@ -102,7 +102,7 @@ where:
 
 ## Image Path Resolution 
 
-<img src="https://raw.githubusercontent.com/BurdetteLamar/MarkdownHelper/master/images/image.jpg" alt="image_icon" width="50">
+<img src="https://raw.githubusercontent.com/BurdetteLamar/MarkdownHelper/master/images/image.png" alt="image_icon" width="50">
 
 This markdown helper enables image path resolution in GitHub markdown.
 
@@ -161,10 +161,10 @@ where:
 
 <code>resolve_image_urls.md</code>
 ```verbatim
-<img src="https://raw.githubusercontent.com/BurdetteLamar/MarkdownHelper/master/image/image.jpg" alt="my_alt">
+<img src="https://raw.githubusercontent.com/BurdetteLamar/MarkdownHelper/master/image/image.png" alt="my_alt">
 
-<img src="https://raw.githubusercontent.com/BurdetteLamar/MarkdownHelper/master/image/image.jpg" alt="my_alt" width="50">
+<img src="https://raw.githubusercontent.com/BurdetteLamar/MarkdownHelper/master/image/image.png" alt="my_alt" width="50">
 
-<img src="https://raw.githubusercontent.com/BurdetteLamar/MarkdownHelper/master/image/image.jpg" alt="my_alt" width="50" height="50">
+<img src="https://raw.githubusercontent.com/BurdetteLamar/MarkdownHelper/master/image/image.png" alt="my_alt" width="50" height="50">
 ```
 

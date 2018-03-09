@@ -58,7 +58,7 @@ where:
 
 ## Image Path Resolution 
 
-![image_icon](images/image.jpg | width=50)
+![image_icon](images/image.png | width=50)
 
 This markdown helper enables image path resolution in GitHub markdown.
 

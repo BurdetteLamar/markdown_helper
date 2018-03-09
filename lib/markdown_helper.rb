@@ -95,7 +95,7 @@ class MarkdownHelper
   #  must give the repo name of the relevant GitHub repository.
   #
   # @example pragma for an image:
-  #   ![image_icon](images/image.jpg)
+  #   ![image_icon](images/image.png)
   #
   # The path resolves to:
   #
