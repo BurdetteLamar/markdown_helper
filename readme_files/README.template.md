@@ -36,7 +36,7 @@ Verbatim text is included unadorned.  Most often, verbatim text is markdown to b
 
 #### API
 
-@[ruby](usage.rb)
+@[ruby](include_usage.rb)
 
 #### Include Pragmas
 
@@ -56,4 +56,41 @@ where:
 
 @[verbatim](include.md)
 
+## Image Path Resolution 
+
+![image_icon](images/image.png | width=50)
+
+This markdown helper enables image path resolution in GitHub markdown.
+
+(Actually, this README file itself is built using image path resolution.)
+
+Use the markdown helper to resolve image relative paths in a markdown (</code>.md</code>) file.
+
+This matters because when markdown becomes part of a Ruby gem, its images will have been relocated in the documentation at RubyDoc.info, breaking the relative paths. The resolved (absolute) urls, however, will still be valid.
+
+### Usage
+
+#### CLI
+
+@[:code_block](../bin/usage/resolve_image_urls.txt)
+
+#### API
+
+@[ruby](resolve_image_urls_usage.rb)
+
+#### Image Pragmas
+
+Specify each image file via an *image pragma*, which has the form:
+
+<code>![*alt_text*]\(</code>*relative_file_path* <code>|</code> *attributes*<code>)</code>
+
+where:
+
+* *alt_text* is the usual alt text for an HTML image.
+* *relative_file_path* points to the file to be included.
+* *attributes* are whitespace-separated name-value pairs in the form *name*<code>=</code>*value*.  These are passed through to the generated <code>img</code> HTML element.
+
+##### Example Image Pragmas
+
+@[verbatim](resolve_image_urls.md)
 

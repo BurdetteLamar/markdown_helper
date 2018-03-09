@@ -6,9 +6,10 @@ require 'markdown_helper/version'
 # @author Burdette Lamar
 class MarkdownHelper
 
-  IMAGE_REGEXP = /^!\[([^\[]+)\]\(([^\)]+)\)/
-  INCLUDE_REGEXP = /^@\[([^\[]+)\]\(([^\)]+)\)/
+  IMAGE_REGEXP = /^!\[([^\[]+)\]\(([^)]+)\)/
+  INCLUDE_REGEXP = /^@\[([^\[]+)\]\(([^)]+)\)/
 
+  # Get the user name and repository name from ENV.
   def repo_user_and_name
     repo_user = ENV['REPO_USER']
     repo_name = ENV['REPO_NAME']
@@ -22,16 +23,15 @@ class MarkdownHelper
   # Merges external files into markdown text.
   # @param template_file_path [String] the path to the input template markdown file, usually containing include pragmas.
   # @param markdown_file_path [String] the path to the output merged markdown file.
-  # @raise [RuntimeError] if an include pragma parsing error occurs.
   # @return [String] the resulting markdown text.
   #
-  # @example Pragma to include text as a highlighted code block.
+  # @example pragma to include text as a highlighted code block.
   #   @[ruby](foo.rb)
   #
-  # @example Pragma to include text as a plain code block.
+  # @example pragma to include text as a plain code block.
   #   @[:code_block](foo.xyz)
   #
-  # @example Pragma to include text verbatim, to be rendered as markdown.
+  # @example pragma to include text verbatim, to be rendered as markdown.
   #   @[:verbatim](foo.md)
   def include(template_file_path, markdown_file_path)
     output_lines = []
@@ -82,6 +82,27 @@ class MarkdownHelper
     output
   end
 
+  # Resolves relative image paths to absolute urls in markdown text.
+  # @param template_file_path [String] the path to the input template markdown file, usually containing image pragmas.
+  # @param markdown_file_path [String] the path to the output resolved markdown file.
+  # @return [String] the resulting markdown text.
+  #
+  # This matters because when markdown becomes part of a Ruby gem,
+  # its images will have been relocated in the documentation at RubyDoc.info, breaking the paths.
+  # The resolved (absolute) urls, however, will still be valid.
+  #
+  # ENV['REPO_USER'] and ENV['REPO_NAME'] must give the user name and repository name of the relevant GitHub repository.
+  #  must give the repo name of the relevant GitHub repository.
+  #
+  # @example pragma for an image:
+  #   ![image_icon](images/image.png)
+  #
+  # The path resolves to:
+  #
+  #   absolute_file_path = File.join(
+  #       "https://raw.githubusercontent.com/#{repo_user}/#{repo_name}/master",
+  #       relative_file_path,
+  #   )
   def resolve_image_urls(template_file_path, markdown_file_path)
     output_lines = []
     File.open(template_file_path, 'r') do |template_file|
