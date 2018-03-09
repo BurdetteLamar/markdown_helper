@@ -6,6 +6,7 @@ require 'markdown_helper/version'
 # @author Burdette Lamar
 class MarkdownHelper
 
+  IMAGE_REGEXP = /^!\[([^\[]+)\]\(([^\)]+)\)/
   INCLUDE_REGEXP = /^@\[([^\[]+)\]\(([^\)]+)\)/
 
   # Merges external files into markdown text.
@@ -25,10 +26,6 @@ class MarkdownHelper
   def include(template_file_path, markdown_file_path)
     output_lines = []
     File.open(template_file_path, 'r') do |template_file|
-      # For later.
-      # if tag_as_generated
-      #   output_lines.push("<!--- GENERATED FILE, DO NOT EDIT --->\n")
-      # end
       template_file.each_line do |input_line|
         match_data = input_line.match(INCLUDE_REGEXP)
         unless match_data
@@ -53,10 +50,6 @@ class MarkdownHelper
           message = "Warning:  Included file has no trailing newline: #{include_file_path}"
           warn(message)
         end
-        # For later.
-        # extname = File.extname(include_file_path)
-        # file_ext_key = extname.sub('.', '').to_sym
-        # treatment ||= @treatment_for_file_ext[file_ext_key]
         if treatment == :verbatim
           # Pass through unadorned.
           output_lines.push(included_text)
@@ -70,6 +63,35 @@ class MarkdownHelper
           output_lines.push(included_text)
           output_lines.push("```\n")
         end
+      end
+    end
+    output = output_lines.join('')
+    File.open(markdown_file_path, 'w') do |md_file|
+      md_file.write(output)
+    end
+    output
+  end
+
+  def resolve_image_urls(template_file_path, markdown_file_path)
+    output_lines = []
+    File.open(template_file_path, 'r') do |template_file|
+      output_lines = []
+      template_file.each_line do |input_line|
+        match_data = input_line.match(IMAGE_REGEXP)
+        unless match_data
+          output_lines.push(input_line)
+          next
+        end
+        alt_text = match_data[1]
+        relative_file_path = match_data[2]
+        repo_user = ENV['REPO_USER']
+        repo_name = ENV['REPO_NAME']
+        absolute_file_path = File.join(
+            "https://raw.githubusercontent.com/#{repo_user}/#{repo_name}/master",
+            relative_file_path,
+        )
+        line = format('<img src="%s" alt="%s">', absolute_file_path, alt_text) + "\n"
+        output_lines.push(line)
       end
     end
     output = output_lines.join('')

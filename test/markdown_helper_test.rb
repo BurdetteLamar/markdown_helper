@@ -42,6 +42,7 @@ class MarkdownHelperTest < Minitest::Test
         end
       end
     end
+
     {
         :nothing => :txt,
         :markdown => :md,
@@ -66,6 +67,38 @@ class MarkdownHelperTest < Minitest::Test
         common_test(MarkdownHelper.new, template_file_path, expected_file_path, actual_file_path)
       end
     end
+
+  end
+
+  def test_resolve_image_urls
+
+    # Common to all image tests.
+    def common_test(markdown_helper, template_file_path, expected_file_path, actual_file_path)
+      output = markdown_helper.resolve_image_urls(
+          template_file_path,
+          actual_file_path,
+      )
+      diffs = MarkdownHelperTest.diff_files(expected_file_path, actual_file_path)
+      unless diffs.empty?
+        puts 'Expected:'
+        puts File.read(expected_file_path)
+        puts 'Got:'
+        puts output
+      end
+      assert_empty(diffs, actual_file_path)
+    end
+
+    [
+        :no_image,
+        :simple_image,
+    ].each do |file_basename|
+      md_file_name = "#{file_basename}.md"
+      template_file_path = File.join(TEMPLATES_DIR_PATH, md_file_name)
+      expected_file_path = File.join(EXPECTED_DIR_PATH, md_file_name)
+      actual_file_path = File.join(ACTUAL_DIR_PATH, md_file_name)
+      common_test(MarkdownHelper.new, template_file_path, expected_file_path, actual_file_path)
+    end
+
   end
 
   def self.diff_files(expected_file_path, actual_file_path)
