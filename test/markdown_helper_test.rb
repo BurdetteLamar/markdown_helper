@@ -95,10 +95,10 @@ class MarkdownHelperTest < Minitest::Test
         :width_image,
         :width_and_height_image,
     ].each do |file_basename|
+      markdown_helper = MarkdownHelper.new
       md_file_name = "#{file_basename}.md"
       template_file_path = File.join(TEMPLATES_DIR_PATH, md_file_name)
-      repo_user = ENV['REPO_USER']
-      repo_name = ENV['REPO_NAME']
+      repo_user, repo_name = markdown_helper.repo_user_and_name
       # Condition template with repo user and repo name.
       template = File.read(template_file_path)
       conditioned_template = format(template, repo_user, repo_name)
@@ -113,7 +113,7 @@ class MarkdownHelperTest < Minitest::Test
       expected_markdown_file.write(conditioned_expected_markdown)
       expected_markdown_file.close
       actual_file_path = File.join(ACTUAL_DIR_PATH, md_file_name)
-      common_test(MarkdownHelper.new, template_file.path, expected_markdown_file.path, actual_file_path)
+      common_test(markdown_helper, template_file.path, expected_markdown_file.path, actual_file_path)
     end
 
   end

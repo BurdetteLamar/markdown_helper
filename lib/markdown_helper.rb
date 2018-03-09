@@ -9,6 +9,16 @@ class MarkdownHelper
   IMAGE_REGEXP = /^!\[([^\[]+)\]\(([^\)]+)\)/
   INCLUDE_REGEXP = /^@\[([^\[]+)\]\(([^\)]+)\)/
 
+  def repo_user_and_name
+    repo_user = ENV['REPO_USER']
+    repo_name = ENV['REPO_NAME']
+    unless repo_user and repo_name
+      message = 'ENV values for both REPO_USER and REPO_NAME must be defined.'
+      raise RuntimeError.new(message)
+    end
+    [repo_user, repo_name]
+  end
+
   # Merges external files into markdown text.
   # @param template_file_path [String] the path to the input template markdown file, usually containing include pragmas.
   # @param markdown_file_path [String] the path to the output merged markdown file.
@@ -91,8 +101,7 @@ class MarkdownHelper
           formatted_attributes.push(format('%s="%s"', name, value))
         end
         formatted_attributes_s = formatted_attributes.join(' ')
-        repo_user = ENV['REPO_USER']
-        repo_name = ENV['REPO_NAME']
+        repo_user, repo_name = repo_user_and_name
         absolute_file_path = File.join(
             "https://raw.githubusercontent.com/#{repo_user}/#{repo_name}/master",
             relative_file_path,
