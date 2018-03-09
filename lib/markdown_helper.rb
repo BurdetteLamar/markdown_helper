@@ -83,14 +83,21 @@ class MarkdownHelper
           next
         end
         alt_text = match_data[1]
-        relative_file_path = match_data[2]
+        relative_file_path, attributes_s = match_data[2].split(/\s?\|\s?/, 2)
+        attributes = attributes_s ? attributes_s.split(/\s+/) : []
+        formatted_attributes = ['']
+        attributes.each do |attribute|
+          name, value = attribute.split('=', 2)
+          formatted_attributes.push(format('%s="%s"', name, value))
+        end
+        formatted_attributes_s = formatted_attributes.join(' ')
         repo_user = ENV['REPO_USER']
         repo_name = ENV['REPO_NAME']
         absolute_file_path = File.join(
             "https://raw.githubusercontent.com/#{repo_user}/#{repo_name}/master",
             relative_file_path,
         )
-        line = format('<img src="%s" alt="%s">', absolute_file_path, alt_text) + "\n"
+        line = format('<img src="%s" alt="%s"%s>', absolute_file_path, alt_text, formatted_attributes_s) + "\n"
         output_lines.push(line)
       end
     end

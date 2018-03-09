@@ -1,4 +1,5 @@
 require 'test_helper'
+require 'tempfile'
 
 require 'diff-lcs'
 
@@ -91,12 +92,28 @@ class MarkdownHelperTest < Minitest::Test
     [
         :no_image,
         :simple_image,
+        :width_image,
+        :width_and_height_image,
     ].each do |file_basename|
       md_file_name = "#{file_basename}.md"
       template_file_path = File.join(TEMPLATES_DIR_PATH, md_file_name)
+      repo_user = ENV['REPO_USER']
+      repo_name = ENV['REPO_NAME']
+      # Condition template with repo user and repo name.
+      template = File.read(template_file_path)
+      conditioned_template = format(template, repo_user, repo_name)
+      template_file = Tempfile.new('template.md')
+      template_file.write(conditioned_template)
+      template_file.close
+      # Condition expected markdown with repo user and repo name.
       expected_file_path = File.join(EXPECTED_DIR_PATH, md_file_name)
+      expected_markdown = File.read(expected_file_path)
+      conditioned_expected_markdown = format(expected_markdown, repo_user, repo_name)
+      expected_markdown_file = Tempfile.new('expected_markdown.md')
+      expected_markdown_file.write(conditioned_expected_markdown)
+      expected_markdown_file.close
       actual_file_path = File.join(ACTUAL_DIR_PATH, md_file_name)
-      common_test(MarkdownHelper.new, template_file_path, expected_file_path, actual_file_path)
+      common_test(MarkdownHelper.new, template_file.path, expected_markdown_file.path, actual_file_path)
     end
 
   end
