@@ -6,29 +6,36 @@ require 'markdown_helper/version'
 # @author Burdette Lamar
 class MarkdownHelper
 
-  INCLUDE_REGEXP = /^@\[(:code_block|:verbatim|\w+)\]/
+  IMAGE_REGEXP = /^!\[([^\[]+)\]\(([^)]+)\)/
+  INCLUDE_REGEXP = /^@\[([^\[]+)\]\(([^)]+)\)/
+
+  # Get the user name and repository name from ENV.
+  def repo_user_and_name
+    repo_user = ENV['REPO_USER']
+    repo_name = ENV['REPO_NAME']
+    unless repo_user and repo_name
+      message = 'ENV values for both REPO_USER and REPO_NAME must be defined.'
+      raise RuntimeError.new(message)
+    end
+    [repo_user, repo_name]
+  end
 
   # Merges external files into markdown text.
   # @param template_file_path [String] the path to the input template markdown file, usually containing include pragmas.
   # @param markdown_file_path [String] the path to the output merged markdown file.
-  # @raise [RuntimeError] if an include pragma parsing error occurs.
   # @return [String] the resulting markdown text.
   #
-  # @example Pragma to include text as a highlighted code block.
+  # @example pragma to include text as a highlighted code block.
   #   @[ruby](foo.rb)
   #
-  # @example Pragma to include text as a plain code block.
+  # @example pragma to include text as a plain code block.
   #   @[:code_block](foo.xyz)
   #
-  # @example Pragma to include text verbatim, to be rendered as markdown.
+  # @example pragma to include text verbatim, to be rendered as markdown.
   #   @[:verbatim](foo.md)
   def include(template_file_path, markdown_file_path)
     output_lines = []
     File.open(template_file_path, 'r') do |template_file|
-      # For later.
-      # if tag_as_generated
-      #   output_lines.push("<!--- GENERATED FILE, DO NOT EDIT --->\n")
-      # end
       template_file.each_line do |input_line|
         match_data = input_line.match(INCLUDE_REGEXP)
         unless match_data
@@ -43,11 +50,7 @@ class MarkdownHelper
                       else
                         match_data[1]
                     end
-        file_path_in_parens =  input_line.sub(INCLUDE_REGEXP, '')
-        unless file_path_in_parens.start_with?('(') && file_path_in_parens.end_with?(")\n")
-          raise RuntimeError.new(file_path_in_parens.inspect)
-        end
-        relative_file_path = file_path_in_parens.sub('(', '').sub(")\n", '')
+        relative_file_path = match_data[2]
         include_file_path = File.join(
             File.dirname(template_file_path),
             relative_file_path,
@@ -57,10 +60,6 @@ class MarkdownHelper
           message = "Warning:  Included file has no trailing newline: #{include_file_path}"
           warn(message)
         end
-        # For later.
-        # extname = File.extname(include_file_path)
-        # file_ext_key = extname.sub('.', '').to_sym
-        # treatment ||= @treatment_for_file_ext[file_ext_key]
         if treatment == :verbatim
           # Pass through unadorned.
           output_lines.push(included_text)
@@ -74,6 +73,62 @@ class MarkdownHelper
           output_lines.push(included_text)
           output_lines.push("```\n")
         end
+      end
+    end
+    output = output_lines.join('')
+    File.open(markdown_file_path, 'w') do |md_file|
+      md_file.write(output)
+    end
+    output
+  end
+
+  # Resolves relative image paths to absolute urls in markdown text.
+  # @param template_file_path [String] the path to the input template markdown file, usually containing image pragmas.
+  # @param markdown_file_path [String] the path to the output resolved markdown file.
+  # @return [String] the resulting markdown text.
+  #
+  # This matters because when markdown becomes part of a Ruby gem,
+  # its images will have been relocated in the documentation at RubyDoc.info, breaking the paths.
+  # The resolved (absolute) urls, however, will still be valid.
+  #
+  # ENV['REPO_USER'] and ENV['REPO_NAME'] must give the user name and repository name of the relevant GitHub repository.
+  #  must give the repo name of the relevant GitHub repository.
+  #
+  # @example pragma for an image:
+  #   ![image_icon](images/image.png)
+  #
+  # The path resolves to:
+  #
+  #   absolute_file_path = File.join(
+  #       "https://raw.githubusercontent.com/#{repo_user}/#{repo_name}/master",
+  #       relative_file_path,
+  #   )
+  def resolve_image_urls(template_file_path, markdown_file_path)
+    output_lines = []
+    File.open(template_file_path, 'r') do |template_file|
+      output_lines = []
+      template_file.each_line do |input_line|
+        match_data = input_line.match(IMAGE_REGEXP)
+        unless match_data
+          output_lines.push(input_line)
+          next
+        end
+        alt_text = match_data[1]
+        relative_file_path, attributes_s = match_data[2].split(/\s?\|\s?/, 2)
+        attributes = attributes_s ? attributes_s.split(/\s+/) : []
+        formatted_attributes = ['']
+        attributes.each do |attribute|
+          name, value = attribute.split('=', 2)
+          formatted_attributes.push(format('%s="%s"', name, value))
+        end
+        formatted_attributes_s = formatted_attributes.join(' ')
+        repo_user, repo_name = repo_user_and_name
+        absolute_file_path = File.join(
+            "https://raw.githubusercontent.com/#{repo_user}/#{repo_name}/master",
+            relative_file_path,
+        )
+        line = format('<img src="%s" alt="%s"%s>', absolute_file_path, alt_text, formatted_attributes_s) + "\n"
+        output_lines.push(line)
       end
     end
     output = output_lines.join('')

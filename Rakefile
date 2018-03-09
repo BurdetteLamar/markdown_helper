@@ -15,6 +15,7 @@ namespace :build do
     markdown_helper = MarkdownHelper.new
     markdown_helper.include('readme_files/highlight_ruby_template.md', 'readme_files/highlighted_ruby.md')
     markdown_helper.include('readme_files/README.template.md', 'README.md')
+    markdown_helper.resolve_image_urls('README.md', 'README.md')
   end
 
 end
