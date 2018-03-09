@@ -65,13 +65,13 @@ Usage:
 
 #### API
 
-<code>usage.rb</code>
+<code>include_usage.rb</code>
 ```ruby
 require 'markdown_helper'
 
 markdown_helper = MarkdownHelper.new
 template_file_path = 'highlight_ruby_template.md'
-markdown_file_path = 'highlighted_ruby.rb'
+markdown_file_path = 'highlighted_ruby.md'
 markdown_helper.include(template_file_path, markdown_file_path)
 ```
 
@@ -100,4 +100,71 @@ where:
 @[:verbatim](my_markdown.md)
 ```
 
+## Image Path Resolution 
+
+<img src="https://raw.githubusercontent.com/BurdetteLamar/MarkdownHelper/master/images/image.jpg" alt="image_icon" width="50">
+
+This markdown helper enables image path resolution in GitHub markdown.
+
+(Actually, this README file itself is built using image path resolution.)
+
+Use the markdown helper to resolve image relative paths in a markdown (</code>.md</code>) file.
+
+This matters because when markdown becomes part of a Ruby gem, its images will have been relocated in the documentation at RubyDoc.info, breaking the relative paths. The resolved (absolute) urls, however, will still be valid.
+
+### Usage
+
+#### CLI
+
+<code>resolve_image_urls.txt</code>
+```
+Usage:
+
+  resolve_image_urls template_file_path markdown_file_page
+
+  where
+
+    * template_file_path is the path to an existing file.
+    * markdown_file_path is the path to a file to be created.
+
+  Typically:
+
+    * Both file types are .md.
+    * The template file contains image relative file paths.  See README.md.
+```
+
+#### API
+
+<code>resolve_image_urls_usage.rb</code>
+```ruby
+require 'markdown_helper'
+
+markdown_helper = MarkdownHelper.new
+template_file_path = 'template.md'
+markdown_file_path = 'markdown.md'
+markdown_helper.resolve_image_urls(template_file_path, markdown_file_path)
+```
+
+#### Image Pragmas
+
+Specify each image file via an *image pragma*, which has the form:
+
+<code>![*alt_text*]\(</code>*relative_file_path* <code>|</code> *attributes*<code>)</code>
+
+where:
+
+* *alt_text* is the usual alt text for an HTML image.
+* *relative_file_path* points to the file to be included.
+* *attributes* are whitespace-separated name-value pairs in the form *name*<code>=</code>*value*.  These are passed through to the generated <code>img</code> HTML element.
+
+##### Example Image Pragmas
+
+<code>resolve_image_urls.md</code>
+```verbatim
+<img src="https://raw.githubusercontent.com/BurdetteLamar/MarkdownHelper/master/image/image.jpg" alt="my_alt">
+
+<img src="https://raw.githubusercontent.com/BurdetteLamar/MarkdownHelper/master/image/image.jpg" alt="my_alt" width="50">
+
+<img src="https://raw.githubusercontent.com/BurdetteLamar/MarkdownHelper/master/image/image.jpg" alt="my_alt" width="50" height="50">
+```
 
