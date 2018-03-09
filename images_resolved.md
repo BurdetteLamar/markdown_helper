@@ -4,7 +4,7 @@
 
 ## File Inclusion 
 
-![include_icon](images/include.png | width=50)
+<img src="https://raw.githubusercontent.com/BurdetteLamar/MarkdownHelper/master/images/include.png" alt="include_icon" width="50">
 
 This markdown helper enables file inclusion in GitHub markdown.
 
@@ -58,7 +58,7 @@ where:
 
 ## Image Path Resolution 
 
-![image_icon](images/image.png | width=50)
+<img src="https://raw.githubusercontent.com/BurdetteLamar/MarkdownHelper/master/images/image.png" alt="image_icon" width="50">
 
 This markdown helper enables image path resolution in GitHub markdown.
 
