@@ -4,7 +4,7 @@
 
 ## File Inclusion 
 
-<img src="https://raw.githubusercontent.com/BurdetteLamar/MarkdownHelper/master/images/include.png" width="50">
+![include_icon](images/include.png | width=50)
 
 This markdown helper enables file inclusion in GitHub markdown.
 

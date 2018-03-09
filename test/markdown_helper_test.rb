@@ -1,4 +1,5 @@
 require 'test_helper'
+require 'tempfile'
 
 require 'diff-lcs'
 
@@ -13,20 +14,36 @@ class MarkdownHelperTest < Minitest::Test
     refute_nil MarkdownHelper::VERSION
   end
 
-  def common_test(markdown_helper, template_file_path, expected_file_path, actual_file_path)
-    output = markdown_helper.include(
-        template_file_path,
-        actual_file_path,
-    )
-    diffs = MarkdownHelperTest.diff_files(expected_file_path, actual_file_path)
-    unless diffs.empty?
-      puts"Failed output in #{actual_file_path}:"
-      puts output
-    end
-    assert_empty(diffs, actual_file_path)
-  end
+  def test_include
 
-  def test_treatment
+    # Common to all include tests.
+    def common_test(markdown_helper, template_file_path, expected_file_path, actual_file_path)
+      output = markdown_helper.include(
+          template_file_path,
+          actual_file_path,
+      )
+      diffs = MarkdownHelperTest.diff_files(expected_file_path, actual_file_path)
+      unless diffs.empty?
+        puts"Failed output in #{actual_file_path}:"
+        puts output
+      end
+      assert_empty(diffs, actual_file_path)
+    end
+
+    # Create the template for this test.
+    def create_template(template_file_path, include_file_path, file_stem, treatment)
+      File.open(template_file_path, 'w') do |file|
+        if file_stem == :nothing
+          file.puts 'This file includes nothing.'
+        else
+          # Inspect, in case it's a symbol, and remove double quotes after inspection.
+          treatment_for_include = treatment.inspect.gsub('"','')
+          include_line = "@[#{treatment_for_include}](#{include_file_path})"
+          file.puts(include_line)
+        end
+      end
+    end
+
     {
         :nothing => :txt,
         :markdown => :md,
@@ -51,34 +68,56 @@ class MarkdownHelperTest < Minitest::Test
         common_test(MarkdownHelper.new, template_file_path, expected_file_path, actual_file_path)
       end
     end
+
   end
 
-  # def test_tag_as_generated
-  #   [
-  #       :verbatim,
-  #       :code_block,
-  #       'xml',
-  #   ].each do |treatment|
-  #     markdown_helper = MarkdownHelper.new
-  #     markdown_helper.set_treatment(:xml, treatment)
-  #     markdown_helper.tag_as_generated = true
-  #     common_test(markdown_helper, :xml, treatment)
-  #   end
-  # end
+  def test_resolve_image_urls
 
-  def create_template(template_file_path, include_file_path, file_stem, treatment)
-    File.open(template_file_path, 'w') do |file|
-      if file_stem == :nothing
-        file.puts 'This file includes nothing.'
-      else
-        # Inspect, in case it's a symbol, and remove double quotes after inspection.
-        treatment_for_include = treatment.inspect.gsub('"','')
-        include_line = "@[#{treatment_for_include}](#{include_file_path})"
-        file.puts(include_line)
+    # Common to all image tests.
+    def common_test(markdown_helper, template_file_path, expected_file_path, actual_file_path)
+      output = markdown_helper.resolve_image_urls(
+          template_file_path,
+          actual_file_path,
+      )
+      diffs = MarkdownHelperTest.diff_files(expected_file_path, actual_file_path)
+      unless diffs.empty?
+        puts 'Expected:'
+        puts File.read(expected_file_path)
+        puts 'Got:'
+        puts output
       end
+      assert_empty(diffs, actual_file_path)
     end
+
+    [
+        :no_image,
+        :simple_image,
+        :width_image,
+        :width_and_height_image,
+    ].each do |file_basename|
+      markdown_helper = MarkdownHelper.new
+      md_file_name = "#{file_basename}.md"
+      template_file_path = File.join(TEMPLATES_DIR_PATH, md_file_name)
+      repo_user, repo_name = markdown_helper.repo_user_and_name
+      # Condition template with repo user and repo name.
+      template = File.read(template_file_path)
+      conditioned_template = format(template, repo_user, repo_name)
+      template_file = Tempfile.new('template.md')
+      template_file.write(conditioned_template)
+      template_file.close
+      # Condition expected markdown with repo user and repo name.
+      expected_file_path = File.join(EXPECTED_DIR_PATH, md_file_name)
+      expected_markdown = File.read(expected_file_path)
+      conditioned_expected_markdown = format(expected_markdown, repo_user, repo_name)
+      expected_markdown_file = Tempfile.new('expected_markdown.md')
+      expected_markdown_file.write(conditioned_expected_markdown)
+      expected_markdown_file.close
+      actual_file_path = File.join(ACTUAL_DIR_PATH, md_file_name)
+      common_test(markdown_helper, template_file.path, expected_markdown_file.path, actual_file_path)
+    end
+
   end
-  
+
   def self.diff_files(expected_file_path, actual_file_path)
     diffs = nil
     File.open(expected_file_path) do |expected_file|
