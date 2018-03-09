@@ -13,20 +13,35 @@ class MarkdownHelperTest < Minitest::Test
     refute_nil MarkdownHelper::VERSION
   end
 
-  def common_test(markdown_helper, template_file_path, expected_file_path, actual_file_path)
-    output = markdown_helper.include(
-        template_file_path,
-        actual_file_path,
-    )
-    diffs = MarkdownHelperTest.diff_files(expected_file_path, actual_file_path)
-    unless diffs.empty?
-      puts"Failed output in #{actual_file_path}:"
-      puts output
-    end
-    assert_empty(diffs, actual_file_path)
-  end
+  def test_include
 
-  def test_treatment
+    # Common to all include tests.
+    def common_test(markdown_helper, template_file_path, expected_file_path, actual_file_path)
+      output = markdown_helper.include(
+          template_file_path,
+          actual_file_path,
+      )
+      diffs = MarkdownHelperTest.diff_files(expected_file_path, actual_file_path)
+      unless diffs.empty?
+        puts"Failed output in #{actual_file_path}:"
+        puts output
+      end
+      assert_empty(diffs, actual_file_path)
+    end
+
+    # Create the template for this test.
+    def create_template(template_file_path, include_file_path, file_stem, treatment)
+      File.open(template_file_path, 'w') do |file|
+        if file_stem == :nothing
+          file.puts 'This file includes nothing.'
+        else
+          # Inspect, in case it's a symbol, and remove double quotes after inspection.
+          treatment_for_include = treatment.inspect.gsub('"','')
+          include_line = "@[#{treatment_for_include}](#{include_file_path})"
+          file.puts(include_line)
+        end
+      end
+    end
     {
         :nothing => :txt,
         :markdown => :md,
@@ -53,32 +68,6 @@ class MarkdownHelperTest < Minitest::Test
     end
   end
 
-  # def test_tag_as_generated
-  #   [
-  #       :verbatim,
-  #       :code_block,
-  #       'xml',
-  #   ].each do |treatment|
-  #     markdown_helper = MarkdownHelper.new
-  #     markdown_helper.set_treatment(:xml, treatment)
-  #     markdown_helper.tag_as_generated = true
-  #     common_test(markdown_helper, :xml, treatment)
-  #   end
-  # end
-
-  def create_template(template_file_path, include_file_path, file_stem, treatment)
-    File.open(template_file_path, 'w') do |file|
-      if file_stem == :nothing
-        file.puts 'This file includes nothing.'
-      else
-        # Inspect, in case it's a symbol, and remove double quotes after inspection.
-        treatment_for_include = treatment.inspect.gsub('"','')
-        include_line = "@[#{treatment_for_include}](#{include_file_path})"
-        file.puts(include_line)
-      end
-    end
-  end
-  
   def self.diff_files(expected_file_path, actual_file_path)
     diffs = nil
     File.open(expected_file_path) do |expected_file|
