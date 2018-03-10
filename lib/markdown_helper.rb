@@ -115,6 +115,10 @@ class MarkdownHelper
         end
         alt_text = match_data[1]
         relative_file_path, attributes_s = match_data[2].split(/\s?\|\s?/, 2)
+        if relative_file_path.start_with?('http')
+          output_lines.push(input_line)
+          next
+        end
         attributes = attributes_s ? attributes_s.split(/\s+/) : []
         formatted_attributes = ['']
         attributes.each do |attribute|
