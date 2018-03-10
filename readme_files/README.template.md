@@ -4,7 +4,7 @@
 
 Class <code>MarkdownHelper</code> supports:
 
-* [File inclusion](#file-inclusion): to include test from other files, as code-block or markdown.
+* [File inclusion](#file-inclusion): to include text from other files, as code-block or markdown.
 * [Image path resolution](#image-path-resolution): to resolve relative image paths to absolute URL paths (so they work even in gem documentation).
 
 Next feature:
