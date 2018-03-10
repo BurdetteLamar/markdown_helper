@@ -11,7 +11,6 @@ Next feature:
 
 * "Slide deck": to chain markdown pages into a series with next/prev navigation links.
 
-
 ## File Inclusion 
 
 ![include_icon](images/include.png | width=50)
