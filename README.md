@@ -6,6 +6,7 @@ Class <code>MarkdownHelper</code> supports:
 
 * [File inclusion](#file-inclusion): to include text from other files, as code-block or markdown.
 * [Image path resolution](#image-path-resolution): to resolve relative image paths to absolute URL paths (so they work even in gem documentation).
+* [Image attributes](#image-attrubutes): image attributes are passed through to an HTML <code>img</code> tag.
 
 Next feature:
 
@@ -84,9 +85,9 @@ markdown_file_path = 'highlighted_ruby.md'
 markdown_helper.include(template_file_path, markdown_file_path)
 ```
 
-#### Include Pragmas
+#### Include Descriptions
 
-Specify each file inclusion via an *include pragma*, which has the form:
+Specify each file inclusion via an *include description*, which has the form:
 
 <code>@[</code>*format*<code>]\(</code>*relative_file_path*<code>)</code>
 
@@ -98,7 +99,7 @@ where:
   * <code>[:verbatim]</code>, to include text verbatim (to be rendered as markdown).
 * *relative_file_path* points to the file to be included.
 
-##### Example Include Pragmas
+##### Example Include Descriptions
 
 <code>include.md</code>
 ```code_block
@@ -154,9 +155,75 @@ markdown_file_path = 'markdown.md'
 markdown_helper.resolve_image_urls(template_file_path, markdown_file_path)
 ```
 
-#### Image Pragmas
+#### Image Descriptions
 
-Specify each image file via an *image pragma*, which has the form:
+Specify each image via an *image description*, which has the form:
+
+<code>![*alt_text*]\(</code>*relative_file_path* <code>|</code> *attributes*<code>)</code>
+
+where:
+
+* *alt_text* is the usual alt text for an HTML image.
+* *relative_file_path* points to the file to be included.
+* *attributes* specify image attributes.  See [Image Attributes](#image-attributes) below.
+
+##### Example Image Descriptions
+
+<code>resolve_image_urls.md</code>
+```code_block
+ ![my_alt](image/image.png)
+
+ ![my_alt](image/image.png | width=50)
+
+ ![my_alt](image/image.png| width=50 height=50)
+```
+
+## Image Attributes
+
+<img src="https://raw.githubusercontent.com/BurdetteLamar/MarkdownHelper/master/images/html.png" alt="html_icon" width="50">
+
+This markdown helper enables HTML image attributes in GitHub markdown [image descriptions](https://github.github.com/gfm/#image-description).
+
+(Actually, this README file itself is built using image attributes.)
+
+Use the markdown helper to add image attributes in a markdown (</code>.md</code>) file.
+
+### Usage
+
+#### CLI
+
+<code>resolve_image_urls.txt</code>
+```
+Usage:
+
+  resolve_image_urls template_file_path markdown_file_page
+
+  where
+
+    * template_file_path is the path to an existing file.
+    * markdown_file_path is the path to a file to be created.
+
+  Typically:
+
+    * Both file types are .md.
+    * The template file contains image relative file paths.  See README.md.
+```
+
+#### API
+
+<code>resolve_image_urls_usage.rb</code>
+```ruby
+require 'markdown_helper'
+
+markdown_helper = MarkdownHelper.new
+template_file_path = 'template.md'
+markdown_file_path = 'markdown.md'
+markdown_helper.resolve_image_urls(template_file_path, markdown_file_path)
+```
+
+#### Image Descriptions
+
+Specify each image via an *image description*, which has the form:
 
 <code>![*alt_text*]\(</code>*relative_file_path* <code>|</code> *attributes*<code>)</code>
 
@@ -166,7 +233,7 @@ where:
 * *relative_file_path* points to the file to be included.
 * *attributes* are whitespace-separated name-value pairs in the form *name*<code>=</code>*value*.  These are passed through to the generated <code>img</code> HTML element.
 
-##### Example Image Pragmas
+##### Example Image Descriptions
 
 <code>resolve_image_urls.md</code>
 ```code_block

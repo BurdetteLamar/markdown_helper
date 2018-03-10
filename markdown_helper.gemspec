@@ -10,7 +10,13 @@ Gem::Specification.new do |spec|
   spec.email         = ['BurdetteLamar@Yahoo.com']
 
   spec.summary       = 'Class to help with GitHub markdown.'
-  spec.description   = 'Class to help with GitHub markdown.  So far:  file inclusion.'
+  spec.description   = <<-EOT
+Class to help with GitHub markdown:
+
+* File inclusion
+* Image path resolution
+* Image attributes
+EOT
   spec.homepage      = 'https://github.com/BurdetteLamar/MarkdownHelper'
   spec.license       = 'MIT'
 
