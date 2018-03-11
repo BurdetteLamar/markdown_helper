@@ -17,39 +17,6 @@ class MarkdownHelperTest < Minitest::Test
 
   def test_include
 
-    # Common to all include tests.
-    def common_test(markdown_helper, method_under_test, template_file_path, expected_file_path, actual_file_path)
-      # API
-      output = markdown_helper.include(
-          template_file_path,
-          actual_file_path,
-      )
-      diffs = MarkdownHelperTest.diff_files(expected_file_path, actual_file_path)
-      unless diffs.empty?
-        puts"Failed output in #{actual_file_path}:"
-        puts output
-      end
-      assert_empty(diffs, actual_file_path)
-      # CLI
-      bin_file = File.join(
-                         TEST_DIR_PATH,
-                         '..',
-                         'bin',
-                         method_under_test.to_s,
-      )
-      command = format("ruby #{bin_file} #{template_file_path} #{actual_file_path}")
-      system(command)
-      output = File.read(actual_file_path)
-      diffs = MarkdownHelperTest.diff_files(expected_file_path, actual_file_path)
-      unless diffs.empty?
-        puts 'Expected:'
-        puts File.read(expected_file_path)
-        puts 'Got:'
-        puts output
-      end
-      assert_empty(diffs, actual_file_path)
-    end
-
     # Create the template for this test.
     def create_template(template_file_path, include_file_path, file_stem, treatment)
 
@@ -122,40 +89,7 @@ class MarkdownHelperTest < Minitest::Test
 
   def test_resolve_image_urls
 
-    # Common to all image tests.
-    def common_test(markdown_helper, template_file_path, expected_file_path, actual_file_path)
-      # API
-      output = markdown_helper.resolve_image_urls(
-          template_file_path,
-          actual_file_path,
-      )
-      diffs = MarkdownHelperTest.diff_files(expected_file_path, actual_file_path)
-      unless diffs.empty?
-        puts 'Expected:'
-        puts File.read(expected_file_path)
-        puts 'Got:'
-        puts output
-      end
-      assert_empty(diffs, actual_file_path)
-      # CLI
-      bin_file = File.join(
-          TEST_DIR_PATH,
-          '..',
-          'bin',
-          'resolve_image_urls'
-      )
-      command = format("ruby #{bin_file} #{template_file_path} #{actual_file_path}")
-      system(command)
-      output = File.read(actual_file_path)
-      diffs = MarkdownHelperTest.diff_files(expected_file_path, actual_file_path)
-      unless diffs.empty?
-        puts 'Expected:'
-        puts File.read(expected_file_path)
-        puts 'Got:'
-        puts output
-      end
-      assert_empty(diffs, actual_file_path)
-    end
+    method_under_test = :resolve_image_urls
 
     # Test results of various templates.
     [
@@ -197,7 +131,7 @@ class MarkdownHelperTest < Minitest::Test
           ACTUAL_DIR_NAME,
           md_file_name
       )
-      common_test(markdown_helper, template_file.path, expected_markdown_file.path, actual_file_path)
+      common_test(markdown_helper, method_under_test, template_file.path, expected_markdown_file.path, actual_file_path)
     end
 
     # Test some special cases.
@@ -227,9 +161,42 @@ class MarkdownHelperTest < Minitest::Test
           ACTUAL_DIR_NAME,
           md_file_name
       )
-      common_test(markdown_helper, template_file_path, expected_file_path, actual_file_path)
+      common_test(markdown_helper, method_under_test, template_file_path, expected_file_path, actual_file_path)
     end
 
+  end
+
+  def common_test(markdown_helper, method_under_test, template_file_path, expected_file_path, actual_file_path)
+    # API
+    output = markdown_helper.send(
+        method_under_test,
+        template_file_path,
+        actual_file_path,
+    )
+    diffs = MarkdownHelperTest.diff_files(expected_file_path, actual_file_path)
+    unless diffs.empty?
+      puts"Failed output in #{actual_file_path}:"
+      puts output
+    end
+    assert_empty(diffs, actual_file_path)
+    # CLI
+    bin_file = File.join(
+        TEST_DIR_PATH,
+        '..',
+        'bin',
+        method_under_test.to_s,
+    )
+    command = format("ruby #{bin_file} #{template_file_path} #{actual_file_path}")
+    system(command)
+    output = File.read(actual_file_path)
+    diffs = MarkdownHelperTest.diff_files(expected_file_path, actual_file_path)
+    unless diffs.empty?
+      puts 'Expected:'
+      puts File.read(expected_file_path)
+      puts 'Got:'
+      puts output
+    end
+    assert_empty(diffs, actual_file_path)
   end
 
   def self.diff_files(expected_file_path, actual_file_path)
