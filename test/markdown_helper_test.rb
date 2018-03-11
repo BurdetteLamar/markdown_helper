@@ -3,9 +3,13 @@ require 'tempfile'
 
 require 'diff-lcs'
 
-THIS_DIR_PATH = File.dirname(__FILE__)
+TEST_DIR_PATH = File.dirname(__FILE__)
 
 class MarkdownHelperTest < Minitest::Test
+  
+  TEMPLATES_DIR_NAME = 'templates'
+  EXPECTED_DIR_NAME = 'expected'
+  ACTUAL_DIR_NAME = 'actual'
 
   def test_version
     refute_nil MarkdownHelper::VERSION
@@ -14,7 +18,7 @@ class MarkdownHelperTest < Minitest::Test
   def test_include
 
     # Common to all include tests.
-    def common_test(markdown_helper, template_file_path, expected_file_path, actual_file_path)
+    def common_test(markdown_helper, method_under_test, template_file_path, expected_file_path, actual_file_path)
       # API
       output = markdown_helper.include(
           template_file_path,
@@ -28,10 +32,10 @@ class MarkdownHelperTest < Minitest::Test
       assert_empty(diffs, actual_file_path)
       # CLI
       bin_file = File.join(
-                         THIS_DIR_PATH,
+                         TEST_DIR_PATH,
                          '..',
                          'bin',
-                         'include'
+                         method_under_test.to_s,
       )
       command = format("ruby #{bin_file} #{template_file_path} #{actual_file_path}")
       system(command)
@@ -48,6 +52,7 @@ class MarkdownHelperTest < Minitest::Test
 
     # Create the template for this test.
     def create_template(template_file_path, include_file_path, file_stem, treatment)
+
       File.open(template_file_path, 'w') do |file|
         if file_stem == :nothing
           file.puts 'This file includes nothing.'
@@ -59,6 +64,25 @@ class MarkdownHelperTest < Minitest::Test
         end
       end
     end
+
+    method_under_test = :include
+
+    test_dir_path = File.join(
+        TEST_DIR_PATH,
+        method_under_test.to_s,
+    )
+    templates_dir_path = File.join(
+        test_dir_path,
+        TEMPLATES_DIR_NAME,
+    )
+    expected_dir_path = File.join(
+        test_dir_path,
+        EXPECTED_DIR_NAME,
+    )
+    actual_dir_path = File.join(
+        test_dir_path,
+        ACTUAL_DIR_NAME,
+    )
 
     {
         :nothing => :txt,
@@ -77,26 +101,20 @@ class MarkdownHelperTest < Minitest::Test
         file_basename = "#{file_stem}_#{treatment}"
         md_file_name = "#{file_basename}.md"
         template_file_path = File.join(
-            THIS_DIR_PATH,
-            'include',
-            'templates',
+            templates_dir_path,
             md_file_name
         )
         expected_file_path = File.join(
-            THIS_DIR_PATH,
-            'include',
-            'expected',
+            expected_dir_path,
             md_file_name
         )
         actual_file_path = File.join(
-            THIS_DIR_PATH,
-            'include',
-            'actual',
+            actual_dir_path,
             md_file_name
         )
         include_file_path = "../includes/#{file_stem}.#{file_type}"
         create_template(template_file_path, include_file_path, file_stem, treatment)
-        common_test(MarkdownHelper.new, template_file_path, expected_file_path, actual_file_path)
+        common_test(MarkdownHelper.new, method_under_test, template_file_path, expected_file_path, actual_file_path)
       end
     end
 
@@ -121,7 +139,7 @@ class MarkdownHelperTest < Minitest::Test
       assert_empty(diffs, actual_file_path)
       # CLI
       bin_file = File.join(
-          THIS_DIR_PATH,
+          TEST_DIR_PATH,
           '..',
           'bin',
           'resolve_image_urls'
@@ -151,9 +169,9 @@ class MarkdownHelperTest < Minitest::Test
       repo_user, repo_name = markdown_helper.repo_user_and_name
       # Condition template with repo user and repo name.
       template_file_path = File.join(
-          THIS_DIR_PATH,
+          TEST_DIR_PATH,
           'resolve_image_urls',
-          'templates',
+          TEMPLATES_DIR_NAME,
           md_file_name
       )
       template = File.read(template_file_path)
@@ -163,9 +181,9 @@ class MarkdownHelperTest < Minitest::Test
       template_file.close
       # Condition expected markdown with repo user and repo name.
       expected_file_path = File.join(
-          THIS_DIR_PATH,
+          TEST_DIR_PATH,
           'resolve_image_urls',
-          'expected',
+          EXPECTED_DIR_NAME,
           md_file_name
       )
       expected_markdown = File.read(expected_file_path)
@@ -174,9 +192,9 @@ class MarkdownHelperTest < Minitest::Test
       expected_markdown_file.write(conditioned_expected_markdown)
       expected_markdown_file.close
       actual_file_path = File.join(
-          THIS_DIR_PATH,
+          TEST_DIR_PATH,
           'resolve_image_urls',
-          'actual',
+          ACTUAL_DIR_NAME,
           md_file_name
       )
       common_test(markdown_helper, template_file.path, expected_markdown_file.path, actual_file_path)
@@ -192,21 +210,21 @@ class MarkdownHelperTest < Minitest::Test
       md_file_name = "#{basename}.md"
       markdown_helper = MarkdownHelper.new
       template_file_path = File.join(
-          THIS_DIR_PATH,
+          TEST_DIR_PATH,
           'resolve_image_urls',
-          'templates',
+          TEMPLATES_DIR_NAME,
           md_file_name
       )
       expected_file_path = File.join(
-          THIS_DIR_PATH,
+          TEST_DIR_PATH,
           'resolve_image_urls',
-          'expected',
+          EXPECTED_DIR_NAME,
           md_file_name
       )
       actual_file_path = File.join(
-          THIS_DIR_PATH,
+          TEST_DIR_PATH,
           'resolve_image_urls',
-          'actual',
+          ACTUAL_DIR_NAME,
           md_file_name
       )
       common_test(markdown_helper, template_file_path, expected_file_path, actual_file_path)
