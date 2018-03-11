@@ -123,10 +123,15 @@ class MarkdownHelper
         end
         formatted_attributes_s = formatted_attributes.join(' ')
         repo_user, repo_name = repo_user_and_name
-        absolute_file_path = File.join(
-            "https://raw.githubusercontent.com/#{repo_user}/#{repo_name}/master",
-            relative_file_path,
-        )
+        absolute_file_path = nil
+        if relative_file_path.start_with?('http')
+          absolute_file_path = relative_file_path
+        else
+          absolute_file_path = File.join(
+              "https://raw.githubusercontent.com/#{repo_user}/#{repo_name}/master",
+              relative_file_path,
+          )
+        end
         line = format('<img src="%s" alt="%s"%s>', absolute_file_path, alt_text, formatted_attributes_s) + "\n"
         output_lines.push(line)
       end
