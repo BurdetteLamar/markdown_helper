@@ -91,6 +91,23 @@ class MarkdownHelperTest < Minitest::Test
 
     method_under_test = :resolve_image_urls
 
+    test_dir_path = File.join(
+        TEST_DIR_PATH,
+        method_under_test.to_s,
+    )
+    templates_dir_path = File.join(
+        test_dir_path,
+        TEMPLATES_DIR_NAME,
+    )
+    expected_dir_path = File.join(
+        test_dir_path,
+        EXPECTED_DIR_NAME,
+    )
+    actual_dir_path = File.join(
+        test_dir_path,
+        ACTUAL_DIR_NAME,
+    )
+
     # Test results of various templates.
     [
         :no_image,
@@ -103,9 +120,7 @@ class MarkdownHelperTest < Minitest::Test
       repo_user, repo_name = markdown_helper.repo_user_and_name
       # Condition template with repo user and repo name.
       template_file_path = File.join(
-          TEST_DIR_PATH,
-          method_under_test.to_s,
-          TEMPLATES_DIR_NAME,
+          templates_dir_path,
           md_file_name
       )
       template = File.read(template_file_path)
@@ -115,9 +130,7 @@ class MarkdownHelperTest < Minitest::Test
       template_file.close
       # Condition expected markdown with repo user and repo name.
       expected_file_path = File.join(
-          TEST_DIR_PATH,
-          method_under_test.to_s,
-          EXPECTED_DIR_NAME,
+          expected_dir_path,
           md_file_name
       )
       expected_markdown = File.read(expected_file_path)
@@ -126,9 +139,7 @@ class MarkdownHelperTest < Minitest::Test
       expected_markdown_file.write(conditioned_expected_markdown)
       expected_markdown_file.close
       actual_file_path = File.join(
-          TEST_DIR_PATH,
-          method_under_test.to_s,
-          ACTUAL_DIR_NAME,
+          actual_dir_path,
           md_file_name
       )
       common_test(markdown_helper, method_under_test, template_file.path, expected_markdown_file.path, actual_file_path)
@@ -144,21 +155,15 @@ class MarkdownHelperTest < Minitest::Test
       md_file_name = "#{basename}.md"
       markdown_helper = MarkdownHelper.new
       template_file_path = File.join(
-          TEST_DIR_PATH,
-          method_under_test.to_s,
-          TEMPLATES_DIR_NAME,
+          templates_dir_path,
           md_file_name
       )
       expected_file_path = File.join(
-          TEST_DIR_PATH,
-          method_under_test.to_s,
-          EXPECTED_DIR_NAME,
+          expected_dir_path,
           md_file_name
       )
       actual_file_path = File.join(
-          TEST_DIR_PATH,
-          method_under_test.to_s,
-          ACTUAL_DIR_NAME,
+          actual_dir_path,
           md_file_name
       )
       common_test(markdown_helper, method_under_test, template_file_path, expected_file_path, actual_file_path)
