@@ -87,7 +87,7 @@ markdown_helper.include(template_file_path, markdown_file_path)
 
 #### Include Descriptions
 
-Specify each file inclusion via an *include description*, which has the form:
+Specify each file inclusion at the beginning of a line via an *include description*, which has the form:
 
 <code>@[</code>*format*<code>]\(</code>*relative_file_path*<code>)</code>
 
@@ -157,7 +157,7 @@ markdown_helper.resolve_image_urls(template_file_path, markdown_file_path)
 
 #### Image Descriptions
 
-Specify each image via an *image description*, which has the form:
+Specify each image  at the beginning of a line via an *image description*, which has the form:
 
 <code>![*alt_text*]\(</code>*relative_file_path* <code>|</code> *attributes*<code>)</code>
 
@@ -223,7 +223,7 @@ markdown_helper.resolve_image_urls(template_file_path, markdown_file_path)
 
 #### Image Descriptions
 
-Specify each image via an *image description*, which has the form:
+Specify each image at the beginning of a line  via an *image description*, which has the form:
 
 <code>![*alt_text*]\(</code>*relative_file_path* <code>|</code> *attributes*<code>)</code>
 
