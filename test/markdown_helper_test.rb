@@ -81,7 +81,13 @@ class MarkdownHelperTest < Minitest::Test
         )
         include_file_path = "../includes/#{file_stem}.#{file_type}"
         create_template(template_file_path, include_file_path, file_stem, treatment)
-        common_test(MarkdownHelper.new, method_under_test, template_file_path, expected_file_path, actual_file_path)
+        common_test(
+            MarkdownHelper.new,
+            method_under_test,
+            template_file_path,
+            expected_file_path,
+            actual_file_path
+        )
       end
     end
 
@@ -142,7 +148,13 @@ class MarkdownHelperTest < Minitest::Test
           actual_dir_path,
           md_file_name
       )
-      common_test(markdown_helper, method_under_test, template_file.path, expected_markdown_file.path, actual_file_path)
+      common_test(
+          markdown_helper,
+          method_under_test,
+          template_file.path,
+          expected_markdown_file.path,
+          actual_file_path
+      )
     end
 
     # Test some special cases.
@@ -171,7 +183,13 @@ class MarkdownHelperTest < Minitest::Test
 
   end
 
-  def common_test(markdown_helper, method_under_test, template_file_path, expected_file_path, actual_file_path)
+  def common_test(
+      markdown_helper,
+      method_under_test,
+      template_file_path,
+      expected_file_path,
+      actual_file_path
+  )
     # API
     output = markdown_helper.send(
         method_under_test,
