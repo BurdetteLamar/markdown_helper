@@ -4,9 +4,6 @@ require 'tempfile'
 require 'diff-lcs'
 
 THIS_DIR_PATH = File.dirname(__FILE__)
-TEMPLATES_DIR_PATH = File.join(THIS_DIR_PATH, 'templates')
-EXPECTED_DIR_PATH = File.join(THIS_DIR_PATH, 'expected')
-ACTUAL_DIR_PATH = File.join(THIS_DIR_PATH, 'actual')
 
 class MarkdownHelperTest < Minitest::Test
 
@@ -79,9 +76,24 @@ class MarkdownHelperTest < Minitest::Test
       ].each do |treatment|
         file_basename = "#{file_stem}_#{treatment}"
         md_file_name = "#{file_basename}.md"
-        template_file_path = File.join(TEMPLATES_DIR_PATH, md_file_name)
-        expected_file_path = File.join(EXPECTED_DIR_PATH, md_file_name)
-        actual_file_path = File.join(ACTUAL_DIR_PATH, md_file_name)
+        template_file_path = File.join(
+            THIS_DIR_PATH,
+            'include',
+            'templates',
+            md_file_name
+        )
+        expected_file_path = File.join(
+            THIS_DIR_PATH,
+            'include',
+            'expected',
+            md_file_name
+        )
+        actual_file_path = File.join(
+            THIS_DIR_PATH,
+            'include',
+            'actual',
+            md_file_name
+        )
         include_file_path = "../includes/#{file_stem}.#{file_type}"
         create_template(template_file_path, include_file_path, file_stem, treatment)
         common_test(MarkdownHelper.new, template_file_path, expected_file_path, actual_file_path)
@@ -136,22 +148,37 @@ class MarkdownHelperTest < Minitest::Test
     ].each do |file_basename|
       markdown_helper = MarkdownHelper.new
       md_file_name = "#{file_basename}.md"
-      template_file_path = File.join(TEMPLATES_DIR_PATH, md_file_name)
       repo_user, repo_name = markdown_helper.repo_user_and_name
       # Condition template with repo user and repo name.
+      template_file_path = File.join(
+          THIS_DIR_PATH,
+          'resolve_image_urls',
+          'templates',
+          md_file_name
+      )
       template = File.read(template_file_path)
       conditioned_template = format(template, repo_user, repo_name)
       template_file = Tempfile.new('template.md')
       template_file.write(conditioned_template)
       template_file.close
       # Condition expected markdown with repo user and repo name.
-      expected_file_path = File.join(EXPECTED_DIR_PATH, md_file_name)
+      expected_file_path = File.join(
+          THIS_DIR_PATH,
+          'resolve_image_urls',
+          'expected',
+          md_file_name
+      )
       expected_markdown = File.read(expected_file_path)
       conditioned_expected_markdown = format(expected_markdown, repo_user, repo_name)
       expected_markdown_file = Tempfile.new('expected_markdown.md')
       expected_markdown_file.write(conditioned_expected_markdown)
       expected_markdown_file.close
-      actual_file_path = File.join(ACTUAL_DIR_PATH, md_file_name)
+      actual_file_path = File.join(
+          THIS_DIR_PATH,
+          'resolve_image_urls',
+          'actual',
+          md_file_name
+      )
       common_test(markdown_helper, template_file.path, expected_markdown_file.path, actual_file_path)
     end
 
@@ -162,19 +189,25 @@ class MarkdownHelperTest < Minitest::Test
         # Line with image has following text.
         :text_following,
     ].each do |basename|
-      file_name = "#{basename}.md"
+      md_file_name = "#{basename}.md"
       markdown_helper = MarkdownHelper.new
       template_file_path = File.join(
-          TEMPLATES_DIR_PATH,
-          file_name,
+          THIS_DIR_PATH,
+          'resolve_image_urls',
+          'templates',
+          md_file_name
       )
       expected_file_path = File.join(
-          EXPECTED_DIR_PATH,
-          file_name,
+          THIS_DIR_PATH,
+          'resolve_image_urls',
+          'expected',
+          md_file_name
       )
       actual_file_path = File.join(
-          ACTUAL_DIR_PATH,
-          file_name,
+          THIS_DIR_PATH,
+          'resolve_image_urls',
+          'actual',
+          md_file_name
       )
       common_test(markdown_helper, template_file_path, expected_file_path, actual_file_path)
     end
