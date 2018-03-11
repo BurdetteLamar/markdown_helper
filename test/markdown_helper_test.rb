@@ -155,23 +155,29 @@ class MarkdownHelperTest < Minitest::Test
       common_test(markdown_helper, template_file.path, expected_markdown_file.path, actual_file_path)
     end
 
-    # Test when the image path is already an absolute URL.
-    # (I'll start out with a naive criterion.)
-    file_name = 'not_relative.md'
-    markdown_helper = MarkdownHelper.new
-    template_file_path = File.join(
-        TEMPLATES_DIR_PATH,
-        file_name,
-    )
-    expected_file_path = File.join(
-        EXPECTED_DIR_PATH,
-        file_name,
-    )
-    actual_file_path = File.join(
-        ACTUAL_DIR_PATH,
-        file_name,
-    )
-    common_test(markdown_helper, template_file_path, expected_file_path, actual_file_path)
+    # Test some special cases.
+    [
+        # Image path is already an absolute URL.
+        :not_relative,
+        # Line with image has following text.
+        :text_following,
+    ].each do |basename|
+      file_name = "#{basename}.md"
+      markdown_helper = MarkdownHelper.new
+      template_file_path = File.join(
+          TEMPLATES_DIR_PATH,
+          file_name,
+      )
+      expected_file_path = File.join(
+          EXPECTED_DIR_PATH,
+          file_name,
+      )
+      actual_file_path = File.join(
+          ACTUAL_DIR_PATH,
+          file_name,
+      )
+      common_test(markdown_helper, template_file_path, expected_file_path, actual_file_path)
+    end
 
   end
 

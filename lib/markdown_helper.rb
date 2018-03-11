@@ -132,7 +132,14 @@ class MarkdownHelper
               relative_file_path,
           )
         end
-        line = format('<img src="%s" alt="%s"%s>', absolute_file_path, alt_text, formatted_attributes_s) + "\n"
+        following_text = input_line.sub(IMAGE_REGEXP, '').chomp
+        line = format(
+            '<img src="%s" alt="%s"%s>%s',
+            absolute_file_path,
+            alt_text,
+            formatted_attributes_s,
+            following_text
+        ) + "\n"
         output_lines.push(line)
       end
     end
