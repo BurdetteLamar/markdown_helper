@@ -104,7 +104,7 @@ class MarkdownHelperTest < Minitest::Test
       # Condition template with repo user and repo name.
       template_file_path = File.join(
           TEST_DIR_PATH,
-          'resolve_image_urls',
+          method_under_test.to_s,
           TEMPLATES_DIR_NAME,
           md_file_name
       )
@@ -116,7 +116,7 @@ class MarkdownHelperTest < Minitest::Test
       # Condition expected markdown with repo user and repo name.
       expected_file_path = File.join(
           TEST_DIR_PATH,
-          'resolve_image_urls',
+          method_under_test.to_s,
           EXPECTED_DIR_NAME,
           md_file_name
       )
@@ -127,7 +127,7 @@ class MarkdownHelperTest < Minitest::Test
       expected_markdown_file.close
       actual_file_path = File.join(
           TEST_DIR_PATH,
-          'resolve_image_urls',
+          method_under_test.to_s,
           ACTUAL_DIR_NAME,
           md_file_name
       )
@@ -145,19 +145,19 @@ class MarkdownHelperTest < Minitest::Test
       markdown_helper = MarkdownHelper.new
       template_file_path = File.join(
           TEST_DIR_PATH,
-          'resolve_image_urls',
+          method_under_test.to_s,
           TEMPLATES_DIR_NAME,
           md_file_name
       )
       expected_file_path = File.join(
           TEST_DIR_PATH,
-          'resolve_image_urls',
+          method_under_test.to_s,
           EXPECTED_DIR_NAME,
           md_file_name
       )
       actual_file_path = File.join(
           TEST_DIR_PATH,
-          'resolve_image_urls',
+          method_under_test.to_s,
           ACTUAL_DIR_NAME,
           md_file_name
       )
