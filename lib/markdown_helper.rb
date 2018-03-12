@@ -36,6 +36,8 @@ class MarkdownHelper
   def include(template_file_path, markdown_file_path)
     output_lines = []
     File.open(template_file_path, 'r') do |template_file|
+      output_lines.push(comment(">>>>>> BEGIN GENERATED FILE: SOURCE #{template_file.path}"))
+      output_lines.push(comment('DO NOT EDIT'))
       template_file.each_line do |input_line|
         match_data = input_line.match(INCLUDE_REGEXP)
         unless match_data
@@ -55,7 +57,9 @@ class MarkdownHelper
             File.dirname(template_file_path),
             relative_file_path,
         )
-        included_text = File.read(include_file_path)
+        include_file = File.new(include_file_path, 'r')
+        output_lines.push(comment(">>>>>> BEGIN INCLUDED FILE: SOURCE #{include_file.path}"))
+        included_text = include_file.read
         unless included_text.match("\n")
           message = "Warning:  Included file has no trailing newline: #{include_file_path}"
           warn(message)
@@ -73,7 +77,9 @@ class MarkdownHelper
           output_lines.push(included_text)
           output_lines.push("```\n")
         end
+        output_lines.push(comment("<<<<<< END INCLUDED FILE: SOURCE #{include_file.path}"))
       end
+      output_lines.push(comment("<<<<<< END GENERATED FILE: SOURCE #{template_file.path}"))
     end
     output = output_lines.join('')
     File.open(markdown_file_path, 'w') do |md_file|
@@ -148,6 +154,10 @@ class MarkdownHelper
       md_file.write(output)
     end
     output
+  end
+
+  def comment(text)
+    "<!-- #{text} -->\n"
   end
 
 end
