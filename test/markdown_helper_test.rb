@@ -17,21 +17,6 @@ class MarkdownHelperTest < Minitest::Test
 
   def test_include
 
-    # Create the template for this test.
-    def create_template(template_file_path, include_file_path, file_stem, treatment)
-
-      File.open(template_file_path, 'w') do |file|
-        if file_stem == :nothing
-          file.puts 'This file includes nothing.'
-        else
-          # Inspect, in case it's a symbol, and remove double quotes after inspection.
-          treatment_for_include = treatment.inspect.gsub('"','')
-          include_line = "@[#{treatment_for_include}](#{include_file_path})"
-          file.puts(include_line)
-        end
-      end
-    end
-
     method_under_test = :include
 
     test_dir_path = File.join(
@@ -50,6 +35,21 @@ class MarkdownHelperTest < Minitest::Test
         test_dir_path,
         ACTUAL_DIR_NAME,
     )
+
+    # Create the template for this test.
+    def create_template(template_file_path, include_file_path, file_stem, treatment)
+
+      File.open(template_file_path, 'w') do |file|
+        if file_stem == :nothing
+          file.puts 'This file includes nothing.'
+        else
+          # Inspect, in case it's a symbol, and remove double quotes after inspection.
+          treatment_for_include = treatment.inspect.gsub('"','')
+          include_line = "@[#{treatment_for_include}](#{include_file_path})"
+          file.puts(include_line)
+        end
+      end
+    end
 
     {
         :nothing => :txt,
@@ -114,6 +114,21 @@ class MarkdownHelperTest < Minitest::Test
         ACTUAL_DIR_NAME,
     )
 
+    # Condition file with repo user and repo name.
+    def condition_file(markdown_helper, dir_path, file_name)
+      file_path = File.join(
+          dir_path,
+          file_name
+      )
+      input_text = File.read(file_path)
+      repo_user, repo_name = markdown_helper.repo_user_and_name
+      conditioned_text = format(input_text, repo_user, repo_name)
+      conditioned_file = Tempfile.new(file_name)
+      conditioned_file.write(conditioned_text)
+      conditioned_file.close
+      conditioned_file
+    end
+
     # Test results of various templates.
     [
         :no_image,
@@ -124,26 +139,8 @@ class MarkdownHelperTest < Minitest::Test
       markdown_helper = MarkdownHelper.new
       md_file_name = "#{file_basename}.md"
       repo_user, repo_name = markdown_helper.repo_user_and_name
-      # Condition template with repo user and repo name.
-      template_file_path = File.join(
-          templates_dir_path,
-          md_file_name
-      )
-      template = File.read(template_file_path)
-      conditioned_template = format(template, repo_user, repo_name)
-      template_file = Tempfile.new('template.md')
-      template_file.write(conditioned_template)
-      template_file.close
-      # Condition expected markdown with repo user and repo name.
-      expected_file_path = File.join(
-          expected_dir_path,
-          md_file_name
-      )
-      expected_markdown = File.read(expected_file_path)
-      conditioned_expected_markdown = format(expected_markdown, repo_user, repo_name)
-      expected_markdown_file = Tempfile.new('expected_markdown.md')
-      expected_markdown_file.write(conditioned_expected_markdown)
-      expected_markdown_file.close
+      template_file = condition_file(markdown_helper, templates_dir_path, md_file_name)
+      expected_markdown_file = condition_file(markdown_helper, expected_dir_path, md_file_name)
       actual_file_path = File.join(
           actual_dir_path,
           md_file_name
