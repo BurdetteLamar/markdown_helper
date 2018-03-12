@@ -20,6 +20,22 @@ class MarkdownHelper
     [repo_user, repo_name]
   end
 
+  def _generate_file(template_file_path, markdown_file_path)
+    output_lines = []
+    File.open(template_file_path, 'r') do |template_file|
+      output_lines.push(comment(">>>>>> BEGIN GENERATED FILE: SOURCE #{template_file.path}"))
+      output_lines.push(comment('DO NOT EDIT'))
+      input_lines = template_file.readlines
+      yield input_lines, output_lines
+      output_lines.push(comment("<<<<<< END GENERATED FILE: SOURCE #{template_file.path}"))
+    end
+    output = output_lines.join('')
+    File.open(markdown_file_path, 'w') do |md_file|
+      md_file.write(output)
+    end
+    output
+  end
+
   # Merges external files into markdown text.
   # @param template_file_path [String] the path to the input template markdown file, usually containing include pragmas.
   # @param markdown_file_path [String] the path to the output merged markdown file.
@@ -34,11 +50,8 @@ class MarkdownHelper
   # @example pragma to include text verbatim, to be rendered as markdown.
   #   @[:verbatim](foo.md)
   def include(template_file_path, markdown_file_path)
-    output_lines = []
-    File.open(template_file_path, 'r') do |template_file|
-      output_lines.push(comment(">>>>>> BEGIN GENERATED FILE: SOURCE #{template_file.path}"))
-      output_lines.push(comment('DO NOT EDIT'))
-      template_file.each_line do |input_line|
+    output = _generate_file(template_file_path, markdown_file_path) do |input_lines, output_lines|
+      input_lines.each do |input_line|
         match_data = input_line.match(INCLUDE_REGEXP)
         unless match_data
           output_lines.push(input_line)
@@ -79,11 +92,6 @@ class MarkdownHelper
         end
         output_lines.push(comment("<<<<<< END INCLUDED FILE: SOURCE #{include_file.path}"))
       end
-      output_lines.push(comment("<<<<<< END GENERATED FILE: SOURCE #{template_file.path}"))
-    end
-    output = output_lines.join('')
-    File.open(markdown_file_path, 'w') do |md_file|
-      md_file.write(output)
     end
     output
   end
