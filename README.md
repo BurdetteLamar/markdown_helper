@@ -28,7 +28,7 @@ Use the markdown helper to merge external files into a markdown (</code>.md</cod
 
 #### Highlighted Code Block
 
-<!-- >>>>>> BEGIN INCLUDED FILE: SOURCE readme_files/include.rb -->
+<!-- >>>>>> BEGIN INCLUDED FILE (ruby): SOURCE readme_files/include.rb -->
 <code>include.rb</code>
 ```ruby
 class RubyCode
@@ -37,11 +37,11 @@ class RubyCode
   end
 end
 ```
-<!-- <<<<<< END INCLUDED FILE: SOURCE readme_files/include.rb -->
+<!-- <<<<<< END INCLUDED FILE (ruby): SOURCE readme_files/include.rb -->
 
 #### Plain Code Block
 
-<!-- >>>>>> BEGIN INCLUDED FILE: SOURCE readme_files/include.rb -->
+<!-- >>>>>> BEGIN INCLUDED FILE (code_block): SOURCE readme_files/include.rb -->
 <code>include.rb</code>
 ```
 class RubyCode
@@ -50,7 +50,7 @@ class RubyCode
   end
 end
 ```
-<!-- <<<<<< END INCLUDED FILE: SOURCE readme_files/include.rb -->
+<!-- <<<<<< END INCLUDED FILE (code_block): SOURCE readme_files/include.rb -->
 
 [Note:  In the gem documentation, RubyDoc.info chooses to highlight this code block regardless.  Go figure.]
 
@@ -62,7 +62,7 @@ Verbatim text is included unadorned.  Most often, verbatim text is markdown to b
 
 #### CLI
 
-<!-- >>>>>> BEGIN INCLUDED FILE: SOURCE readme_files/../bin/usage/include.txt -->
+<!-- >>>>>> BEGIN INCLUDED FILE (code_block): SOURCE readme_files/../bin/usage/include.txt -->
 <code>include.txt</code>
 ```
 Usage:
@@ -79,11 +79,11 @@ Usage:
     * Both file types are .md.
     * The template file contains file inclusion pragmas.  See README.md.
 ```
-<!-- <<<<<< END INCLUDED FILE: SOURCE readme_files/../bin/usage/include.txt -->
+<!-- <<<<<< END INCLUDED FILE (code_block): SOURCE readme_files/../bin/usage/include.txt -->
 
 #### API
 
-<!-- >>>>>> BEGIN INCLUDED FILE: SOURCE readme_files/include_usage.rb -->
+<!-- >>>>>> BEGIN INCLUDED FILE (ruby): SOURCE readme_files/include_usage.rb -->
 <code>include_usage.rb</code>
 ```ruby
 require 'markdown_helper'
@@ -93,7 +93,7 @@ template_file_path = 'highlight_ruby_template.md'
 markdown_file_path = 'highlighted_ruby.md'
 markdown_helper.include(template_file_path, markdown_file_path)
 ```
-<!-- <<<<<< END INCLUDED FILE: SOURCE readme_files/include_usage.rb -->
+<!-- <<<<<< END INCLUDED FILE (ruby): SOURCE readme_files/include_usage.rb -->
 
 #### Include Descriptions
 
@@ -111,7 +111,7 @@ where:
 
 ##### Example Include Descriptions
 
-<!-- >>>>>> BEGIN INCLUDED FILE: SOURCE readme_files/include.md -->
+<!-- >>>>>> BEGIN INCLUDED FILE (code_block): SOURCE readme_files/include.md -->
 <code>include.md</code>
 ```code_block
 @[ruby](my_ruby.rb)
@@ -120,7 +120,7 @@ where:
 
 @[:verbatim](my_markdown.md)
 ```
-<!-- <<<<<< END INCLUDED FILE: SOURCE readme_files/include.md -->
+<!-- <<<<<< END INCLUDED FILE (code_block): SOURCE readme_files/include.md -->
 
 ## Image Path Resolution 
 
@@ -138,7 +138,7 @@ This matters because when markdown becomes part of a Ruby gem, its images will h
 
 #### CLI
 
-<!-- >>>>>> BEGIN INCLUDED FILE: SOURCE readme_files/../bin/usage/resolve.txt -->
+<!-- >>>>>> BEGIN INCLUDED FILE (code_block): SOURCE readme_files/../bin/usage/resolve.txt -->
 <code>resolve.txt</code>
 ```
 Usage:
@@ -155,11 +155,11 @@ Usage:
     * Both file types are .md.
     * The template file contains image relative file paths.  See README.md.
 ```
-<!-- <<<<<< END INCLUDED FILE: SOURCE readme_files/../bin/usage/resolve.txt -->
+<!-- <<<<<< END INCLUDED FILE (code_block): SOURCE readme_files/../bin/usage/resolve.txt -->
 
 #### API
 
-<!-- >>>>>> BEGIN INCLUDED FILE: SOURCE readme_files/resolve_usage.rb -->
+<!-- >>>>>> BEGIN INCLUDED FILE (ruby): SOURCE readme_files/resolve_usage.rb -->
 <code>resolve_usage.rb</code>
 ```ruby
 require 'markdown_helper'
@@ -169,7 +169,7 @@ template_file_path = 'template.md'
 markdown_file_path = 'markdown.md'
 markdown_helper.resolve(template_file_path, markdown_file_path)
 ```
-<!-- <<<<<< END INCLUDED FILE: SOURCE readme_files/resolve_usage.rb -->
+<!-- <<<<<< END INCLUDED FILE (ruby): SOURCE readme_files/resolve_usage.rb -->
 
 #### Image Descriptions
 
@@ -185,7 +185,7 @@ where:
 
 ##### Example Image Descriptions
 
-<!-- >>>>>> BEGIN INCLUDED FILE: SOURCE readme_files/resolve.md -->
+<!-- >>>>>> BEGIN INCLUDED FILE (code_block): SOURCE readme_files/resolve.md -->
 <code>resolve.md</code>
 ```code_block
 ![my_alt](image/image.png)
@@ -194,7 +194,7 @@ where:
 
 ![my_alt](image/image.png| width=50 height=50)
 ```
-<!-- <<<<<< END INCLUDED FILE: SOURCE readme_files/resolve.md -->
+<!-- <<<<<< END INCLUDED FILE (code_block): SOURCE readme_files/resolve.md -->
 
 ## Image Attributes
 
@@ -210,7 +210,7 @@ Use the markdown helper to add image attributes in a markdown (</code>.md</code>
 
 #### CLI
 
-<!-- >>>>>> BEGIN INCLUDED FILE: SOURCE readme_files/../bin/usage/resolve.txt -->
+<!-- >>>>>> BEGIN INCLUDED FILE (code_block): SOURCE readme_files/../bin/usage/resolve.txt -->
 <code>resolve.txt</code>
 ```
 Usage:
@@ -227,11 +227,11 @@ Usage:
     * Both file types are .md.
     * The template file contains image relative file paths.  See README.md.
 ```
-<!-- <<<<<< END INCLUDED FILE: SOURCE readme_files/../bin/usage/resolve.txt -->
+<!-- <<<<<< END INCLUDED FILE (code_block): SOURCE readme_files/../bin/usage/resolve.txt -->
 
 #### API
 
-<!-- >>>>>> BEGIN INCLUDED FILE: SOURCE readme_files/resolve_usage.rb -->
+<!-- >>>>>> BEGIN INCLUDED FILE (ruby): SOURCE readme_files/resolve_usage.rb -->
 <code>resolve_usage.rb</code>
 ```ruby
 require 'markdown_helper'
@@ -241,7 +241,7 @@ template_file_path = 'template.md'
 markdown_file_path = 'markdown.md'
 markdown_helper.resolve(template_file_path, markdown_file_path)
 ```
-<!-- <<<<<< END INCLUDED FILE: SOURCE readme_files/resolve_usage.rb -->
+<!-- <<<<<< END INCLUDED FILE (ruby): SOURCE readme_files/resolve_usage.rb -->
 
 #### Image Descriptions
 
@@ -257,7 +257,7 @@ where:
 
 ##### Example Image Descriptions
 
-<!-- >>>>>> BEGIN INCLUDED FILE: SOURCE readme_files/resolve.md -->
+<!-- >>>>>> BEGIN INCLUDED FILE (code_block): SOURCE readme_files/resolve.md -->
 <code>resolve.md</code>
 ```code_block
 ![my_alt](image/image.png)
@@ -266,7 +266,7 @@ where:
 
 ![my_alt](image/image.png| width=50 height=50)
 ```
-<!-- <<<<<< END INCLUDED FILE: SOURCE readme_files/resolve.md -->
+<!-- <<<<<< END INCLUDED FILE (code_block): SOURCE readme_files/resolve.md -->
 
 <!-- <<<<<< END GENERATED FILE (resolve): SOURCE readme_files/README.template.md -->
 <!-- <<<<<< END GENERATED FILE (include): SOURCE readme_files/temp_resolved.md -->

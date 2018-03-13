@@ -50,6 +50,7 @@ class MarkdownHelperTest < Minitest::Test
       end
     end
 
+    # Test combinations of treatments and templates.
     {
         :nothing => :txt,
         :markdown => :md,
@@ -89,6 +90,30 @@ class MarkdownHelperTest < Minitest::Test
         )
       end
     end
+
+    # Test treatment as comment.
+    md_file_name = 'comment.md'
+    template_file_path = File.join(
+        templates_dir_path,
+        md_file_name
+    )
+    expected_file_path = File.join(
+        expected_dir_path,
+        md_file_name
+    )
+    actual_file_path = File.join(
+        actual_dir_path,
+        md_file_name
+    )
+    include_file_path = '../includes/comment.txt'
+    create_template(template_file_path, include_file_path, 'comment', :comment)
+    common_test(
+        MarkdownHelper.new,
+        method_under_test,
+        template_file_path,
+        expected_file_path,
+        actual_file_path
+    )
 
   end
 

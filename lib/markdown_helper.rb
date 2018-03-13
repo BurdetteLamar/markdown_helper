@@ -46,6 +46,8 @@ class MarkdownHelper
                         :code_block
                       when ':verbatim'
                         :verbatim
+                      when ':comment'
+                        :comment
                       else
                         match_data[1]
                     end
@@ -125,7 +127,7 @@ class MarkdownHelper
   alias resolve_image_urls resolve
 
   def comment(text)
-    "<!-- #{text} -->\n"
+    "<!--#{text}-->\n"
   end
 
   private
@@ -133,10 +135,10 @@ class MarkdownHelper
   def generate_file(template_file_path, markdown_file_path, method)
     output_lines = []
     File.open(template_file_path, 'r') do |template_file|
-      output_lines.push(comment(">>>>>> BEGIN GENERATED FILE (#{method.to_s}): SOURCE #{template_file_path}"))
+      output_lines.push(comment(" >>>>>> BEGIN GENERATED FILE (#{method.to_s}): SOURCE #{template_file_path} "))
       input_lines = template_file.readlines
       yield input_lines, output_lines
-      output_lines.push(comment("<<<<<< END GENERATED FILE (#{method.to_s}): SOURCE #{template_file_path}"))
+      output_lines.push(comment(" <<<<<< END GENERATED FILE (#{method.to_s}): SOURCE #{template_file_path} "))
     end
     output = output_lines.join('')
     File.open(markdown_file_path, 'w') do |md_file|
@@ -147,25 +149,28 @@ class MarkdownHelper
 
   def include_file(include_file_path, treatment, output_lines)
     include_file = File.new(include_file_path, 'r')
-    output_lines.push(comment(">>>>>> BEGIN INCLUDED FILE: SOURCE #{include_file.path}"))
+    output_lines.push(comment(" >>>>>> BEGIN INCLUDED FILE (#{treatment}): SOURCE #{include_file.path} "))
     included_text = include_file.read
     unless included_text.match("\n")
       message = "Warning:  Included file has no trailing newline: #{include_file_path}"
       warn(message)
     end
-    if treatment == :verbatim
-      # Pass through unadorned.
-      output_lines.push(included_text)
-    else
-      # Use the file name as a label.
-      file_name_line = format("<code>%s</code>\n", File.basename(include_file_path))
-      output_lines.push(file_name_line)
-      # Put into code block.
-      language = treatment == :code_block ? '' : treatment
-      output_lines.push("```#{language}\n")
-      output_lines.push(included_text)
-      output_lines.push("```\n")
+    case treatment
+      when :verbatim
+        # Pass through unadorned.
+        output_lines.push(included_text)
+      when :comment
+        output_lines.push(comment(included_text))
+      else
+        # Use the file name as a label.
+        file_name_line = format("<code>%s</code>\n", File.basename(include_file_path))
+        output_lines.push(file_name_line)
+        # Put into code block.
+        language = treatment == :code_block ? '' : treatment
+        output_lines.push("```#{language}\n")
+        output_lines.push(included_text)
+        output_lines.push("```\n")
     end
-    output_lines.push(comment("<<<<<< END INCLUDED FILE: SOURCE #{include_file.path}"))
+    output_lines.push(comment(" <<<<<< END INCLUDED FILE (#{treatment}): SOURCE #{include_file.path} "))
   end
 end
