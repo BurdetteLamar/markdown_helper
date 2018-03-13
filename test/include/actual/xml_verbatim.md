@@ -1,5 +1,4 @@
-<!-- >>>>>> BEGIN GENERATED FILE: SOURCE C:/Users/Burdette/Documents/GitHub/markdown_helper/test/include/templates/xml_verbatim.md -->
-<!-- DO NOT EDIT -->
+<!-- >>>>>> BEGIN GENERATED FILE (include): SOURCE C:/Users/Burdette/Documents/GitHub/markdown_helper/test/include/templates/xml_verbatim.md -->
 <!-- >>>>>> BEGIN INCLUDED FILE: SOURCE C:/Users/Burdette/Documents/GitHub/markdown_helper/test/include/templates/../includes/xml.xml -->
 <!-- This is XML. -->
 <root>
@@ -10,4 +9,4 @@
   </element>
 </root>
 <!-- <<<<<< END INCLUDED FILE: SOURCE C:/Users/Burdette/Documents/GitHub/markdown_helper/test/include/templates/../includes/xml.xml -->
-<!-- <<<<<< END GENERATED FILE: SOURCE C:/Users/Burdette/Documents/GitHub/markdown_helper/test/include/templates/xml_verbatim.md -->
+<!-- <<<<<< END GENERATED FILE (include): SOURCE C:/Users/Burdette/Documents/GitHub/markdown_helper/test/include/templates/xml_verbatim.md -->

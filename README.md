@@ -1,5 +1,5 @@
-<!-- >>>>>> BEGIN GENERATED FILE: SOURCE readme_files/_temp.md -->
-<!-- DO NOT EDIT -->
+<!-- >>>>>> BEGIN GENERATED FILE (include): SOURCE readme_files/temp_resolved.md -->
+<!-- >>>>>> BEGIN GENERATED FILE (resolve): SOURCE readme_files/README.template.md -->
 # MarkdownHelper
 
 [![Gem Version](https://badge.fury.io/rb/markdown_helper.svg)](https://badge.fury.io/rb/markdown_helper)
@@ -268,4 +268,5 @@ where:
 ```
 <!-- <<<<<< END INCLUDED FILE: SOURCE readme_files/resolve_image_urls.md -->
 
-<!-- <<<<<< END GENERATED FILE: SOURCE readme_files/_temp.md -->
+<!-- <<<<<< END GENERATED FILE (resolve): SOURCE readme_files/README.template.md -->
+<!-- <<<<<< END GENERATED FILE (include): SOURCE readme_files/temp_resolved.md -->
