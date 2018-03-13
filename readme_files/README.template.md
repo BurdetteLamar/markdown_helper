@@ -82,11 +82,11 @@ This matters because when markdown becomes part of a Ruby gem, its images will h
 
 #### CLI
 
-@[:code_block](../bin/usage/resolve_image_urls.txt)
+@[:code_block](../bin/usage/resolve.txt)
 
 #### API
 
-@[ruby](resolve_image_urls_usage.rb)
+@[ruby](resolve_usage.rb)
 
 #### Image Descriptions
 
@@ -102,7 +102,7 @@ where:
 
 ##### Example Image Descriptions
 
-@[code_block](resolve_image_urls.md)
+@[code_block](resolve.md)
 
 ## Image Attributes
 
@@ -118,11 +118,11 @@ Use the markdown helper to add image attributes in a markdown (</code>.md</code>
 
 #### CLI
 
-@[:code_block](../bin/usage/resolve_image_urls.txt)
+@[:code_block](../bin/usage/resolve.txt)
 
 #### API
 
-@[ruby](resolve_image_urls_usage.rb)
+@[ruby](resolve_usage.rb)
 
 #### Image Descriptions
 
@@ -138,5 +138,5 @@ where:
 
 ##### Example Image Descriptions
 
-@[code_block](resolve_image_urls.md)
+@[code_block](resolve.md)
 

@@ -18,7 +18,7 @@ namespace :build do
     # Thie protects example code from being also resolved, thus damaging the example code.
     # Temp file must be in the same directory as its source (it becomes the source).
     temp_file_path = 'readme_files/temp_resolved.md'
-    markdown_helper.resolve_image_urls('readme_files/README.template.md', temp_file_path)
+    markdown_helper.resolve('readme_files/README.template.md', temp_file_path)
     markdown_helper.include(temp_file_path, 'README.md')
     File.delete(temp_file_path)
   end

@@ -92,9 +92,9 @@ class MarkdownHelperTest < Minitest::Test
 
   end
 
-  def test_resolve_image_urls
+  def test_resolve
 
-    method_under_test = :resolve_image_urls
+    method_under_test = :resolve
 
     test_dir_path = File.join(
         TEST_DIR_PATH,
