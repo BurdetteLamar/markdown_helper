@@ -1,7 +1,6 @@
-require 'test_helper'
-require 'tempfile'
-
 require 'diff-lcs'
+
+require 'test_helper'
 
 TEST_DIR_PATH = File.dirname(__FILE__)
 
@@ -115,7 +114,7 @@ class MarkdownHelperTest < Minitest::Test
     )
 
     # Condition file with repo user and repo name.
-    def condition_file(markdown_helper, dir_path, file_name)
+    def condition_file(markdown_helper, dir_path, file_name, type)
       file_path = File.join(
           dir_path,
           file_name
@@ -123,7 +122,17 @@ class MarkdownHelperTest < Minitest::Test
       input_text = File.read(file_path)
       repo_user, repo_name = markdown_helper.repo_user_and_name
       conditioned_text = format(input_text, repo_user, repo_name)
-      conditioned_file = Tempfile.new(file_name)
+      tmp_dir_name = 'tmp'
+      tmp_dir_path = File.join(
+          TEST_DIR_PATH,
+          tmp_dir_name,
+      )
+      Dir.mkdir(tmp_dir_path) unless File.directory?(tmp_dir_path)
+      conditioned_file_path = File.join(
+          tmp_dir_path,
+          "#{type}_#{file_name}",
+      )
+      conditioned_file = File.new(conditioned_file_path, 'w')
       conditioned_file.write(conditioned_text)
       conditioned_file.close
       conditioned_file
@@ -138,9 +147,8 @@ class MarkdownHelperTest < Minitest::Test
     ].each do |file_basename|
       markdown_helper = MarkdownHelper.new
       md_file_name = "#{file_basename}.md"
-      repo_user, repo_name = markdown_helper.repo_user_and_name
-      template_file = condition_file(markdown_helper, templates_dir_path, md_file_name)
-      expected_markdown_file = condition_file(markdown_helper, expected_dir_path, md_file_name)
+      template_file = condition_file(markdown_helper, templates_dir_path, md_file_name, 'template')
+      expected_markdown_file = condition_file(markdown_helper, expected_dir_path, md_file_name, 'expected')
       actual_file_path = File.join(
           actual_dir_path,
           md_file_name
@@ -195,8 +203,11 @@ class MarkdownHelperTest < Minitest::Test
     )
     diffs = MarkdownHelperTest.diff_files(expected_file_path, actual_file_path)
     unless diffs.empty?
-      puts"Failed output in #{actual_file_path}:"
-      puts output
+      puts 'EXPECTED'
+      puts File.read(expected_file_path)
+      puts 'ACTUAL'
+      puts File.read(actual_file_path)
+      puts 'END'
     end
     assert_empty(diffs, actual_file_path)
     # CLI

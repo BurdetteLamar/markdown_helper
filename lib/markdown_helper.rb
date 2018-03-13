@@ -34,7 +34,7 @@ class MarkdownHelper
   # @example pragma to include text verbatim, to be rendered as markdown.
   #   @[:verbatim](foo.md)
   def include(template_file_path, markdown_file_path)
-    output = send(:generate_file, template_file_path, markdown_file_path) do |input_lines, output_lines|
+    output = send(:generate_file, template_file_path, markdown_file_path, __method__) do |input_lines, output_lines|
       input_lines.each do |input_line|
         match_data = input_line.match(INCLUDE_REGEXP)
         unless match_data
@@ -81,11 +81,10 @@ class MarkdownHelper
   #       "https://raw.githubusercontent.com/#{repo_user}/#{repo_name}/master",
   #       relative_file_path,
   #   )
-  def resolve_image_urls(template_file_path, markdown_file_path)
-    output_lines = []
-    File.open(template_file_path, 'r') do |template_file|
-      output_lines = []
-      template_file.each_line do |input_line|
+  def resolve(template_file_path, markdown_file_path)
+    # Method :generate_file does the first things, yields the block, does the last things.
+    output = send(:generate_file, template_file_path, markdown_file_path, __method__) do |input_lines, output_lines|
+      input_lines.each do |input_line|
         match_data = input_line.match(IMAGE_REGEXP)
         unless match_data
           output_lines.push(input_line)
@@ -121,12 +120,9 @@ class MarkdownHelper
         output_lines.push(line)
       end
     end
-    output = output_lines.join('')
-    File.open(markdown_file_path, 'w') do |md_file|
-      md_file.write(output)
-    end
     output
   end
+  alias resolve_image_urls resolve
 
   def comment(text)
     "<!-- #{text} -->\n"
@@ -134,14 +130,13 @@ class MarkdownHelper
 
   private
 
-  def generate_file(template_file_path, markdown_file_path)
+  def generate_file(template_file_path, markdown_file_path, method)
     output_lines = []
     File.open(template_file_path, 'r') do |template_file|
-      output_lines.push(comment(">>>>>> BEGIN GENERATED FILE: SOURCE #{template_file.path}"))
-      output_lines.push(comment('DO NOT EDIT'))
+      output_lines.push(comment(">>>>>> BEGIN GENERATED FILE (#{method.to_s}): SOURCE #{template_file_path}"))
       input_lines = template_file.readlines
       yield input_lines, output_lines
-      output_lines.push(comment("<<<<<< END GENERATED FILE: SOURCE #{template_file.path}"))
+      output_lines.push(comment("<<<<<< END GENERATED FILE (#{method.to_s}): SOURCE #{template_file_path}"))
     end
     output = output_lines.join('')
     File.open(markdown_file_path, 'w') do |md_file|
