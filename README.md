@@ -138,12 +138,12 @@ This matters because when markdown becomes part of a Ruby gem, its images will h
 
 #### CLI
 
-<!-- >>>>>> BEGIN INCLUDED FILE: SOURCE readme_files/../bin/usage/resolve_image_urls.txt -->
-<code>resolve_image_urls.txt</code>
+<!-- >>>>>> BEGIN INCLUDED FILE: SOURCE readme_files/../bin/usage/resolve.txt -->
+<code>resolve.txt</code>
 ```
 Usage:
 
-  resolve_image_urls template_file_path markdown_file_page
+  resolve template_file_path markdown_file_page
 
   where
 
@@ -155,21 +155,21 @@ Usage:
     * Both file types are .md.
     * The template file contains image relative file paths.  See README.md.
 ```
-<!-- <<<<<< END INCLUDED FILE: SOURCE readme_files/../bin/usage/resolve_image_urls.txt -->
+<!-- <<<<<< END INCLUDED FILE: SOURCE readme_files/../bin/usage/resolve.txt -->
 
 #### API
 
-<!-- >>>>>> BEGIN INCLUDED FILE: SOURCE readme_files/resolve_image_urls_usage.rb -->
-<code>resolve_image_urls_usage.rb</code>
+<!-- >>>>>> BEGIN INCLUDED FILE: SOURCE readme_files/resolve_usage.rb -->
+<code>resolve_usage.rb</code>
 ```ruby
 require 'markdown_helper'
 
 markdown_helper = MarkdownHelper.new
 template_file_path = 'template.md'
 markdown_file_path = 'markdown.md'
-markdown_helper.resolve_image_urls(template_file_path, markdown_file_path)
+markdown_helper.resolve(template_file_path, markdown_file_path)
 ```
-<!-- <<<<<< END INCLUDED FILE: SOURCE readme_files/resolve_image_urls_usage.rb -->
+<!-- <<<<<< END INCLUDED FILE: SOURCE readme_files/resolve_usage.rb -->
 
 #### Image Descriptions
 
@@ -185,8 +185,8 @@ where:
 
 ##### Example Image Descriptions
 
-<!-- >>>>>> BEGIN INCLUDED FILE: SOURCE readme_files/resolve_image_urls.md -->
-<code>resolve_image_urls.md</code>
+<!-- >>>>>> BEGIN INCLUDED FILE: SOURCE readme_files/resolve.md -->
+<code>resolve.md</code>
 ```code_block
 ![my_alt](image/image.png)
 
@@ -194,7 +194,7 @@ where:
 
 ![my_alt](image/image.png| width=50 height=50)
 ```
-<!-- <<<<<< END INCLUDED FILE: SOURCE readme_files/resolve_image_urls.md -->
+<!-- <<<<<< END INCLUDED FILE: SOURCE readme_files/resolve.md -->
 
 ## Image Attributes
 
@@ -210,12 +210,12 @@ Use the markdown helper to add image attributes in a markdown (</code>.md</code>
 
 #### CLI
 
-<!-- >>>>>> BEGIN INCLUDED FILE: SOURCE readme_files/../bin/usage/resolve_image_urls.txt -->
-<code>resolve_image_urls.txt</code>
+<!-- >>>>>> BEGIN INCLUDED FILE: SOURCE readme_files/../bin/usage/resolve.txt -->
+<code>resolve.txt</code>
 ```
 Usage:
 
-  resolve_image_urls template_file_path markdown_file_page
+  resolve template_file_path markdown_file_page
 
   where
 
@@ -227,21 +227,21 @@ Usage:
     * Both file types are .md.
     * The template file contains image relative file paths.  See README.md.
 ```
-<!-- <<<<<< END INCLUDED FILE: SOURCE readme_files/../bin/usage/resolve_image_urls.txt -->
+<!-- <<<<<< END INCLUDED FILE: SOURCE readme_files/../bin/usage/resolve.txt -->
 
 #### API
 
-<!-- >>>>>> BEGIN INCLUDED FILE: SOURCE readme_files/resolve_image_urls_usage.rb -->
-<code>resolve_image_urls_usage.rb</code>
+<!-- >>>>>> BEGIN INCLUDED FILE: SOURCE readme_files/resolve_usage.rb -->
+<code>resolve_usage.rb</code>
 ```ruby
 require 'markdown_helper'
 
 markdown_helper = MarkdownHelper.new
 template_file_path = 'template.md'
 markdown_file_path = 'markdown.md'
-markdown_helper.resolve_image_urls(template_file_path, markdown_file_path)
+markdown_helper.resolve(template_file_path, markdown_file_path)
 ```
-<!-- <<<<<< END INCLUDED FILE: SOURCE readme_files/resolve_image_urls_usage.rb -->
+<!-- <<<<<< END INCLUDED FILE: SOURCE readme_files/resolve_usage.rb -->
 
 #### Image Descriptions
 
@@ -257,8 +257,8 @@ where:
 
 ##### Example Image Descriptions
 
-<!-- >>>>>> BEGIN INCLUDED FILE: SOURCE readme_files/resolve_image_urls.md -->
-<code>resolve_image_urls.md</code>
+<!-- >>>>>> BEGIN INCLUDED FILE: SOURCE readme_files/resolve.md -->
+<code>resolve.md</code>
 ```code_block
 ![my_alt](image/image.png)
 
@@ -266,7 +266,7 @@ where:
 
 ![my_alt](image/image.png| width=50 height=50)
 ```
-<!-- <<<<<< END INCLUDED FILE: SOURCE readme_files/resolve_image_urls.md -->
+<!-- <<<<<< END INCLUDED FILE: SOURCE readme_files/resolve.md -->
 
 <!-- <<<<<< END GENERATED FILE (resolve): SOURCE readme_files/README.template.md -->
 <!-- <<<<<< END GENERATED FILE (include): SOURCE readme_files/temp_resolved.md -->

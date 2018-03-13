@@ -7,7 +7,7 @@ def usage
   file_path = File.join(
                       dir_path,
                       'usage',
-                      'resolve_image_urls.txt'
+                      'resolve.txt'
   )
   puts File.read(file_path)
   exit
@@ -19,4 +19,4 @@ usage unless ARGV.size == 2
 usage unless File.readable?(template_file_path)
 usage unless File.writable?(File.dirname(markdown_file_path))
 
-MarkdownHelper.new.resolve_image_urls(template_file_path, markdown_file_path)
+MarkdownHelper.new.resolve(template_file_path, markdown_file_path)
