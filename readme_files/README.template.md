@@ -12,6 +12,19 @@ Next feature:
 
 * "Slide deck": to chain markdown pages into a series with next/prev navigation links.
 
+## How It Works
+
+The markdown helper reads a markdown document (template) and writes another markdown document.
+
+The template can contain certain instructions that call for file inclusions and image resolutions.
+
+By default, the output markdown has added comments that show:
+
+* The path to the template file.
+* The path to each included file.
+* The image description (original) for each resolved image file path.
+
+You can suppress those comments using the <code>pristine</code> option.
 ## File Inclusion 
 
 ![include_icon](images/include.png | width=50)
@@ -34,6 +47,10 @@ Use the markdown helper to merge external files into a markdown (</code>.md</cod
 
 [Note:  In the gem documentation, RubyDoc.info chooses to highlight this code block regardless.  Go figure.]
 
+#### Comment
+
+Comment text is written into the output between the comment delimiters <code>\<!--</code> and <code>--></code>
+
 #### Verbatim
 
 Verbatim text is included unadorned.  Most often, verbatim text is markdown to be rendered as part of the markdown page.
@@ -50,7 +67,7 @@ Verbatim text is included unadorned.  Most often, verbatim text is markdown to b
 
 #### Include Descriptions
 
-Specify each file inclusion via an *include description*, which has the form:
+Specify each file inclusion at the beginning of a line via an *include description*, which has the form:
 
 <code>@[</code>*format*<code>]\(</code>*relative_file_path*<code>)</code>
 
@@ -82,15 +99,15 @@ This matters because when markdown becomes part of a Ruby gem, its images will h
 
 #### CLI
 
-@[:code_block](../bin/usage/resolve_image_urls.txt)
+@[:code_block](../bin/usage/resolve.txt)
 
 #### API
 
-@[ruby](resolve_image_urls_usage.rb)
+@[ruby](resolve_usage.rb)
 
 #### Image Descriptions
 
-Specify each image via an *image description*, which has the form:
+Specify each image  at the beginning of a line via an *image description*, which has the form:
 
 <code>![*alt_text*]\(</code>*relative_file_path* <code>|</code> *attributes*<code>)</code>
 
@@ -102,7 +119,7 @@ where:
 
 ##### Example Image Descriptions
 
-@[code_block](resolve_image_urls.md)
+@[code_block](resolve.md)
 
 ## Image Attributes
 
@@ -118,15 +135,15 @@ Use the markdown helper to add image attributes in a markdown (</code>.md</code>
 
 #### CLI
 
-@[:code_block](../bin/usage/resolve_image_urls.txt)
+@[:code_block](../bin/usage/resolve.txt)
 
 #### API
 
-@[ruby](resolve_image_urls_usage.rb)
+@[ruby](resolve_usage.rb)
 
 #### Image Descriptions
 
-Specify each image via an *image description*, which has the form:
+Specify each image at the beginning of a line  via an *image description*, which has the form:
 
 <code>![*alt_text*]\(</code>*relative_file_path* <code>|</code> *attributes*<code>)</code>
 
@@ -138,5 +155,5 @@ where:
 
 ##### Example Image Descriptions
 
-@[code_block](resolve_image_urls.md)
+@[code_block](resolve.md)
 
