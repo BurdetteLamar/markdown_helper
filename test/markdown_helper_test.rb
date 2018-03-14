@@ -63,6 +63,7 @@ class MarkdownHelperTest < Minitest::Test
       [
           :verbatim,
           :code_block,
+          :comment,
           file_stem.to_s,
       ].each do |treatment|
         file_basename = "#{file_stem}_#{treatment}"

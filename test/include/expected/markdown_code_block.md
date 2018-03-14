@@ -2,7 +2,7 @@
 <!-- >>>>>> BEGIN INCLUDED FILE (code_block): SOURCE C:/Users/Burdette/Documents/GitHub/markdown_helper/test/include/templates/../includes/markdown.md -->
 <code>markdown.md</code>
 ```
-<!-- This is markdown. -->
+This is markdown.
 
 ### This is a third-level header.
 ```

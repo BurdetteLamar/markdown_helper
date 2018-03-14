@@ -2,7 +2,6 @@
 <!-- >>>>>> BEGIN INCLUDED FILE (code_block): SOURCE C:/Users/Burdette/Documents/GitHub/markdown_helper/test/include/templates/../includes/xml.xml -->
 <code>xml.xml</code>
 ```
-<!-- This is XML. -->
 <root>
   <element attribute="value">
     <sub_element>
