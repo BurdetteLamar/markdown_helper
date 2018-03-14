@@ -9,6 +9,23 @@ class MarkdownHelper
   IMAGE_REGEXP = /^!\[([^\[]+)\]\(([^)]+)\)/
   INCLUDE_REGEXP = /^@\[([^\[]+)\]\(([^)]+)\)/
 
+  attr_accessor :pristine
+
+  def initialize(options = {})
+    default_options = {
+        :pristine => false,
+    }
+    merged_options = default_options.merge(options)
+    merged_options.each_pair do |method, value|
+      unless self.respond_to?(method)
+        raise ArgumentError.new("Unknown option: #{method}")
+      end
+      setter_method = "#{method}="
+      send(setter_method, value)
+      merged_options.delete(method)
+    end
+  end
+
   # Get the user name and repository name from ENV.
   def repo_user_and_name
     repo_user = ENV['REPO_USER']
@@ -46,6 +63,8 @@ class MarkdownHelper
                         :code_block
                       when ':verbatim'
                         :verbatim
+                      when ':comment'
+                        :comment
                       else
                         match_data[1]
                     end
@@ -90,34 +109,36 @@ class MarkdownHelper
           output_lines.push(input_line)
           next
         end
-        alt_text = match_data[1]
-        relative_file_path, attributes_s = match_data[2].split(/\s?\|\s?/, 2)
-        attributes = attributes_s ? attributes_s.split(/\s+/) : []
-        formatted_attributes = ['']
-        attributes.each do |attribute|
-          name, value = attribute.split('=', 2)
-          formatted_attributes.push(format('%s="%s"', name, value))
+        send(:comment_resolve, input_line, output_lines) do
+          alt_text = match_data[1]
+          relative_file_path, attributes_s = match_data[2].split(/\s?\|\s?/, 2)
+          attributes = attributes_s ? attributes_s.split(/\s+/) : []
+          formatted_attributes = ['']
+          attributes.each do |attribute|
+            name, value = attribute.split('=', 2)
+            formatted_attributes.push(format('%s="%s"', name, value))
+          end
+          formatted_attributes_s = formatted_attributes.join(' ')
+          repo_user, repo_name = repo_user_and_name
+          absolute_file_path = nil
+          if relative_file_path.start_with?('http')
+            absolute_file_path = relative_file_path
+          else
+            absolute_file_path = File.join(
+                "https://raw.githubusercontent.com/#{repo_user}/#{repo_name}/master",
+                relative_file_path,
+            )
+          end
+          following_text = input_line.sub(IMAGE_REGEXP, '').chomp
+          line = format(
+              '<img src="%s" alt="%s"%s>%s',
+              absolute_file_path,
+              alt_text,
+              formatted_attributes_s,
+              following_text
+          ) + "\n"
+          output_lines.push(line)
         end
-        formatted_attributes_s = formatted_attributes.join(' ')
-        repo_user, repo_name = repo_user_and_name
-        absolute_file_path = nil
-        if relative_file_path.start_with?('http')
-          absolute_file_path = relative_file_path
-        else
-          absolute_file_path = File.join(
-              "https://raw.githubusercontent.com/#{repo_user}/#{repo_name}/master",
-              relative_file_path,
-          )
-        end
-        following_text = input_line.sub(IMAGE_REGEXP, '').chomp
-        line = format(
-            '<img src="%s" alt="%s"%s>%s',
-            absolute_file_path,
-            alt_text,
-            formatted_attributes_s,
-            following_text
-        ) + "\n"
-        output_lines.push(line)
       end
     end
     output
@@ -125,7 +146,7 @@ class MarkdownHelper
   alias resolve_image_urls resolve
 
   def comment(text)
-    "<!-- #{text} -->\n"
+    "<!--#{text}-->\n"
   end
 
   private
@@ -133,10 +154,10 @@ class MarkdownHelper
   def generate_file(template_file_path, markdown_file_path, method)
     output_lines = []
     File.open(template_file_path, 'r') do |template_file|
-      output_lines.push(comment(">>>>>> BEGIN GENERATED FILE (#{method.to_s}): SOURCE #{template_file_path}"))
+      output_lines.push(comment(" >>>>>> BEGIN GENERATED FILE (#{method.to_s}): SOURCE #{template_file_path} ")) unless pristine
       input_lines = template_file.readlines
       yield input_lines, output_lines
-      output_lines.push(comment("<<<<<< END GENERATED FILE (#{method.to_s}): SOURCE #{template_file_path}"))
+      output_lines.push(comment(" <<<<<< END GENERATED FILE (#{method.to_s}): SOURCE #{template_file_path} ")) unless pristine
     end
     output = output_lines.join('')
     File.open(markdown_file_path, 'w') do |md_file|
@@ -147,25 +168,35 @@ class MarkdownHelper
 
   def include_file(include_file_path, treatment, output_lines)
     include_file = File.new(include_file_path, 'r')
-    output_lines.push(comment(">>>>>> BEGIN INCLUDED FILE: SOURCE #{include_file.path}"))
+    output_lines.push(comment(" >>>>>> BEGIN INCLUDED FILE (#{treatment}): SOURCE #{include_file.path} ")) unless pristine
     included_text = include_file.read
     unless included_text.match("\n")
       message = "Warning:  Included file has no trailing newline: #{include_file_path}"
       warn(message)
     end
-    if treatment == :verbatim
-      # Pass through unadorned.
-      output_lines.push(included_text)
-    else
-      # Use the file name as a label.
-      file_name_line = format("<code>%s</code>\n", File.basename(include_file_path))
-      output_lines.push(file_name_line)
-      # Put into code block.
-      language = treatment == :code_block ? '' : treatment
-      output_lines.push("```#{language}\n")
-      output_lines.push(included_text)
-      output_lines.push("```\n")
+    case treatment
+      when :verbatim
+        # Pass through unadorned.
+        output_lines.push(included_text)
+      when :comment
+        output_lines.push(comment(included_text))
+      else
+        # Use the file name as a label.
+        file_name_line = format("<code>%s</code>\n", File.basename(include_file_path))
+        output_lines.push(file_name_line)
+        # Put into code block.
+        language = treatment == :code_block ? '' : treatment
+        output_lines.push("```#{language}\n")
+        output_lines.push(included_text)
+        output_lines.push("```\n")
     end
-    output_lines.push(comment("<<<<<< END INCLUDED FILE: SOURCE #{include_file.path}"))
+    output_lines.push(comment(" <<<<<< END INCLUDED FILE (#{treatment}): SOURCE #{include_file.path} ")) unless pristine
   end
+
+  def comment_resolve(description, output_lines)
+    output_lines.push(comment(" >>>>>> BEGIN RESOLVED IMAGE: DESCRIPTION '#{description}' ")) unless pristine
+    yield
+    output_lines.push(comment(" <<<<<< END RESOLVED IMAGE: DESCRIPTION '#{description}' ")) unless pristine
+  end
+
 end

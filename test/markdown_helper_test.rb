@@ -50,6 +50,7 @@ class MarkdownHelperTest < Minitest::Test
       end
     end
 
+    # Test combinations of treatments and templates.
     {
         :nothing => :txt,
         :markdown => :md,
@@ -62,6 +63,7 @@ class MarkdownHelperTest < Minitest::Test
       [
           :verbatim,
           :code_block,
+          :comment,
           file_stem.to_s,
       ].each do |treatment|
         file_basename = "#{file_stem}_#{treatment}"
@@ -89,6 +91,63 @@ class MarkdownHelperTest < Minitest::Test
         )
       end
     end
+
+    # Test treatment as comment.
+    md_file_name = 'comment.md'
+    template_file_path = File.join(
+        templates_dir_path,
+        md_file_name
+    )
+    expected_file_path = File.join(
+        expected_dir_path,
+        md_file_name
+    )
+    actual_file_path = File.join(
+        actual_dir_path,
+        md_file_name
+    )
+    include_file_path = '../includes/comment.txt'
+    create_template(template_file_path, include_file_path, 'comment', :comment)
+    common_test(
+        MarkdownHelper.new,
+        method_under_test,
+        template_file_path,
+        expected_file_path,
+        actual_file_path
+    )
+
+    # Test option pristine.
+    md_file_name = 'pristine.md'
+    template_file_path = File.join(
+        templates_dir_path,
+        md_file_name
+    )
+    expected_file_path = File.join(
+        expected_dir_path,
+        md_file_name
+    )
+    actual_file_path = File.join(
+        actual_dir_path,
+        md_file_name
+    )
+    include_file_path = '../includes/ruby.rb'
+    create_template(template_file_path, include_file_path, 'pristine', :code_block)
+    common_test(
+        MarkdownHelper.new(:pristine => true),
+        method_under_test,
+        template_file_path,
+        expected_file_path,
+        actual_file_path
+    )
+    markdown_helper = MarkdownHelper.new
+    markdown_helper.pristine = true
+    common_test(
+        markdown_helper,
+        method_under_test,
+        template_file_path,
+        expected_file_path,
+        actual_file_path
+    )
 
   end
 
@@ -186,6 +245,37 @@ class MarkdownHelperTest < Minitest::Test
       common_test(markdown_helper, method_under_test, template_file_path, expected_file_path, actual_file_path)
     end
 
+    # Test option pristine.
+    md_file_name = 'pristine.md'
+    template_file_path = File.join(
+        templates_dir_path,
+        md_file_name
+    )
+    expected_file_path = File.join(
+        expected_dir_path,
+        md_file_name
+    )
+    actual_file_path = File.join(
+        actual_dir_path,
+        md_file_name
+    )
+    common_test(
+        MarkdownHelper.new(:pristine => true),
+        method_under_test,
+        template_file_path,
+        expected_file_path,
+        actual_file_path
+    )
+    markdown_helper = MarkdownHelper.new
+    markdown_helper.pristine = true
+    common_test(
+        markdown_helper,
+        method_under_test,
+        template_file_path,
+        expected_file_path,
+        actual_file_path
+    )
+
   end
 
   def common_test(
@@ -217,7 +307,8 @@ class MarkdownHelperTest < Minitest::Test
         'bin',
         method_under_test.to_s,
     )
-    command = format("ruby #{bin_file} #{template_file_path} #{actual_file_path}")
+    options = markdown_helper.pristine ? '--pristine' : ''
+    command = format("ruby #{bin_file} #{options} #{template_file_path} #{actual_file_path}")
     system(command)
     output = File.read(actual_file_path)
     diffs = MarkdownHelperTest.diff_files(expected_file_path, actual_file_path)

@@ -1,23 +1,44 @@
 #!/usr/bin/env ruby
 
+require 'optparse'
+
 require 'markdown_helper'
 
-def usage
-  dir_path = File.dirname(File.absolute_path(__FILE__))
-  file_path = File.join(
-                      dir_path,
-                      'usage',
-                      'include.txt'
-  )
-  puts File.read(file_path)
+options = {:pristine => false}
+
+parser = OptionParser.new do|opts|
+  opts.banner = "Usage: #{__FILE__} [options] template_file_path markdown_file_page"
+  opts.on('--pristine', 'No comments added') do |_|
+    options[:pristine] = true
+  end
+  opts.on('--help', 'Display help') do
+    usage(opts)
+  end
+end
+
+def usage(opts)
+  puts opts
+  puts <<-EOT
+    
+  where
+
+    * template_file_path is the path to an existing file.
+    * markdown_file_path is the path to a file to be created.
+
+  Typically:
+
+    * Both file types are .md.
+    * The template file contains file inclusion descriptions.
+EOT
   exit
 end
 
+parser.parse!
+
 template_file_path, markdown_file_path = ARGV
 
-usage unless ARGV.size == 2
-usage unless File.readable?(template_file_path)
-usage unless File.writable?(File.dirname(markdown_file_path))
+usage(options) unless ARGV.size == 2
+usage(options) unless File.readable?(template_file_path)
+usage(options) unless File.writable?(File.dirname(markdown_file_path))
 
-MarkdownHelper.new.include(template_file_path, markdown_file_path)
-
+MarkdownHelper.new(options).include(template_file_path, markdown_file_path)

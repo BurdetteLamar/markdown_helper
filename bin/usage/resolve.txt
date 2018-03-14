@@ -1,7 +1,7 @@
-Usage:
-
-  resolve template_file_path markdown_file_page
-
+Usage: bin/resolve [options] template_file_path markdown_file_page
+        --pristine                   No comments added
+        --help                       Display help
+    
   where
 
     * template_file_path is the path to an existing file.
@@ -10,4 +10,4 @@ Usage:
   Typically:
 
     * Both file types are .md.
-    * The template file contains image relative file paths.  See README.md.
+    * The template file contains image descriptions.

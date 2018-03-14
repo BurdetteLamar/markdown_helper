@@ -1,5 +1,5 @@
 <!-- >>>>>> BEGIN GENERATED FILE (include): SOURCE C:/Users/Burdette/Documents/GitHub/markdown_helper/test/include/templates/python_python.md -->
-<!-- >>>>>> BEGIN INCLUDED FILE: SOURCE C:/Users/Burdette/Documents/GitHub/markdown_helper/test/include/templates/../includes/python.py -->
+<!-- >>>>>> BEGIN INCLUDED FILE (python): SOURCE C:/Users/Burdette/Documents/GitHub/markdown_helper/test/include/templates/../includes/python.py -->
 <code>python.py</code>
 ```python
 
@@ -9,5 +9,5 @@ class MyClass:
     def function(self):
         print("This is Python.")
 ```
-<!-- <<<<<< END INCLUDED FILE: SOURCE C:/Users/Burdette/Documents/GitHub/markdown_helper/test/include/templates/../includes/python.py -->
+<!-- <<<<<< END INCLUDED FILE (python): SOURCE C:/Users/Burdette/Documents/GitHub/markdown_helper/test/include/templates/../includes/python.py -->
 <!-- <<<<<< END GENERATED FILE (include): SOURCE C:/Users/Burdette/Documents/GitHub/markdown_helper/test/include/templates/python_python.md -->
