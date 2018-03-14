@@ -139,6 +139,15 @@ class MarkdownHelperTest < Minitest::Test
         expected_file_path,
         actual_file_path
     )
+    markdown_helper = MarkdownHelper.new
+    markdown_helper.pristine = true
+    common_test(
+        markdown_helper,
+        method_under_test,
+        template_file_path,
+        expected_file_path,
+        actual_file_path
+    )
 
   end
 
@@ -252,6 +261,15 @@ class MarkdownHelperTest < Minitest::Test
     )
     common_test(
         MarkdownHelper.new(:pristine => true),
+        method_under_test,
+        template_file_path,
+        expected_file_path,
+        actual_file_path
+    )
+    markdown_helper = MarkdownHelper.new
+    markdown_helper.pristine = true
+    common_test(
+        markdown_helper,
         method_under_test,
         template_file_path,
         expected_file_path,

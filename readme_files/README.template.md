@@ -12,6 +12,19 @@ Next feature:
 
 * "Slide deck": to chain markdown pages into a series with next/prev navigation links.
 
+## How It Works
+
+The markdown helper reads a markdown document (template) and writes another markdown document.
+
+The template can contain certain instructions that call for file inclusions and image resolutions.
+
+By default, the output markdown has added comments that show:
+
+* The path to the template file.
+* The path to each included file.
+* The image description (original) for each resolved image file path.
+
+You can suppress those comments using the <code>pristine</code> option.
 ## File Inclusion 
 
 ![include_icon](images/include.png | width=50)
@@ -33,6 +46,10 @@ Use the markdown helper to merge external files into a markdown (</code>.md</cod
 @[:code_block](include.rb)
 
 [Note:  In the gem documentation, RubyDoc.info chooses to highlight this code block regardless.  Go figure.]
+
+#### Comment
+
+Comment text is written into the output between the comment delimiters <code>\<!--</code> and <code>--></code>
 
 #### Verbatim
 

@@ -14,9 +14,26 @@ Next feature:
 
 * "Slide deck": to chain markdown pages into a series with next/prev navigation links.
 
+## How It Works
+
+The markdown helper reads a markdown document (template) and writes another markdown document.
+
+The template can contain certain instructions that call for file inclusions and image resolutions.
+
+By default, the output markdown has added comments that show:
+
+* The path to the template file.
+* The path to each included file.
+* The image description (original) for each resolved image file path.
+
+You can suppress those comments using the <code>pristine</code> option.
 ## File Inclusion 
 
+<!-- >>>>>> BEGIN RESOLVED IMAGE: DESCRIPTION '![include_icon](images/include.png | width=50)
+' -->
 <img src="https://raw.githubusercontent.com/BurdetteLamar/MarkdownHelper/master/images/include.png" alt="include_icon" width="50">
+<!-- <<<<<< END RESOLVED IMAGE: DESCRIPTION '![include_icon](images/include.png | width=50)
+' -->
 
 This markdown helper enables file inclusion in GitHub markdown.
 
@@ -54,6 +71,10 @@ end
 
 [Note:  In the gem documentation, RubyDoc.info chooses to highlight this code block regardless.  Go figure.]
 
+#### Comment
+
+Comment text is written into the output between the comment delimiters <code>\<!--</code> and <code>--></code>
+
 #### Verbatim
 
 Verbatim text is included unadorned.  Most often, verbatim text is markdown to be rendered as part of the markdown page.
@@ -65,10 +86,10 @@ Verbatim text is included unadorned.  Most often, verbatim text is markdown to b
 <!-- >>>>>> BEGIN INCLUDED FILE (code_block): SOURCE readme_files/../bin/usage/include.txt -->
 <code>include.txt</code>
 ```
-Usage:
-
-  include template_file_path markdown_file_page
-
+Usage: bin/include [options] template_file_path markdown_file_page
+        --pristine                   No comments added
+        --help                       Display help
+    
   where
 
     * template_file_path is the path to an existing file.
@@ -77,7 +98,7 @@ Usage:
   Typically:
 
     * Both file types are .md.
-    * The template file contains file inclusion pragmas.  See README.md.
+    * The template file contains file inclusion descriptions.
 ```
 <!-- <<<<<< END INCLUDED FILE (code_block): SOURCE readme_files/../bin/usage/include.txt -->
 
@@ -88,9 +109,15 @@ Usage:
 ```ruby
 require 'markdown_helper'
 
-markdown_helper = MarkdownHelper.new
 template_file_path = 'highlight_ruby_template.md'
 markdown_file_path = 'highlighted_ruby.md'
+markdown_helper = MarkdownHelper.new
+markdown_helper.include(template_file_path, markdown_file_path)
+# Pristine.
+markdown_helper.pristine = true
+markdown_helper.include(template_file_path, markdown_file_path)
+# Also pristine.
+markdown_helper = MarkdownHelper.new(:pristine => true)
 markdown_helper.include(template_file_path, markdown_file_path)
 ```
 <!-- <<<<<< END INCLUDED FILE (ruby): SOURCE readme_files/include_usage.rb -->
@@ -124,7 +151,11 @@ where:
 
 ## Image Path Resolution 
 
+<!-- >>>>>> BEGIN RESOLVED IMAGE: DESCRIPTION '![image_icon](images/image.png | width=50)
+' -->
 <img src="https://raw.githubusercontent.com/BurdetteLamar/MarkdownHelper/master/images/image.png" alt="image_icon" width="50">
+<!-- <<<<<< END RESOLVED IMAGE: DESCRIPTION '![image_icon](images/image.png | width=50)
+' -->
 
 This markdown helper enables image path resolution in GitHub markdown.
 
@@ -141,10 +172,10 @@ This matters because when markdown becomes part of a Ruby gem, its images will h
 <!-- >>>>>> BEGIN INCLUDED FILE (code_block): SOURCE readme_files/../bin/usage/resolve.txt -->
 <code>resolve.txt</code>
 ```
-Usage:
-
-  resolve template_file_path markdown_file_page
-
+Usage: bin/resolve [options] template_file_path markdown_file_page
+        --pristine                   No comments added
+        --help                       Display help
+    
   where
 
     * template_file_path is the path to an existing file.
@@ -153,7 +184,7 @@ Usage:
   Typically:
 
     * Both file types are .md.
-    * The template file contains image relative file paths.  See README.md.
+    * The template file contains image descriptions.
 ```
 <!-- <<<<<< END INCLUDED FILE (code_block): SOURCE readme_files/../bin/usage/resolve.txt -->
 
@@ -164,9 +195,15 @@ Usage:
 ```ruby
 require 'markdown_helper'
 
-markdown_helper = MarkdownHelper.new
 template_file_path = 'template.md'
 markdown_file_path = 'markdown.md'
+markdown_helper = MarkdownHelper.new
+markdown_helper.resolve(template_file_path, markdown_file_path)
+# Pristine.
+markdown_helper.pristine = true
+markdown_helper.resolve(template_file_path, markdown_file_path)
+# Also pristine.
+markdown_helper = MarkdownHelper.new(:pristine => true)
 markdown_helper.resolve(template_file_path, markdown_file_path)
 ```
 <!-- <<<<<< END INCLUDED FILE (ruby): SOURCE readme_files/resolve_usage.rb -->
@@ -198,7 +235,11 @@ where:
 
 ## Image Attributes
 
+<!-- >>>>>> BEGIN RESOLVED IMAGE: DESCRIPTION '![html_icon](images/html.png | width=50)
+' -->
 <img src="https://raw.githubusercontent.com/BurdetteLamar/MarkdownHelper/master/images/html.png" alt="html_icon" width="50">
+<!-- <<<<<< END RESOLVED IMAGE: DESCRIPTION '![html_icon](images/html.png | width=50)
+' -->
 
 This markdown helper enables HTML image attributes in GitHub markdown [image descriptions](https://github.github.com/gfm/#image-description).
 
@@ -213,10 +254,10 @@ Use the markdown helper to add image attributes in a markdown (</code>.md</code>
 <!-- >>>>>> BEGIN INCLUDED FILE (code_block): SOURCE readme_files/../bin/usage/resolve.txt -->
 <code>resolve.txt</code>
 ```
-Usage:
-
-  resolve template_file_path markdown_file_page
-
+Usage: bin/resolve [options] template_file_path markdown_file_page
+        --pristine                   No comments added
+        --help                       Display help
+    
   where
 
     * template_file_path is the path to an existing file.
@@ -225,7 +266,7 @@ Usage:
   Typically:
 
     * Both file types are .md.
-    * The template file contains image relative file paths.  See README.md.
+    * The template file contains image descriptions.
 ```
 <!-- <<<<<< END INCLUDED FILE (code_block): SOURCE readme_files/../bin/usage/resolve.txt -->
 
@@ -236,9 +277,15 @@ Usage:
 ```ruby
 require 'markdown_helper'
 
-markdown_helper = MarkdownHelper.new
 template_file_path = 'template.md'
 markdown_file_path = 'markdown.md'
+markdown_helper = MarkdownHelper.new
+markdown_helper.resolve(template_file_path, markdown_file_path)
+# Pristine.
+markdown_helper.pristine = true
+markdown_helper.resolve(template_file_path, markdown_file_path)
+# Also pristine.
+markdown_helper = MarkdownHelper.new(:pristine => true)
 markdown_helper.resolve(template_file_path, markdown_file_path)
 ```
 <!-- <<<<<< END INCLUDED FILE (ruby): SOURCE readme_files/resolve_usage.rb -->
