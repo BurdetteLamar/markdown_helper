@@ -9,6 +9,23 @@ class MarkdownHelper
   IMAGE_REGEXP = /^!\[([^\[]+)\]\(([^)]+)\)/
   INCLUDE_REGEXP = /^@\[([^\[]+)\]\(([^)]+)\)/
 
+  attr_accessor :pristine
+
+  def initialize(options = {})
+    default_options = {
+        :pristine => false,
+    }
+    merged_options = default_options.merge(options)
+    merged_options.each_pair do |method, value|
+      unless self.respond_to?(method)
+        raise ArgumentError.new("Unknown option: #{method}")
+      end
+      setter_method = "#{method}="
+      send(setter_method, value)
+      merged_options.delete(method)
+    end
+  end
+
   # Get the user name and repository name from ENV.
   def repo_user_and_name
     repo_user = ENV['REPO_USER']
@@ -135,10 +152,10 @@ class MarkdownHelper
   def generate_file(template_file_path, markdown_file_path, method)
     output_lines = []
     File.open(template_file_path, 'r') do |template_file|
-      output_lines.push(comment(" >>>>>> BEGIN GENERATED FILE (#{method.to_s}): SOURCE #{template_file_path} "))
+      output_lines.push(comment(" >>>>>> BEGIN GENERATED FILE (#{method.to_s}): SOURCE #{template_file_path} ")) unless pristine
       input_lines = template_file.readlines
       yield input_lines, output_lines
-      output_lines.push(comment(" <<<<<< END GENERATED FILE (#{method.to_s}): SOURCE #{template_file_path} "))
+      output_lines.push(comment(" <<<<<< END GENERATED FILE (#{method.to_s}): SOURCE #{template_file_path} ")) unless pristine
     end
     output = output_lines.join('')
     File.open(markdown_file_path, 'w') do |md_file|
@@ -149,7 +166,7 @@ class MarkdownHelper
 
   def include_file(include_file_path, treatment, output_lines)
     include_file = File.new(include_file_path, 'r')
-    output_lines.push(comment(" >>>>>> BEGIN INCLUDED FILE (#{treatment}): SOURCE #{include_file.path} "))
+    output_lines.push(comment(" >>>>>> BEGIN INCLUDED FILE (#{treatment}): SOURCE #{include_file.path} ")) unless pristine
     included_text = include_file.read
     unless included_text.match("\n")
       message = "Warning:  Included file has no trailing newline: #{include_file_path}"
@@ -171,6 +188,6 @@ class MarkdownHelper
         output_lines.push(included_text)
         output_lines.push("```\n")
     end
-    output_lines.push(comment(" <<<<<< END INCLUDED FILE (#{treatment}): SOURCE #{include_file.path} "))
+    output_lines.push(comment(" <<<<<< END INCLUDED FILE (#{treatment}): SOURCE #{include_file.path} ")) unless pristine
   end
 end
