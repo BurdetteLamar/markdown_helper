@@ -323,8 +323,8 @@ I have opened some enhancement Issues over at the GitHub [MarkdownHelper](https:
 * [Pagination](https://github.com/BurdetteLamar/MarkdownHelper/issues/40):  series of markdown pages connected by prev/next navigation links.
 * [Partial file inclusion](https://github.com/BurdetteLamar/MarkdownHelper/issues/38):  including only specified lines from a file (instead of the whole file).
 * [Ruby-entity inclusion](https://github.com/BurdetteLamar/MarkdownHelper/issues/39):  like file inclusion, but including a Ruby class, module, or method.
-* [File TOC](https://github.com/BurdetteLamar/MarkdownHelper/issues/37):  table of contents of all headers in a markdown page.
-* [Project TOC](https://github.com/BurdetteLamar/MarkdownHelper/issues/36):  table of contents of all markdown pages in project.
+* [File TOC](https://github.com/BurdetteLamar/MarkdownHelper/issues/36):  table of contents of all headers in a markdown page.
+* [Project TOC](https://github.com/BurdetteLamar/MarkdownHelper/issues/37):  table of contents of all markdown pages in project.
 
 Feel free to comment on any of these, or to add more Issues (enhancement or otherwise).
 <!-- <<<<<< END GENERATED FILE (resolve): SOURCE readme_files/README.template.md -->
