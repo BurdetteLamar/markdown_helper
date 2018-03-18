@@ -6,7 +6,7 @@ Class <code>MarkdownHelper</code> supports:
 
 * [File inclusion](#file-inclusion): to include text from other files, as code-block or markdown.
 * [Image path resolution](#image-path-resolution): to resolve relative image paths to absolute URL paths (so they work even in gem documentation).
-* [Image attributes](#image-attrubutes): image attributes are passed through to an HTML <code>img</code> tag.
+* [Image attributes](#image-attributes): image attributes are passed through to an HTML <code>img</code> tag.
 
 Next feature:
 
