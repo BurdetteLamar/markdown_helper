@@ -2,6 +2,8 @@
 <!-- >>>>>> BEGIN GENERATED FILE (resolve): SOURCE readme_files/README.template.md -->
 # MarkdownHelper
 
+## What's This?
+
 [![Gem Version](https://badge.fury.io/rb/markdown_helper.svg)](https://badge.fury.io/rb/markdown_helper)
 
 Class <code>MarkdownHelper</code> supports:
@@ -10,15 +12,13 @@ Class <code>MarkdownHelper</code> supports:
 * [Image path resolution](#image-path-resolution): to resolve relative image paths to absolute URL paths (so they work even in gem documentation).
 * [Image attributes](#image-attributes): image attributes are passed through to an HTML <code>img</code> tag.
 
-Next feature:
-
-* "Slide deck": to chain markdown pages into a series with next/prev navigation links.
-
 ## How It Works
 
 The markdown helper reads a markdown document (template) and writes another markdown document.
 
 The template can contain certain instructions that call for file inclusions and image resolutions.
+
+## Commented or Pristine?
 
 By default, the output markdown has added comments that show:
 
@@ -27,6 +27,7 @@ By default, the output markdown has added comments that show:
 * The image description (original) for each resolved image file path.
 
 You can suppress those comments using the <code>pristine</code> option.
+
 ## File Inclusion 
 
 <!-- >>>>>> BEGIN RESOLVED IMAGE: DESCRIPTION '![include_icon](images/include.png | width=50)
@@ -315,5 +316,16 @@ where:
 ```
 <!-- <<<<<< END INCLUDED FILE (code_block): SOURCE readme_files/resolve.md -->
 
+## What Should Be Next?
+
+I have opened some enhancement Issues over at the GitHub [MarkdownHelper](https://github.com/BurdetteLamar/MarkdownHelper) project:
+
+* [Pagination](https://github.com/BurdetteLamar/MarkdownHelper/issues/40):  series of markdown pages connected by prev/next navigation links.
+* [Partial file inclusion](https://github.com/BurdetteLamar/MarkdownHelper/issues/38):  including only specified lines from a file (instead of the whole file).
+* [Ruby-entity inclusion](https://github.com/BurdetteLamar/MarkdownHelper/issues/39):  like file inclusion, but including a Ruby class, module, or method.
+* [File TOC](https://github.com/BurdetteLamar/MarkdownHelper/issues/37):  table of contents of all headers in a markdown page.
+* [Project TOC](https://github.com/BurdetteLamar/MarkdownHelper/issues/36):  table of contents of all markdown pages in project.
+
+Feel free to comment on any of these, or to add more Issues (enhancement or otherwise).
 <!-- <<<<<< END GENERATED FILE (resolve): SOURCE readme_files/README.template.md -->
 <!-- <<<<<< END GENERATED FILE (include): SOURCE readme_files/temp_resolved.md -->
