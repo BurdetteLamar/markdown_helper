@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    markdown_helper (0.2.4)
+    markdown_helper (1.0.0)
 
 GEM
   remote: https://rubygems.org/
