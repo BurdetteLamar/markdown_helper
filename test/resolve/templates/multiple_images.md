@@ -1,3 +1,3 @@
-This file has an image with text following.
+This file has multiple images.
 
-![image](images/include.md), plus more text.
+Foo ![image](images/html.png) bar ![image](images/include.png) baz.
