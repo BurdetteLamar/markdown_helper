@@ -2,13 +2,13 @@
 <!-- >>>>>> BEGIN GENERATED FILE (resolve): SOURCE readme_files/README.template.md -->
 # Markdown Helper
 
-## What's This?
+<!-- >>>>>> BEGIN RESOLVED IMAGES: INPUT-LINE '![Gem Version](https://badge.fury.io/rb/markdown_helper.svg)
+' -->
+<img src="https://badge.fury.io/rb/markdown_helper.svg" alt="Gem Version">
+<!-- <<<<<< END RESOLVED IMAGES: INPUT-LINE '![Gem Version](https://badge.fury.io/rb/markdown_helper.svg)
+' -->
 
-<!-- >>>>>> BEGIN RESOLVED IMAGES: INPUT-LINE '[![Gem Version](https://badge.fury.io/rb/markdown_helper.svg)](https://badge.fury.io/rb/markdown_helper)
-' -->
-[<img src="https://badge.fury.io/rb/markdown_helper" alt="Gem Version](https://badge.fury.io/rb/markdown_helper.svg)">
-<!-- <<<<<< END RESOLVED IMAGES: INPUT-LINE '[![Gem Version](https://badge.fury.io/rb/markdown_helper.svg)](https://badge.fury.io/rb/markdown_helper)
-' -->
+## What's This?
 
 Class <code>MarkdownHelper</code> supports:
 

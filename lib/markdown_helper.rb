@@ -168,32 +168,32 @@ class MarkdownHelper
   output_lines.push(comment(" >>>>>> BEGIN RESOLVED IMAGES: INPUT-LINE '#{input_line}' ")) unless pristine
   output_line = input_line
   scan_data.each do |alt_text, path_and_attributes|
-      relative_file_path, attributes_s =path_and_attributes.split(/\s?\|\s?/, 2)
-      attributes = attributes_s ? attributes_s.split(/\s+/) : []
-      formatted_attributes = ['']
-      attributes.each do |attribute|
-        name, value = attribute.split('=', 2)
-        formatted_attributes.push(format('%s="%s"', name, value))
-      end
-      formatted_attributes_s = formatted_attributes.join(' ')
-      repo_user, repo_name = repo_user_and_name
-      absolute_file_path = nil
-      if relative_file_path.start_with?('http')
-        absolute_file_path = relative_file_path
-      else
-        absolute_file_path = File.join(
-            "https://raw.githubusercontent.com/#{repo_user}/#{repo_name}/master",
-            relative_file_path,
-        )
-      end
-      img_element = format(
-          '<img src="%s" alt="%s"%s>',
-          absolute_file_path,
-          alt_text,
-          formatted_attributes_s,
-      )
-    output_line = output_line.sub(IMAGE_REGEXP, img_element)
+    relative_file_path, attributes_s =path_and_attributes.split(/\s?\|\s?/, 2)
+    attributes = attributes_s ? attributes_s.split(/\s+/) : []
+    formatted_attributes = ['']
+    attributes.each do |attribute|
+      name, value = attribute.split('=', 2)
+      formatted_attributes.push(format('%s="%s"', name, value))
     end
+    formatted_attributes_s = formatted_attributes.join(' ')
+    repo_user, repo_name = repo_user_and_name
+    absolute_file_path = nil
+    if relative_file_path.start_with?('http')
+      absolute_file_path = relative_file_path
+    else
+      absolute_file_path = File.join(
+          "https://raw.githubusercontent.com/#{repo_user}/#{repo_name}/master",
+          relative_file_path,
+      )
+    end
+    img_element = format(
+        '<img src="%s" alt="%s"%s>',
+        absolute_file_path,
+        alt_text,
+        formatted_attributes_s,
+    )
+    output_line = output_line.sub(IMAGE_REGEXP, img_element)
+  end
   output_lines.push(output_line)
   output_lines.push(comment(" <<<<<< END RESOLVED IMAGES: INPUT-LINE '#{input_line}' ")) unless pristine
   end

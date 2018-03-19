@@ -1,8 +1,8 @@
 # Markdown Helper
 
-## What's This?
+![Gem Version](https://badge.fury.io/rb/markdown_helper.svg)
 
-[![Gem Version](https://badge.fury.io/rb/markdown_helper.svg)](https://badge.fury.io/rb/markdown_helper)
+## What's This?
 
 Class <code>MarkdownHelper</code> supports:
 
