@@ -225,8 +225,8 @@ class MarkdownHelperTest < Minitest::Test
     [
         # Image path is already an absolute URL.
         :not_relative,
-        # Line with image has following text.
-        :text_following,
+        # Line with multiple images.
+        :multiple_images,
     ].each do |basename|
       md_file_name = "#{basename}.md"
       markdown_helper = MarkdownHelper.new
