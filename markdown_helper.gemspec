@@ -17,7 +17,7 @@ Class to help with GitHub markdown:
 * Image path resolution
 * Image attributes
 EOT
-  spec.homepage      = 'https://github.com/BurdetteLamar/MarkdownHelper'
+  spec.homepage      = 'https://github.com/BurdetteLamar/markdown_helper'
   spec.license       = 'MIT'
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'

@@ -1,10 +1,14 @@
 <!-- >>>>>> BEGIN GENERATED FILE (include): SOURCE readme_files/temp_resolved.md -->
 <!-- >>>>>> BEGIN GENERATED FILE (resolve): SOURCE readme_files/README.template.md -->
-# MarkdownHelper
+# Markdown Helper
 
 ## What's This?
 
-[![Gem Version](https://badge.fury.io/rb/markdown_helper.svg)](https://badge.fury.io/rb/markdown_helper)
+<!-- >>>>>> BEGIN RESOLVED IMAGES: INPUT-LINE '[![Gem Version](https://badge.fury.io/rb/markdown_helper.svg)](https://badge.fury.io/rb/markdown_helper)
+' -->
+[<img src="https://badge.fury.io/rb/markdown_helper" alt="Gem Version](https://badge.fury.io/rb/markdown_helper.svg)">
+<!-- <<<<<< END RESOLVED IMAGES: INPUT-LINE '[![Gem Version](https://badge.fury.io/rb/markdown_helper.svg)](https://badge.fury.io/rb/markdown_helper)
+' -->
 
 Class <code>MarkdownHelper</code> supports:
 
@@ -30,10 +34,10 @@ You can suppress those comments using the <code>pristine</code> option.
 
 ## File Inclusion 
 
-<!-- >>>>>> BEGIN RESOLVED IMAGE: DESCRIPTION '![include_icon](images/include.png | width=50)
+<!-- >>>>>> BEGIN RESOLVED IMAGES: INPUT-LINE '![include_icon](images/include.png | width=50)
 ' -->
-<img src="https://raw.githubusercontent.com/BurdetteLamar/MarkdownHelper/master/images/include.png" alt="include_icon" width="50">
-<!-- <<<<<< END RESOLVED IMAGE: DESCRIPTION '![include_icon](images/include.png | width=50)
+<img src="https://raw.githubusercontent.com/BurdetteLamar/markdown_helper/master/images/include.png" alt="include_icon" width="50">
+<!-- <<<<<< END RESOLVED IMAGES: INPUT-LINE '![include_icon](images/include.png | width=50)
 ' -->
 
 This markdown helper enables file inclusion in GitHub markdown.
@@ -152,10 +156,10 @@ where:
 
 ## Image Path Resolution 
 
-<!-- >>>>>> BEGIN RESOLVED IMAGE: DESCRIPTION '![image_icon](images/image.png | width=50)
+<!-- >>>>>> BEGIN RESOLVED IMAGES: INPUT-LINE '![image_icon](images/image.png | width=50)
 ' -->
-<img src="https://raw.githubusercontent.com/BurdetteLamar/MarkdownHelper/master/images/image.png" alt="image_icon" width="50">
-<!-- <<<<<< END RESOLVED IMAGE: DESCRIPTION '![image_icon](images/image.png | width=50)
+<img src="https://raw.githubusercontent.com/BurdetteLamar/markdown_helper/master/images/image.png" alt="image_icon" width="50">
+<!-- <<<<<< END RESOLVED IMAGES: INPUT-LINE '![image_icon](images/image.png | width=50)
 ' -->
 
 This markdown helper enables image path resolution in GitHub markdown.
@@ -236,10 +240,10 @@ where:
 
 ## Image Attributes
 
-<!-- >>>>>> BEGIN RESOLVED IMAGE: DESCRIPTION '![html_icon](images/html.png | width=50)
+<!-- >>>>>> BEGIN RESOLVED IMAGES: INPUT-LINE '![html_icon](images/html.png | width=50)
 ' -->
-<img src="https://raw.githubusercontent.com/BurdetteLamar/MarkdownHelper/master/images/html.png" alt="html_icon" width="50">
-<!-- <<<<<< END RESOLVED IMAGE: DESCRIPTION '![html_icon](images/html.png | width=50)
+<img src="https://raw.githubusercontent.com/BurdetteLamar/markdown_helper/master/images/html.png" alt="html_icon" width="50">
+<!-- <<<<<< END RESOLVED IMAGES: INPUT-LINE '![html_icon](images/html.png | width=50)
 ' -->
 
 This markdown helper enables HTML image attributes in GitHub markdown [image descriptions](https://github.github.com/gfm/#image-description).
@@ -318,13 +322,13 @@ where:
 
 ## What Should Be Next?
 
-I have opened some enhancement Issues in the GitHub [MarkdownHelper](https://github.com/BurdetteLamar/MarkdownHelper) project:
+I have opened some enhancement Issues in the GitHub [markdown_helper](https://github.com/BurdetteLamar/markdown_helper) project:
 
-* [Pagination](https://github.com/BurdetteLamar/MarkdownHelper/issues/40):  series of markdown pages connected by prev/next navigation links.
-* [Partial file inclusion](https://github.com/BurdetteLamar/MarkdownHelper/issues/38):  including only specified lines from a file (instead of the whole file).
-* [Ruby-entity inclusion](https://github.com/BurdetteLamar/MarkdownHelper/issues/39):  like file inclusion, but including a Ruby class, module, or method.
-* [File TOC](https://github.com/BurdetteLamar/MarkdownHelper/issues/36):  table of contents of all headers in a markdown page.
-* [Project TOC](https://github.com/BurdetteLamar/MarkdownHelper/issues/37):  table of contents of all markdown pages in project.
+* [Pagination](https://github.com/BurdetteLamar/markdown_helper/issues/40):  series of markdown pages connected by prev/next navigation links.
+* [Partial file inclusion](https://github.com/BurdetteLamar/markdown_helper/issues/38):  including only specified lines from a file (instead of the whole file).
+* [Ruby-entity inclusion](https://github.com/BurdetteLamar/markdown_helper/issues/39):  like file inclusion, but including a Ruby class, module, or method.
+* [File TOC](https://github.com/BurdetteLamar/markdown_helper/issues/36):  table of contents of all headers in a markdown page.
+* [Project TOC](https://github.com/BurdetteLamar/markdown_helper/issues/37):  table of contents of all markdown pages in project.
 
 Feel free to comment on any of these, or to add more Issues (enhancement or otherwise).
 <!-- <<<<<< END GENERATED FILE (resolve): SOURCE readme_files/README.template.md -->
