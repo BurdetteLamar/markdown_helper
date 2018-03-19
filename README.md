@@ -4,7 +4,11 @@
 
 ## What's This?
 
-[![Gem Version](https://badge.fury.io/rb/markdown_helper.svg)](https://badge.fury.io/rb/markdown_helper)
+<!-- >>>>>> BEGIN RESOLVED IMAGES: INPUT-LINE '[![Gem Version](https://badge.fury.io/rb/markdown_helper.svg)](https://badge.fury.io/rb/markdown_helper)
+' -->
+[<img src="https://badge.fury.io/rb/markdown_helper" alt="Gem Version](https://badge.fury.io/rb/markdown_helper.svg)">
+<!-- <<<<<< END RESOLVED IMAGES: INPUT-LINE '[![Gem Version](https://badge.fury.io/rb/markdown_helper.svg)](https://badge.fury.io/rb/markdown_helper)
+' -->
 
 Class <code>MarkdownHelper</code> supports:
 
@@ -30,10 +34,10 @@ You can suppress those comments using the <code>pristine</code> option.
 
 ## File Inclusion 
 
-<!-- >>>>>> BEGIN RESOLVED IMAGE: DESCRIPTION '![include_icon](images/include.png | width=50)
+<!-- >>>>>> BEGIN RESOLVED IMAGES: INPUT-LINE '![include_icon](images/include.png | width=50)
 ' -->
 <img src="https://raw.githubusercontent.com/BurdetteLamar/MarkdownHelper/master/images/include.png" alt="include_icon" width="50">
-<!-- <<<<<< END RESOLVED IMAGE: DESCRIPTION '![include_icon](images/include.png | width=50)
+<!-- <<<<<< END RESOLVED IMAGES: INPUT-LINE '![include_icon](images/include.png | width=50)
 ' -->
 
 This markdown helper enables file inclusion in GitHub markdown.
@@ -152,10 +156,10 @@ where:
 
 ## Image Path Resolution 
 
-<!-- >>>>>> BEGIN RESOLVED IMAGE: DESCRIPTION '![image_icon](images/image.png | width=50)
+<!-- >>>>>> BEGIN RESOLVED IMAGES: INPUT-LINE '![image_icon](images/image.png | width=50)
 ' -->
 <img src="https://raw.githubusercontent.com/BurdetteLamar/MarkdownHelper/master/images/image.png" alt="image_icon" width="50">
-<!-- <<<<<< END RESOLVED IMAGE: DESCRIPTION '![image_icon](images/image.png | width=50)
+<!-- <<<<<< END RESOLVED IMAGES: INPUT-LINE '![image_icon](images/image.png | width=50)
 ' -->
 
 This markdown helper enables image path resolution in GitHub markdown.
@@ -236,10 +240,10 @@ where:
 
 ## Image Attributes
 
-<!-- >>>>>> BEGIN RESOLVED IMAGE: DESCRIPTION '![html_icon](images/html.png | width=50)
+<!-- >>>>>> BEGIN RESOLVED IMAGES: INPUT-LINE '![html_icon](images/html.png | width=50)
 ' -->
 <img src="https://raw.githubusercontent.com/BurdetteLamar/MarkdownHelper/master/images/html.png" alt="html_icon" width="50">
-<!-- <<<<<< END RESOLVED IMAGE: DESCRIPTION '![html_icon](images/html.png | width=50)
+<!-- <<<<<< END RESOLVED IMAGES: INPUT-LINE '![html_icon](images/html.png | width=50)
 ' -->
 
 This markdown helper enables HTML image attributes in GitHub markdown [image descriptions](https://github.github.com/gfm/#image-description).

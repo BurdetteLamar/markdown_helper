@@ -6,8 +6,8 @@ require 'markdown_helper/version'
 # @author Burdette Lamar
 class MarkdownHelper
 
-  IMAGE_REGEXP = /^!\[([^\[]+)\]\(([^)]+)\)/
-  INCLUDE_REGEXP = /^@\[([^\[]+)\]\(([^)]+)\)/
+  IMAGE_REGEXP = /!\[([^\[]+)\]\(([^)]+)\)/
+  INCLUDE_REGEXP = /^@\[([^\[]+)\]\(([^)]+)\)$/
 
   attr_accessor :pristine
 
@@ -104,41 +104,12 @@ class MarkdownHelper
     # Method :generate_file does the first things, yields the block, does the last things.
     output = send(:generate_file, template_file_path, markdown_file_path, __method__) do |input_lines, output_lines|
       input_lines.each do |input_line|
-        match_data = input_line.match(IMAGE_REGEXP)
-        unless match_data
+        scan_data = input_line.scan(IMAGE_REGEXP)
+        if scan_data.empty?
           output_lines.push(input_line)
           next
         end
-        send(:comment_resolve, input_line, output_lines) do
-          alt_text = match_data[1]
-          relative_file_path, attributes_s = match_data[2].split(/\s?\|\s?/, 2)
-          attributes = attributes_s ? attributes_s.split(/\s+/) : []
-          formatted_attributes = ['']
-          attributes.each do |attribute|
-            name, value = attribute.split('=', 2)
-            formatted_attributes.push(format('%s="%s"', name, value))
-          end
-          formatted_attributes_s = formatted_attributes.join(' ')
-          repo_user, repo_name = repo_user_and_name
-          absolute_file_path = nil
-          if relative_file_path.start_with?('http')
-            absolute_file_path = relative_file_path
-          else
-            absolute_file_path = File.join(
-                "https://raw.githubusercontent.com/#{repo_user}/#{repo_name}/master",
-                relative_file_path,
-            )
-          end
-          following_text = input_line.sub(IMAGE_REGEXP, '').chomp
-          line = format(
-              '<img src="%s" alt="%s"%s>%s',
-              absolute_file_path,
-              alt_text,
-              formatted_attributes_s,
-              following_text
-          ) + "\n"
-          output_lines.push(line)
-        end
+        send(:resolve_images, scan_data, input_line, output_lines)
       end
     end
     output
@@ -193,10 +164,38 @@ class MarkdownHelper
     output_lines.push(comment(" <<<<<< END INCLUDED FILE (#{treatment}): SOURCE #{include_file.path} ")) unless pristine
   end
 
-  def comment_resolve(description, output_lines)
-    output_lines.push(comment(" >>>>>> BEGIN RESOLVED IMAGE: DESCRIPTION '#{description}' ")) unless pristine
-    yield
-    output_lines.push(comment(" <<<<<< END RESOLVED IMAGE: DESCRIPTION '#{description}' ")) unless pristine
+  def resolve_images(scan_data, input_line, output_lines)
+  output_lines.push(comment(" >>>>>> BEGIN RESOLVED IMAGES: INPUT-LINE '#{input_line}' ")) unless pristine
+  output_line = input_line
+  scan_data.each do |alt_text, path_and_attributes|
+      relative_file_path, attributes_s =path_and_attributes.split(/\s?\|\s?/, 2)
+      attributes = attributes_s ? attributes_s.split(/\s+/) : []
+      formatted_attributes = ['']
+      attributes.each do |attribute|
+        name, value = attribute.split('=', 2)
+        formatted_attributes.push(format('%s="%s"', name, value))
+      end
+      formatted_attributes_s = formatted_attributes.join(' ')
+      repo_user, repo_name = repo_user_and_name
+      absolute_file_path = nil
+      if relative_file_path.start_with?('http')
+        absolute_file_path = relative_file_path
+      else
+        absolute_file_path = File.join(
+            "https://raw.githubusercontent.com/#{repo_user}/#{repo_name}/master",
+            relative_file_path,
+        )
+      end
+      img_element = format(
+          '<img src="%s" alt="%s"%s>',
+          absolute_file_path,
+          alt_text,
+          formatted_attributes_s,
+      )
+    output_line = output_line.sub(IMAGE_REGEXP, img_element)
+    end
+  output_lines.push(output_line)
+  output_lines.push(comment(" <<<<<< END RESOLVED IMAGES: INPUT-LINE '#{input_line}' ")) unless pristine
   end
 
 end

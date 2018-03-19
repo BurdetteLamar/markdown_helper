@@ -223,10 +223,9 @@ class MarkdownHelperTest < Minitest::Test
 
     # Test some special cases.
     [
-        # Image path is already an absolute URL.
         :not_relative,
-        # Line with multiple images.
         :multiple_images,
+        :absolute_and_relative,
     ].each do |basename|
       md_file_name = "#{basename}.md"
       markdown_helper = MarkdownHelper.new
