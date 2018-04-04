@@ -179,7 +179,7 @@ class MarkdownHelperTest < Minitest::Test
           file_name
       )
       input_text = File.read(file_path)
-      repo_user, repo_name = markdown_helper.repo_user_and_name
+      repo_user, repo_name = markdown_helper.send(:repo_user_and_name)
       conditioned_text = format(input_text, repo_user, repo_name)
       tmp_dir_name = 'tmp'
       tmp_dir_path = File.join(

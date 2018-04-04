@@ -26,17 +26,6 @@ class MarkdownHelper
     end
   end
 
-  # Get the user name and repository name from ENV.
-  def repo_user_and_name
-    repo_user = ENV['REPO_USER']
-    repo_name = ENV['REPO_NAME']
-    unless repo_user and repo_name
-      message = 'ENV values for both REPO_USER and REPO_NAME must be defined.'
-      raise RuntimeError.new(message)
-    end
-    [repo_user, repo_name]
-  end
-
   # Merges external files into markdown text.
   # @param template_file_path [String] the path to the input template markdown file, usually containing include pragmas.
   # @param markdown_file_path [String] the path to the output merged markdown file.
@@ -116,11 +105,21 @@ class MarkdownHelper
   end
   alias resolve_image_urls resolve
 
+  private
+
   def comment(text)
     "<!--#{text}-->\n"
   end
 
-  private
+  def repo_user_and_name
+    repo_user = ENV['REPO_USER']
+    repo_name = ENV['REPO_NAME']
+    unless repo_user and repo_name
+      message = 'ENV values for both REPO_USER and REPO_NAME must be defined.'
+      raise RuntimeError.new(message)
+    end
+    [repo_user, repo_name]
+  end
 
   def generate_file(template_file_path, markdown_file_path, method)
     output_lines = []
