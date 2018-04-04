@@ -41,29 +41,7 @@ class MarkdownHelper
   #   @[:verbatim](foo.md)
   def include(template_file_path, markdown_file_path)
     output = send(:generate_file, template_file_path, markdown_file_path, __method__) do |input_lines, output_lines|
-      input_lines.each do |input_line|
-        match_data = input_line.match(INCLUDE_REGEXP)
-        unless match_data
-          output_lines.push(input_line)
-          next
-        end
-        treatment = case match_data[1]
-                      when ':code_block'
-                        :code_block
-                      when ':verbatim'
-                        :verbatim
-                      when ':comment'
-                        :comment
-                      else
-                        match_data[1]
-                    end
-        relative_file_path = match_data[2]
-        include_file_path = File.join(
-            File.dirname(template_file_path),
-            relative_file_path,
-        )
-        send(:include_file, include_file_path, treatment, output_lines)
-      end
+      send(:include_files, template_file_path, input_lines, output_lines)
     end
     output
   end
@@ -129,31 +107,53 @@ class MarkdownHelper
     output
   end
 
-  def include_file(include_file_path, treatment, output_lines)
-    include_file = File.new(include_file_path, 'r')
-    output_lines.push(comment(" >>>>>> BEGIN INCLUDED FILE (#{treatment}): SOURCE #{include_file.path} ")) unless pristine
-    included_text = include_file.read
-    unless included_text.match("\n")
-      message = "Warning:  Included file has no trailing newline: #{include_file_path}"
-      warn(message)
+  def include_files(template_file_path, input_lines, output_lines)
+    input_lines.each do |input_line|
+      match_data = input_line.match(INCLUDE_REGEXP)
+      unless match_data
+        output_lines.push(input_line)
+        next
+      end
+      treatment = case match_data[1]
+                    when ':code_block'
+                      :code_block
+                    when ':verbatim'
+                      :verbatim
+                    when ':comment'
+                      :comment
+                    else
+                      match_data[1]
+                  end
+      relative_file_path = match_data[2]
+      include_file_path = File.join(
+          File.dirname(template_file_path),
+          relative_file_path,
+      )
+      include_file = File.new(include_file_path, 'r')
+      output_lines.push(comment(" >>>>>> BEGIN INCLUDED FILE (#{treatment}): SOURCE #{include_file.path} ")) unless pristine
+      included_text = include_file.read
+      unless included_text.match("\n")
+        message = "Warning:  Included file has no trailing newline: #{include_file_path}"
+        warn(message)
+      end
+      case treatment
+        when :verbatim
+          # Pass through unadorned.
+          output_lines.push(included_text)
+        when :comment
+          output_lines.push(comment(included_text))
+        else
+          # Use the file name as a label.
+          file_name_line = format("<code>%s</code>\n", File.basename(include_file_path))
+          output_lines.push(file_name_line)
+          # Put into code block.
+          language = treatment == :code_block ? '' : treatment
+          output_lines.push("```#{language}\n")
+          output_lines.push(included_text)
+          output_lines.push("```\n")
+      end
+      output_lines.push(comment(" <<<<<< END INCLUDED FILE (#{treatment}): SOURCE #{include_file.path} ")) unless pristine
     end
-    case treatment
-      when :verbatim
-        # Pass through unadorned.
-        output_lines.push(included_text)
-      when :comment
-        output_lines.push(comment(included_text))
-      else
-        # Use the file name as a label.
-        file_name_line = format("<code>%s</code>\n", File.basename(include_file_path))
-        output_lines.push(file_name_line)
-        # Put into code block.
-        language = treatment == :code_block ? '' : treatment
-        output_lines.push("```#{language}\n")
-        output_lines.push(included_text)
-        output_lines.push("```\n")
-    end
-    output_lines.push(comment(" <<<<<< END INCLUDED FILE (#{treatment}): SOURCE #{include_file.path} ")) unless pristine
   end
 
   def resolve_images(input_lines, output_lines)
