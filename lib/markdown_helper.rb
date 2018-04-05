@@ -1,3 +1,4 @@
+require 'pathname'
 require 'markdown_helper/version'
 
 # Helper class for working with GitHub markdown.
@@ -26,17 +27,6 @@ class MarkdownHelper
     end
   end
 
-  # Get the user name and repository name from ENV.
-  def repo_user_and_name
-    repo_user = ENV['REPO_USER']
-    repo_name = ENV['REPO_NAME']
-    unless repo_user and repo_name
-      message = 'ENV values for both REPO_USER and REPO_NAME must be defined.'
-      raise RuntimeError.new(message)
-    end
-    [repo_user, repo_name]
-  end
-
   # Merges external files into markdown text.
   # @param template_file_path [String] the path to the input template markdown file, usually containing include pragmas.
   # @param markdown_file_path [String] the path to the output merged markdown file.
@@ -52,29 +42,7 @@ class MarkdownHelper
   #   @[:verbatim](foo.md)
   def include(template_file_path, markdown_file_path)
     output = send(:generate_file, template_file_path, markdown_file_path, __method__) do |input_lines, output_lines|
-      input_lines.each do |input_line|
-        match_data = input_line.match(INCLUDE_REGEXP)
-        unless match_data
-          output_lines.push(input_line)
-          next
-        end
-        treatment = case match_data[1]
-                      when ':code_block'
-                        :code_block
-                      when ':verbatim'
-                        :verbatim
-                      when ':comment'
-                        :comment
-                      else
-                        match_data[1]
-                    end
-        relative_file_path = match_data[2]
-        include_file_path = File.join(
-            File.dirname(template_file_path),
-            relative_file_path,
-        )
-        send(:include_file, include_file_path, treatment, output_lines)
-      end
+      send(:include_files, template_file_path, input_lines, output_lines, paths = [], realpaths = [])
     end
     output
   end
@@ -103,24 +71,27 @@ class MarkdownHelper
   def resolve(template_file_path, markdown_file_path)
     # Method :generate_file does the first things, yields the block, does the last things.
     output = send(:generate_file, template_file_path, markdown_file_path, __method__) do |input_lines, output_lines|
-      input_lines.each do |input_line|
-        scan_data = input_line.scan(IMAGE_REGEXP)
-        if scan_data.empty?
-          output_lines.push(input_line)
-          next
-        end
-        send(:resolve_images, scan_data, input_line, output_lines)
-      end
+      send(:resolve_images, input_lines, output_lines)
     end
     output
   end
   alias resolve_image_urls resolve
 
+  private
+
   def comment(text)
     "<!--#{text}-->\n"
   end
 
-  private
+  def repo_user_and_name
+    repo_user = ENV['REPO_USER']
+    repo_name = ENV['REPO_NAME']
+    unless repo_user and repo_name
+      message = 'ENV values for both REPO_USER and REPO_NAME must be defined.'
+      raise RuntimeError.new(message)
+    end
+    [repo_user, repo_name]
+  end
 
   def generate_file(template_file_path, markdown_file_path, method)
     output_lines = []
@@ -137,65 +108,110 @@ class MarkdownHelper
     output
   end
 
-  def include_file(include_file_path, treatment, output_lines)
-    include_file = File.new(include_file_path, 'r')
-    output_lines.push(comment(" >>>>>> BEGIN INCLUDED FILE (#{treatment}): SOURCE #{include_file.path} ")) unless pristine
-    included_text = include_file.read
-    unless included_text.match("\n")
-      message = "Warning:  Included file has no trailing newline: #{include_file_path}"
-      warn(message)
+  def include_files(template_file_path, input_lines, output_lines, paths, realpaths)
+    realpath = Pathname.new(template_file_path).realpath
+    i = realpaths.index(realpath)
+    if i
+      old_path = paths[i]
+      new_path = template_file_path
+      realpath = realpaths[i]
+      message = <<EOT
+Includes are circular:
+  Old path:  #{old_path}
+  New path:  #{new_path}
+  Real path: #{realpath}
+EOT
+      raise RuntimeError.new(message)
     end
-    case treatment
-      when :verbatim
-        # Pass through unadorned.
-        output_lines.push(included_text)
-      when :comment
-        output_lines.push(comment(included_text))
-      else
-        # Use the file name as a label.
-        file_name_line = format("<code>%s</code>\n", File.basename(include_file_path))
-        output_lines.push(file_name_line)
-        # Put into code block.
-        language = treatment == :code_block ? '' : treatment
-        output_lines.push("```#{language}\n")
-        output_lines.push(included_text)
-        output_lines.push("```\n")
-    end
-    output_lines.push(comment(" <<<<<< END INCLUDED FILE (#{treatment}): SOURCE #{include_file.path} ")) unless pristine
-  end
+    paths.push(template_file_path)
+    realpaths.push(realpath)
 
-  def resolve_images(scan_data, input_line, output_lines)
-  output_lines.push(comment(" >>>>>> BEGIN RESOLVED IMAGES: INPUT-LINE '#{input_line}' ")) unless pristine
-  output_line = input_line
-  scan_data.each do |alt_text, path_and_attributes|
-    relative_file_path, attributes_s =path_and_attributes.split(/\s?\|\s?/, 2)
-    attributes = attributes_s ? attributes_s.split(/\s+/) : []
-    formatted_attributes = ['']
-    attributes.each do |attribute|
-      name, value = attribute.split('=', 2)
-      formatted_attributes.push(format('%s="%s"', name, value))
-    end
-    formatted_attributes_s = formatted_attributes.join(' ')
-    repo_user, repo_name = repo_user_and_name
-    absolute_file_path = nil
-    if relative_file_path.start_with?('http')
-      absolute_file_path = relative_file_path
-    else
-      absolute_file_path = File.join(
-          "https://raw.githubusercontent.com/#{repo_user}/#{repo_name}/master",
+    input_lines.each do |input_line|
+      match_data = input_line.match(INCLUDE_REGEXP)
+      unless match_data
+        output_lines.push(input_line)
+        next
+      end
+      treatment = case match_data[1]
+                    when ':code_block'
+                      :code_block
+                    when ':verbatim'
+                      :verbatim
+                    when ':comment'
+                      :comment
+                    else
+                      match_data[1]
+                  end
+      relative_file_path = match_data[2]
+      include_file_path = File.join(
+          File.dirname(template_file_path),
           relative_file_path,
       )
+      output_lines.push(comment(" >>>>>> BEGIN INCLUDED FILE (#{treatment}): SOURCE #{include_file_path} ")) unless pristine
+      include_lines = File.readlines(include_file_path)
+      unless include_lines.last.match("\n")
+        message = "Warning:  Included file has no trailing newline: #{include_file_path}"
+        warn(message)
+      end
+      case treatment
+        when :verbatim
+          # Pass through unadorned, but honor any nested includes.
+          include_files(include_file_path, include_lines, output_lines, paths, realpaths)
+        when :comment
+          output_lines.push(comment(include_lines.join('')))
+        else
+          # Use the file name as a label.
+          file_name_line = format("<code>%s</code>\n", File.basename(include_file_path))
+          output_lines.push(file_name_line)
+          # Put into code block.
+          language = treatment == :code_block ? '' : treatment
+          output_lines.push("```#{language}\n")
+          output_lines.push(*include_lines)
+          output_lines.push("```\n")
+      end
+      output_lines.push(comment(" <<<<<< END INCLUDED FILE (#{treatment}): SOURCE #{include_file_path} ")) unless pristine
     end
-    img_element = format(
-        '<img src="%s" alt="%s"%s>',
-        absolute_file_path,
-        alt_text,
-        formatted_attributes_s,
-    )
-    output_line = output_line.sub(IMAGE_REGEXP, img_element)
   end
-  output_lines.push(output_line)
-  output_lines.push(comment(" <<<<<< END RESOLVED IMAGES: INPUT-LINE '#{input_line}' ")) unless pristine
+
+  def resolve_images(input_lines, output_lines)
+  input_lines.each do |input_line|
+    scan_data = input_line.scan(IMAGE_REGEXP)
+    if scan_data.empty?
+      output_lines.push(input_line)
+      next
+    end
+    output_lines.push(comment(" >>>>>> BEGIN RESOLVED IMAGES: INPUT-LINE '#{input_line}' ")) unless pristine
+    output_line = input_line
+    scan_data.each do |alt_text, path_and_attributes|
+      relative_file_path, attributes_s =path_and_attributes.split(/\s?\|\s?/, 2)
+      attributes = attributes_s ? attributes_s.split(/\s+/) : []
+      formatted_attributes = ['']
+      attributes.each do |attribute|
+        name, value = attribute.split('=', 2)
+        formatted_attributes.push(format('%s="%s"', name, value))
+      end
+      formatted_attributes_s = formatted_attributes.join(' ')
+      repo_user, repo_name = repo_user_and_name
+      absolute_file_path = nil
+      if relative_file_path.start_with?('http')
+        absolute_file_path = relative_file_path
+      else
+        absolute_file_path = File.join(
+            "https://raw.githubusercontent.com/#{repo_user}/#{repo_name}/master",
+            relative_file_path,
+        )
+      end
+      img_element = format(
+          '<img src="%s" alt="%s"%s>',
+          absolute_file_path,
+          alt_text,
+          formatted_attributes_s,
+      )
+      output_line = output_line.sub(IMAGE_REGEXP, img_element)
+    end
+    output_lines.push(output_line)
+    output_lines.push(comment(" <<<<<< END RESOLVED IMAGES: INPUT-LINE '#{input_line}' ")) unless pristine
+  end
   end
 
 end
