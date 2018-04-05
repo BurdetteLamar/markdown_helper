@@ -21,8 +21,6 @@ end
 
 def usage(opts)
   puts ''
-  puts opts.banner
-  puts ''
   puts opts
   puts <<-EOT
     
