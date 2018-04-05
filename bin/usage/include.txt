@@ -1,6 +1,5 @@
-Usage: bin/include [options] template_file_path markdown_file_page
-        --pristine                   No comments added
-        --help                       Display help
+
+Usage: include [options] template_file_path markdown_file_page
     
   where
 

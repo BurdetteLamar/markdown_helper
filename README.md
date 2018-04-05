@@ -91,9 +91,8 @@ Verbatim text is included unadorned.  Most often, verbatim text is markdown to b
 <!-- >>>>>> BEGIN INCLUDED FILE (code_block): SOURCE readme_files/../bin/usage/include.txt -->
 <code>include.txt</code>
 ```
-Usage: bin/include [options] template_file_path markdown_file_page
-        --pristine                   No comments added
-        --help                       Display help
+
+Usage: include [options] template_file_path markdown_file_page
     
   where
 
