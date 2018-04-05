@@ -41,7 +41,7 @@ class MarkdownHelper
   #   @[:verbatim](foo.md)
   def include(template_file_path, markdown_file_path)
     output = send(:generate_file, template_file_path, markdown_file_path, __method__) do |input_lines, output_lines|
-      send(:include_files, template_file_path, input_lines, output_lines)
+      send(:_include_files, template_file_path, input_lines, output_lines)
     end
     output
   end
@@ -107,7 +107,7 @@ class MarkdownHelper
     output
   end
 
-  def include_files(template_file_path, input_lines, output_lines)
+  def _include_files(template_file_path, input_lines, output_lines)
     input_lines.each do |input_line|
       match_data = input_line.match(INCLUDE_REGEXP)
       unless match_data
@@ -129,19 +129,18 @@ class MarkdownHelper
           File.dirname(template_file_path),
           relative_file_path,
       )
-      include_file = File.new(include_file_path, 'r')
-      output_lines.push(comment(" >>>>>> BEGIN INCLUDED FILE (#{treatment}): SOURCE #{include_file.path} ")) unless pristine
-      included_text = include_file.read
-      unless included_text.match("\n")
+      output_lines.push(comment(" >>>>>> BEGIN INCLUDED FILE (#{treatment}): SOURCE #{include_file_path} ")) unless pristine
+      include_lines = File.readlines(include_file_path)
+      unless include_lines.last.match("\n")
         message = "Warning:  Included file has no trailing newline: #{include_file_path}"
         warn(message)
       end
       case treatment
         when :verbatim
-          # Pass through unadorned.
-          output_lines.push(included_text)
+          # Pass through unadorned, but honor any nested includes.
+          _include_files(include_file_path, include_lines, output_lines)
         when :comment
-          output_lines.push(comment(included_text))
+          output_lines.push(comment(include_lines.join('')))
         else
           # Use the file name as a label.
           file_name_line = format("<code>%s</code>\n", File.basename(include_file_path))
@@ -149,10 +148,10 @@ class MarkdownHelper
           # Put into code block.
           language = treatment == :code_block ? '' : treatment
           output_lines.push("```#{language}\n")
-          output_lines.push(included_text)
+          output_lines.push(*include_lines)
           output_lines.push("```\n")
       end
-      output_lines.push(comment(" <<<<<< END INCLUDED FILE (#{treatment}): SOURCE #{include_file.path} ")) unless pristine
+      output_lines.push(comment(" <<<<<< END INCLUDED FILE (#{treatment}): SOURCE #{include_file_path} ")) unless pristine
     end
   end
 

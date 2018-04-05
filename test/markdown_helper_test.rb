@@ -37,7 +37,6 @@ class MarkdownHelperTest < Minitest::Test
 
     # Create the template for this test.
     def create_template(template_file_path, include_file_path, file_stem, treatment)
-
       File.open(template_file_path, 'w') do |file|
         if file_stem == :nothing
           file.puts 'This file includes nothing.'
@@ -108,6 +107,28 @@ class MarkdownHelperTest < Minitest::Test
     )
     include_file_path = '../includes/comment.txt'
     create_template(template_file_path, include_file_path, 'comment', :comment)
+    common_test(
+        MarkdownHelper.new,
+        method_under_test,
+        template_file_path,
+        expected_file_path,
+        actual_file_path
+    )
+
+    # Test nested includes.
+    md_file_name = 'nested.md'
+    template_file_path = File.join(
+        templates_dir_path,
+        md_file_name
+    )
+    expected_file_path = File.join(
+        expected_dir_path,
+        md_file_name
+    )
+    actual_file_path = File.join(
+        actual_dir_path,
+        md_file_name
+    )
     common_test(
         MarkdownHelper.new,
         method_under_test,
