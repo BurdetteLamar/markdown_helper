@@ -93,6 +93,10 @@ Verbatim text is included unadorned.  Most often, verbatim text is markdown to b
 ```
 
 Usage: include [options] template_file_path markdown_file_page
+
+Usage: include [options] template_file_path markdown_file_page
+        --pristine                   No comments added
+        --help                       Display help
     
   where
 
