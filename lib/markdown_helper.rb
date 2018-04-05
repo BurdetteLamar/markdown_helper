@@ -1,3 +1,4 @@
+require 'pathname'
 require 'markdown_helper/version'
 
 # Helper class for working with GitHub markdown.
@@ -41,7 +42,7 @@ class MarkdownHelper
   #   @[:verbatim](foo.md)
   def include(template_file_path, markdown_file_path)
     output = send(:generate_file, template_file_path, markdown_file_path, __method__) do |input_lines, output_lines|
-      send(:_include_files, template_file_path, input_lines, output_lines)
+      send(:include_files, template_file_path, input_lines, output_lines, paths = [], realpaths = [])
     end
     output
   end
@@ -107,7 +108,24 @@ class MarkdownHelper
     output
   end
 
-  def _include_files(template_file_path, input_lines, output_lines)
+  def include_files(template_file_path, input_lines, output_lines, paths, realpaths)
+    realpath = Pathname.new(template_file_path).realpath
+    i = realpaths.index(realpath)
+    if i
+      old_path = paths[i]
+      new_path = template_file_path
+      realpath = realpaths[i]
+      message = <<EOT
+Includes are circular:
+  Old path:  #{old_path}
+  New path:  #{new_path}
+  Real path: #{realpath}
+EOT
+      raise RuntimeError.new(message)
+    end
+    paths.push(template_file_path)
+    realpaths.push(realpath)
+
     input_lines.each do |input_line|
       match_data = input_line.match(INCLUDE_REGEXP)
       unless match_data
@@ -138,7 +156,7 @@ class MarkdownHelper
       case treatment
         when :verbatim
           # Pass through unadorned, but honor any nested includes.
-          _include_files(include_file_path, include_lines, output_lines)
+          include_files(include_file_path, include_lines, output_lines, paths, realpaths)
         when :comment
           output_lines.push(comment(include_lines.join('')))
         else
