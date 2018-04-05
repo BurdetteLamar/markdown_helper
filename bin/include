@@ -6,6 +6,7 @@ require 'markdown_helper'
 
 options = {:pristine => false}
 
+# Save opts for use below.
 opts = nil
 parser = OptionParser.new do |_opts|
   opts = _opts
@@ -44,4 +45,14 @@ usage(opts) unless ARGV.size == 2
 usage(opts) unless File.readable?(template_file_path)
 usage(opts) unless File.writable?(File.dirname(markdown_file_path))
 
-MarkdownHelper.new(options).include(template_file_path, markdown_file_path)
+# This code, outside of a class, had interference from Module#include.
+# So now it's in a class.
+class AvoidModule
+  def initialize(template_file_path, markdown_file_path, options)
+    markdown_helper = MarkdownHelper.new(options)
+    markdown_helper.include(template_file_path, markdown_file_path)
+  end
+end
+
+AvoidModule.new(template_file_path, markdown_file_path, options)
+
