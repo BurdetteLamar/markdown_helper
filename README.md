@@ -8,6 +8,10 @@
 <!-- <<<<<< END RESOLVED IMAGES: INPUT-LINE '![Gem Version](https://badge.fury.io/rb/markdown_helper.svg)
 ' -->
 
+## What's New?
+
+Nested file inclusion is now supported, which means that an included file can include more files.  This applies only to a file included verbatim, not to a file included as a code block or as a markdown comment.
+
 ## What's This?
 
 Class <code>MarkdownHelper</code> supports:
@@ -18,11 +22,11 @@ Class <code>MarkdownHelper</code> supports:
 
 ## How It Works
 
-The markdown helper reads a markdown document (template) and writes another markdown document.
+The markdown helper is a preprocessor that reads a markdown document (template) and writes another markdown document.
 
 The template can contain certain instructions that call for file inclusions and image resolutions.
 
-## Commented or Pristine?
+### Commented or Pristine?
 
 By default, the output markdown has added comments that show:
 
@@ -83,6 +87,8 @@ Comment text is written into the output between the comment delimiters <code>\<!
 #### Verbatim
 
 Verbatim text is included unadorned.  Most often, verbatim text is markdown to be rendered as part of the markdown page.
+
+The verbatim text is itself scanned for nested includes.
 
 ### Usage
 
