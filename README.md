@@ -18,11 +18,11 @@ Class <code>MarkdownHelper</code> supports:
 
 ## How It Works
 
-The markdown helper reads a markdown document (template) and writes another markdown document.
+The markdown helper is a preprocessor that reads a markdown document (template) and writes another markdown document.
 
 The template can contain certain instructions that call for file inclusions and image resolutions.
 
-## Commented or Pristine?
+### Commented or Pristine?
 
 By default, the output markdown has added comments that show:
 
@@ -83,6 +83,8 @@ Comment text is written into the output between the comment delimiters <code>\<!
 #### Verbatim
 
 Verbatim text is included unadorned.  Most often, verbatim text is markdown to be rendered as part of the markdown page.
+
+The verbatim text is itself scanned for nested includes.
 
 ### Usage
 
