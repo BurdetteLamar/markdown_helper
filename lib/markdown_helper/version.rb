@@ -1,3 +1,3 @@
 class MarkdownHelper
-  VERSION = '1.0.0'
+  VERSION = '1.5.0'
 end
