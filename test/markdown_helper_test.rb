@@ -330,7 +330,7 @@ class MarkdownHelperTest < Minitest::Test
       actual_file_path
   )
     # API
-    output = markdown_helper.send(
+    markdown_helper.send(
         method_under_test,
         template_file_path,
         actual_file_path,

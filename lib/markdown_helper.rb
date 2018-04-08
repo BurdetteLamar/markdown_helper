@@ -41,10 +41,9 @@ class MarkdownHelper
   # @example pragma to include text verbatim, to be rendered as markdown.
   #   @[:verbatim](foo.md)
   def include(template_file_path, markdown_file_path)
-    output = send(:generate_file, template_file_path, markdown_file_path, __method__) do |input_lines, output_lines|
+    send(:generate_file, template_file_path, markdown_file_path, __method__) do |input_lines, output_lines|
       send(:include_files, template_file_path, input_lines, output_lines, paths = [], realpaths = [])
     end
-    output
   end
 
   # Resolves relative image paths to absolute urls in markdown text.
@@ -70,10 +69,9 @@ class MarkdownHelper
   #   )
   def resolve(template_file_path, markdown_file_path)
     # Method :generate_file does the first things, yields the block, does the last things.
-    output = send(:generate_file, template_file_path, markdown_file_path, __method__) do |input_lines, output_lines|
+    send(:generate_file, template_file_path, markdown_file_path, __method__) do |input_lines, output_lines|
       send(:resolve_images, input_lines, output_lines)
     end
-    output
   end
   alias resolve_image_urls resolve
 
@@ -192,7 +190,6 @@ EOT
       end
       formatted_attributes_s = formatted_attributes.join(' ')
       repo_user, repo_name = repo_user_and_name
-      absolute_file_path = nil
       if relative_file_path.start_with?('http')
         absolute_file_path = relative_file_path
       else
