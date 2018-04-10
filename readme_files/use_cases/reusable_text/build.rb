@@ -1,29 +1,42 @@
 reusable_text_file_name = 'reusable_text.md'
 includer_file_name = 'includer.md'
 included_file_name = 'included.md'
+template_file_name = 'template.md'
+use_case_file_name = 'use_case.md'
+
+include_command = "ruby ../../../bin/include --pristine #{includer_file_name} #{included_file_name}"
+build_command = "ruby ../../../bin/include --pristine #{template_file_name} #{use_case_file_name}"
 
 template = <<EOT
 ### Reusable Text
 
-Use the markdown helper to stay DRY (Don't Repeat Yourself).
+Use file inclusion to stay DRY (Don't Repeat Yourself).
 
-Text that will be needed in more than one place in the documentation can be maintained in a separate file, then included wherever it's needed.
+Maintain reusable text in a separate file, then include it wherever it's needed.
 
-Note that the included text may itself be markdown, which can be included verbatim, or it may be code or other example data, which can be included into a code block.
+#### Separate File
 
-Here's a file containing some text that's to be included in more than one place:
+Here's a file containing some text that can be included in more than one place:
 
 @[:code_block](#{reusable_text_file_name})
+
+#### Template File
 
 Here's a template file that includes it:
 
 @[:code_block](#{includer_file_name})
 
-Here's the command to perform the inclusion:
+#### Command
 
-@[:code_block](command.sh)
+Here's the command to perform the inclusion (```--pristine``` suppresses inclusion comments):
 
-And here's the finished file with the file included:
+```sh
+#{include_command}
+```
+
+#### Included File
+
+Here's the finished file with the inclusion:
 
 @[:code_block](#{included_file_name})
 EOT
@@ -40,20 +53,15 @@ EOT
 
 # Write markdown files.
 {
-  :template => template,
-  :reusable_text => reusable_text,
-  :includer => includer,
-}.each_pair do |text_name, text|
-  file_name = "#{text_name}.md"
+  template_file_name => template,
+  reusable_text_file_name => reusable_text,
+  includer_file_name => includer,
+}.each_pair do |file_name, text|
   File.write(file_name, text)
 end
 
-# Write command files and perform commands.
-{
-    :command => 'ruby ../../../bin/include --pristine includer.md included.md',
-    :build_command => 'ruby ../../../bin/include --pristine template.md use_case.md'
-}.each_pair do |name, command|
-  file_name = "#{name}.sh"
-  File.write(file_name, "#{command}\n")
-  system(command)
-end
+# Perform the inclusion.
+system(include_command)
+
+# Build the use case.
+system(build_command)

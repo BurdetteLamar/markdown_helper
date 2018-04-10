@@ -1,23 +1,31 @@
 ### Reusable Text
 
-Use the markdown helper to stay DRY (Don't Repeat Yourself).
+Use file inclusion to stay DRY (Don't Repeat Yourself).
 
-Text that will be needed in more than one place in the documentation can be maintained in a separate file, then included wherever it's needed.
+Maintain reusable text in a separate file, then include it wherever it's needed.
 
-Note that the included text may itself be markdown, which can be included verbatim, or it may be code or other example data, which can be included into a code block.
+#### Separate File
 
-Here's a file containing some text that's to be included in more than one place:
+Here's a file containing some text that can be included in more than one place:
 
 @[:code_block](reusable_text.md)
+
+#### Template File
 
 Here's a template file that includes it:
 
 @[:code_block](includer.md)
 
-Here's the command to perform the inclusion:
+#### Command
 
-@[:code_block](command.sh)
+Here's the command to perform the inclusion (```--pristine``` suppresses inclusion comments):
 
-And here's the finished file with the file included:
+```sh
+ruby ../../../bin/include --pristine includer.md included.md
+```
+
+#### Included File
+
+Here's the finished file with the inclusion:
 
 @[:code_block](included.md)
