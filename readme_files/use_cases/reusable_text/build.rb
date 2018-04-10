@@ -1,3 +1,7 @@
+reusable_text_file_name = 'reusable_text.md'
+includer_file_name = 'includer.md'
+included_file_name = 'included.md'
+
 template = <<EOT
 ### Reusable Text
 
@@ -9,11 +13,11 @@ Note that the included text may itself be markdown, which can be included verbat
 
 Here's a file containing some text that's to be included in more than one place:
 
-@[:code_block](reusable_text.md)
+@[:code_block](#{reusable_text_file_name})
 
 Here's a template file that includes it:
 
-@[:code_block](includer.md)
+@[:code_block](#{includer_file_name})
 
 Here's the command to perform the inclusion:
 
@@ -21,17 +25,17 @@ Here's the command to perform the inclusion:
 
 And here's the finished file with the file included:
 
-@[:code_block](included.md)
+@[:code_block](#{included_file_name})
 EOT
 
 reusable_text = <<EOT
-This is some useful text that will be included in more than one place (actually, in more than one file).
+This is some useful text that can be included in more than one place (actually, in more than one file).
 EOT
 
 includer = <<EOT
 This file includes the useful text.
 
-@[:verbatim](reusable_text.md)
+@[:verbatim](#{reusable_text_file_name})
 EOT
 
 # Write markdown files.

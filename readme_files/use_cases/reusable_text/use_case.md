@@ -10,7 +10,7 @@ Here's a file containing some text that's to be included in more than one place:
 
 <code>reusable_text.md</code>
 ```
-This is some useful text that will be included in more than one place (actually, in more than one file).
+This is some useful text that can be included in more than one place (actually, in more than one file).
 ```
 
 Here's a template file that includes it:
@@ -35,5 +35,5 @@ And here's the finished file with the file included:
 ```
 This file includes the useful text.
 
-This is some useful text that will be included in more than one place (actually, in more than one file).
+This is some useful text that can be included in more than one place (actually, in more than one file).
 ```
