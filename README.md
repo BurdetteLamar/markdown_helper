@@ -2,10 +2,10 @@
 <!-- >>>>>> BEGIN GENERATED FILE (resolve): SOURCE readme_files/README.template.md -->
 # Markdown Helper
 
-<!-- >>>>>> BEGIN RESOLVED IMAGES: INPUT-LINE '![Gem Version](https://badge.fury.io/rb/markdown_helper.svg)
+<!-- >>>>>> BEGIN RESOLVED IMAGES: INPUT-LINE '[![Link to gem](https://badge.fury.io/rb/markdown_helper.svg)](https://github.com/BurdetteLamar/markdown_helper)
 ' -->
-<img src="https://badge.fury.io/rb/markdown_helper.svg" alt="Gem Version">
-<!-- <<<<<< END RESOLVED IMAGES: INPUT-LINE '![Gem Version](https://badge.fury.io/rb/markdown_helper.svg)
+[<img src="https://github.com/BurdetteLamar/markdown_helper" alt="Link to gem](https://badge.fury.io/rb/markdown_helper.svg)">
+<!-- <<<<<< END RESOLVED IMAGES: INPUT-LINE '[![Link to gem](https://badge.fury.io/rb/markdown_helper.svg)](https://github.com/BurdetteLamar/markdown_helper)
 ' -->
 
 ## What's New?

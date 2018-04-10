@@ -1,6 +1,6 @@
 # Markdown Helper
 
-![Gem Version](https://badge.fury.io/rb/markdown_helper.svg)
+[![Link to gem](https://badge.fury.io/rb/markdown_helper.svg)](https://github.com/BurdetteLamar/markdown_helper)
 
 ## What's New?
 
