@@ -42,7 +42,7 @@ class MarkdownHelper
   #   @[:verbatim](foo.md)
   def include(template_file_path, markdown_file_path)
     send(:generate_file, template_file_path, markdown_file_path, __method__) do |input_lines, output_lines|
-      send(:include_files, template_file_path, input_lines, output_lines, paths = [], realpaths = [])
+      send(:include_files, template_file_path, input_lines, output_lines, verbatim_inclusions = {})
     end
   end
 
@@ -106,31 +106,17 @@ class MarkdownHelper
     output
   end
 
-  def include_files(template_file_path, input_lines, output_lines, paths, realpaths)
-    realpath = Pathname.new(template_file_path).realpath
-    i = realpaths.index(realpath)
-    if i
-      old_path = paths[i]
-      new_path = template_file_path
-      realpath = realpaths[i]
-      message = <<EOT
-Includes are circular:
-  Old path:  #{old_path}
-  New path:  #{new_path}
-  Real path: #{realpath}
-EOT
-      raise RuntimeError.new(message)
-    end
-    paths.push(template_file_path)
-    realpaths.push(realpath)
+  def include_files(includer_file_path, input_lines, output_lines, verbatim_inclusions)
 
-    input_lines.each do |input_line|
+    input_lines.each_with_index do |input_line, line_index|
       match_data = input_line.match(INCLUDE_REGEXP)
       unless match_data
         output_lines.push(input_line)
         next
       end
-      treatment = case match_data[1]
+      treatment = match_data[1]
+      relative_included_file_path = match_data[2]
+      treatment = case treatment
                     when ':code_block'
                       :code_block
                     when ':verbatim'
@@ -138,28 +124,46 @@ EOT
                     when ':comment'
                       :comment
                     else
-                      match_data[1]
+                      treatment
                   end
-      relative_file_path = match_data[2]
-      include_file_path = File.join(
-          File.dirname(template_file_path),
-          relative_file_path,
+      new_inclusion = Inclusion.new(
+          includer_file_path,
+          includer_line_number = line_index + 1,
+          relative_included_file_path
       )
-      output_lines.push(comment(" >>>>>> BEGIN INCLUDED FILE (#{treatment}): SOURCE #{include_file_path} ")) unless pristine
-      include_lines = File.readlines(include_file_path)
+      included_real_path = new_inclusion.included_real_path
+      if treatment == :verbatim
+        previously_included = verbatim_inclusions.include?(new_inclusion.included_real_path)
+        if previously_included
+          backtrace = verbatim_inclusions.values.push(new_inclusion)
+          message_lines = ['Includes are circular:']
+          backtrace.each_with_index do |inclusion, i|
+            message_lines.push("  Level #{i}:")
+            message_lines.push("    Includer: #{inclusion.includer_file_path}:#{inclusion.includer_line_number}")
+            message_lines.push("    Relative file path: #{inclusion.relative_included_file_path}")
+            message_lines.push("    Included file path: #{inclusion.included_file_path}")
+            message_lines.push("    Real file_path: #{inclusion.included_real_path}")
+          end
+          message = message_lines.join("\n")
+          raise RuntimeError.new(message)
+        end
+        verbatim_inclusions[included_real_path] = new_inclusion
+      end
+      output_lines.push(comment(" >>>>>> BEGIN INCLUDED FILE (#{treatment}): SOURCE #{new_inclusion.included_file_path} ")) unless pristine
+      include_lines = File.readlines(new_inclusion.included_file_path)
       unless include_lines.last.match("\n")
-        message = "Warning:  Included file has no trailing newline: #{include_file_path}"
+        message = "Warning:  Included file has no trailing newline: #{relative_included_file_path}"
         warn(message)
       end
       case treatment
         when :verbatim
           # Pass through unadorned, but honor any nested includes.
-          include_files(include_file_path, include_lines, output_lines, paths, realpaths)
+          include_files(new_inclusion.included_file_path, include_lines, output_lines, verbatim_inclusions)
         when :comment
           output_lines.push(comment(include_lines.join('')))
         else
           # Use the file name as a label.
-          file_name_line = format("<code>%s</code>\n", File.basename(include_file_path))
+          file_name_line = format("<code>%s</code>\n", File.basename(relative_included_file_path))
           output_lines.push(file_name_line)
           # Put into code block.
           language = treatment == :code_block ? '' : treatment
@@ -167,48 +171,77 @@ EOT
           output_lines.push(*include_lines)
           output_lines.push("```\n")
       end
-      output_lines.push(comment(" <<<<<< END INCLUDED FILE (#{treatment}): SOURCE #{include_file_path} ")) unless pristine
+      output_lines.push(comment(" <<<<<< END INCLUDED FILE (#{treatment}): SOURCE #{new_inclusion.included_file_path} ")) unless pristine
     end
   end
 
   def resolve_images(input_lines, output_lines)
-  input_lines.each do |input_line|
-    scan_data = input_line.scan(IMAGE_REGEXP)
-    if scan_data.empty?
-      output_lines.push(input_line)
-      next
-    end
-    output_lines.push(comment(" >>>>>> BEGIN RESOLVED IMAGES: INPUT-LINE '#{input_line}' ")) unless pristine
-    output_line = input_line
-    scan_data.each do |alt_text, path_and_attributes|
-      relative_file_path, attributes_s =path_and_attributes.split(/\s?\|\s?/, 2)
-      attributes = attributes_s ? attributes_s.split(/\s+/) : []
-      formatted_attributes = ['']
-      attributes.each do |attribute|
-        name, value = attribute.split('=', 2)
-        formatted_attributes.push(format('%s="%s"', name, value))
+    input_lines.each do |input_line|
+      scan_data = input_line.scan(IMAGE_REGEXP)
+      if scan_data.empty?
+        output_lines.push(input_line)
+        next
       end
-      formatted_attributes_s = formatted_attributes.join(' ')
-      repo_user, repo_name = repo_user_and_name
-      if relative_file_path.start_with?('http')
-        absolute_file_path = relative_file_path
-      else
-        absolute_file_path = File.join(
-            "https://raw.githubusercontent.com/#{repo_user}/#{repo_name}/master",
-            relative_file_path,
+      output_lines.push(comment(" >>>>>> BEGIN RESOLVED IMAGES: INPUT-LINE '#{input_line}' ")) unless pristine
+      output_line = input_line
+      scan_data.each do |alt_text, path_and_attributes|
+        relative_file_path, attributes_s =path_and_attributes.split(/\s?\|\s?/, 2)
+        attributes = attributes_s ? attributes_s.split(/\s+/) : []
+        formatted_attributes = ['']
+        attributes.each do |attribute|
+          name, value = attribute.split('=', 2)
+          formatted_attributes.push(format('%s="%s"', name, value))
+        end
+        formatted_attributes_s = formatted_attributes.join(' ')
+        repo_user, repo_name = repo_user_and_name
+        if relative_file_path.start_with?('http')
+          absolute_file_path = relative_file_path
+        else
+          absolute_file_path = File.join(
+              "https://raw.githubusercontent.com/#{repo_user}/#{repo_name}/master",
+              relative_file_path,
+          )
+        end
+        img_element = format(
+            '<img src="%s" alt="%s"%s>',
+            absolute_file_path,
+            alt_text,
+            formatted_attributes_s,
         )
+        output_line = output_line.sub(IMAGE_REGEXP, img_element)
       end
-      img_element = format(
-          '<img src="%s" alt="%s"%s>',
-          absolute_file_path,
-          alt_text,
-          formatted_attributes_s,
-      )
-      output_line = output_line.sub(IMAGE_REGEXP, img_element)
+      output_lines.push(output_line)
+      output_lines.push(comment(" <<<<<< END RESOLVED IMAGES: INPUT-LINE '#{input_line}' ")) unless pristine
     end
-    output_lines.push(output_line)
-    output_lines.push(comment(" <<<<<< END RESOLVED IMAGES: INPUT-LINE '#{input_line}' ")) unless pristine
+
   end
+
+  class Inclusion
+
+    attr_accessor \
+      :includer_file_path,
+      :includer_line_number,
+      :relative_included_file_path,
+      :included_file_path,
+      :included_real_path
+
+    def initialize(
+        includer_file_path,
+        includer_line_number,
+        relative_included_file_path
+    )
+      included_file_path = File.join(
+          File.dirname(includer_file_path),
+          relative_included_file_path,
+      )
+      self.includer_file_path = includer_file_path
+      self.includer_line_number = includer_line_number
+      self.relative_included_file_path = relative_included_file_path
+      self.included_file_path = included_file_path
+      self.included_real_path = Pathname.new(included_file_path).realpath.to_s
+    end
+
   end
 
 end
+
