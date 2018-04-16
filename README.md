@@ -1,5 +1,5 @@
-<!-- >>>>>> BEGIN GENERATED FILE (include): SOURCE readme_files/temp_resolved.md -->
-<!-- >>>>>> BEGIN GENERATED FILE (resolve): SOURCE readme_files/README.template.md -->
+<!-- >>>>>> BEGIN GENERATED FILE (include): SOURCE markdown/temp_resolved.md -->
+<!-- >>>>>> BEGIN GENERATED FILE (resolve): SOURCE markdown/README.template.md -->
 # Markdown Helper
 
 <!-- >>>>>> BEGIN RESOLVED IMAGES: INPUT-LINE '![Gem Version](https://badge.fury.io/rb/markdown_helper.svg) [Visit gem markdown_helper](https://rubygems.org/gems/markdown_helper)
@@ -54,7 +54,7 @@ Use the markdown helper to merge external files into a markdown (</code>.md</cod
 
 #### Highlighted Code Block
 
-<!-- >>>>>> BEGIN INCLUDED FILE (ruby): SOURCE readme_files/include.rb -->
+<!-- >>>>>> BEGIN INCLUDED FILE (ruby): SOURCE markdown/include.rb -->
 <code>include.rb</code>
 ```ruby
 class RubyCode
@@ -63,11 +63,11 @@ class RubyCode
   end
 end
 ```
-<!-- <<<<<< END INCLUDED FILE (ruby): SOURCE readme_files/include.rb -->
+<!-- <<<<<< END INCLUDED FILE (ruby): SOURCE markdown/include.rb -->
 
 #### Plain Code Block
 
-<!-- >>>>>> BEGIN INCLUDED FILE (code_block): SOURCE readme_files/include.rb -->
+<!-- >>>>>> BEGIN INCLUDED FILE (code_block): SOURCE markdown/include.rb -->
 <code>include.rb</code>
 ```
 class RubyCode
@@ -76,7 +76,7 @@ class RubyCode
   end
 end
 ```
-<!-- <<<<<< END INCLUDED FILE (code_block): SOURCE readme_files/include.rb -->
+<!-- <<<<<< END INCLUDED FILE (code_block): SOURCE markdown/include.rb -->
 
 [Note:  In the gem documentation, RubyDoc.info chooses to highlight this code block regardless.  Go figure.]
 
@@ -94,7 +94,7 @@ The verbatim text is itself scanned for nested includes.
 
 #### CLI
 
-<!-- >>>>>> BEGIN INCLUDED FILE (code_block): SOURCE readme_files/../bin/usage/include.txt -->
+<!-- >>>>>> BEGIN INCLUDED FILE (code_block): SOURCE markdown/../bin/usage/include.txt -->
 <code>include.txt</code>
 ```
 
@@ -112,11 +112,11 @@ Usage: include [options] template_file_path markdown_file_page
     * Both file types are .md.
     * The template file contains file inclusion descriptions.
 ```
-<!-- <<<<<< END INCLUDED FILE (code_block): SOURCE readme_files/../bin/usage/include.txt -->
+<!-- <<<<<< END INCLUDED FILE (code_block): SOURCE markdown/../bin/usage/include.txt -->
 
 #### API
 
-<!-- >>>>>> BEGIN INCLUDED FILE (ruby): SOURCE readme_files/include_usage.rb -->
+<!-- >>>>>> BEGIN INCLUDED FILE (ruby): SOURCE markdown/include_usage.rb -->
 <code>include_usage.rb</code>
 ```ruby
 require 'markdown_helper'
@@ -132,7 +132,7 @@ markdown_helper.include(template_file_path, markdown_file_path)
 markdown_helper = MarkdownHelper.new(:pristine => true)
 markdown_helper.include(template_file_path, markdown_file_path)
 ```
-<!-- <<<<<< END INCLUDED FILE (ruby): SOURCE readme_files/include_usage.rb -->
+<!-- <<<<<< END INCLUDED FILE (ruby): SOURCE markdown/include_usage.rb -->
 
 #### Include Descriptions
 
@@ -150,7 +150,7 @@ where:
 
 ##### Example Include Descriptions
 
-<!-- >>>>>> BEGIN INCLUDED FILE (code_block): SOURCE readme_files/include.md -->
+<!-- >>>>>> BEGIN INCLUDED FILE (code_block): SOURCE markdown/include.md -->
 <code>include.md</code>
 ```code_block
 @[ruby](my_ruby.rb)
@@ -159,7 +159,7 @@ where:
 
 @[:verbatim](my_markdown.md)
 ```
-<!-- <<<<<< END INCLUDED FILE (code_block): SOURCE readme_files/include.md -->
+<!-- <<<<<< END INCLUDED FILE (code_block): SOURCE markdown/include.md -->
 
 ## Image Path Resolution 
 
@@ -181,7 +181,7 @@ This matters because when markdown becomes part of a Ruby gem, its images will h
 
 #### CLI
 
-<!-- >>>>>> BEGIN INCLUDED FILE (code_block): SOURCE readme_files/../bin/usage/resolve.txt -->
+<!-- >>>>>> BEGIN INCLUDED FILE (code_block): SOURCE markdown/../bin/usage/resolve.txt -->
 <code>resolve.txt</code>
 ```
 Usage: bin/resolve [options] template_file_path markdown_file_page
@@ -198,11 +198,11 @@ Usage: bin/resolve [options] template_file_path markdown_file_page
     * Both file types are .md.
     * The template file contains image descriptions.
 ```
-<!-- <<<<<< END INCLUDED FILE (code_block): SOURCE readme_files/../bin/usage/resolve.txt -->
+<!-- <<<<<< END INCLUDED FILE (code_block): SOURCE markdown/../bin/usage/resolve.txt -->
 
 #### API
 
-<!-- >>>>>> BEGIN INCLUDED FILE (ruby): SOURCE readme_files/resolve_usage.rb -->
+<!-- >>>>>> BEGIN INCLUDED FILE (ruby): SOURCE markdown/resolve_usage.rb -->
 <code>resolve_usage.rb</code>
 ```ruby
 require 'markdown_helper'
@@ -218,7 +218,7 @@ markdown_helper.resolve(template_file_path, markdown_file_path)
 markdown_helper = MarkdownHelper.new(:pristine => true)
 markdown_helper.resolve(template_file_path, markdown_file_path)
 ```
-<!-- <<<<<< END INCLUDED FILE (ruby): SOURCE readme_files/resolve_usage.rb -->
+<!-- <<<<<< END INCLUDED FILE (ruby): SOURCE markdown/resolve_usage.rb -->
 
 #### Image Descriptions
 
@@ -234,7 +234,7 @@ where:
 
 ##### Example Image Descriptions
 
-<!-- >>>>>> BEGIN INCLUDED FILE (code_block): SOURCE readme_files/resolve.md -->
+<!-- >>>>>> BEGIN INCLUDED FILE (code_block): SOURCE markdown/resolve.md -->
 <code>resolve.md</code>
 ```code_block
 ![my_alt](image/image.png)
@@ -243,7 +243,7 @@ where:
 
 ![my_alt](image/image.png| width=50 height=50)
 ```
-<!-- <<<<<< END INCLUDED FILE (code_block): SOURCE readme_files/resolve.md -->
+<!-- <<<<<< END INCLUDED FILE (code_block): SOURCE markdown/resolve.md -->
 
 ## Image Attributes
 
@@ -263,7 +263,7 @@ Use the markdown helper to add image attributes in a markdown (</code>.md</code>
 
 #### CLI
 
-<!-- >>>>>> BEGIN INCLUDED FILE (code_block): SOURCE readme_files/../bin/usage/resolve.txt -->
+<!-- >>>>>> BEGIN INCLUDED FILE (code_block): SOURCE markdown/../bin/usage/resolve.txt -->
 <code>resolve.txt</code>
 ```
 Usage: bin/resolve [options] template_file_path markdown_file_page
@@ -280,11 +280,11 @@ Usage: bin/resolve [options] template_file_path markdown_file_page
     * Both file types are .md.
     * The template file contains image descriptions.
 ```
-<!-- <<<<<< END INCLUDED FILE (code_block): SOURCE readme_files/../bin/usage/resolve.txt -->
+<!-- <<<<<< END INCLUDED FILE (code_block): SOURCE markdown/../bin/usage/resolve.txt -->
 
 #### API
 
-<!-- >>>>>> BEGIN INCLUDED FILE (ruby): SOURCE readme_files/resolve_usage.rb -->
+<!-- >>>>>> BEGIN INCLUDED FILE (ruby): SOURCE markdown/resolve_usage.rb -->
 <code>resolve_usage.rb</code>
 ```ruby
 require 'markdown_helper'
@@ -300,7 +300,7 @@ markdown_helper.resolve(template_file_path, markdown_file_path)
 markdown_helper = MarkdownHelper.new(:pristine => true)
 markdown_helper.resolve(template_file_path, markdown_file_path)
 ```
-<!-- <<<<<< END INCLUDED FILE (ruby): SOURCE readme_files/resolve_usage.rb -->
+<!-- <<<<<< END INCLUDED FILE (ruby): SOURCE markdown/resolve_usage.rb -->
 
 #### Image Descriptions
 
@@ -316,7 +316,7 @@ where:
 
 ##### Example Image Descriptions
 
-<!-- >>>>>> BEGIN INCLUDED FILE (code_block): SOURCE readme_files/resolve.md -->
+<!-- >>>>>> BEGIN INCLUDED FILE (code_block): SOURCE markdown/resolve.md -->
 <code>resolve.md</code>
 ```code_block
 ![my_alt](image/image.png)
@@ -325,7 +325,7 @@ where:
 
 ![my_alt](image/image.png| width=50 height=50)
 ```
-<!-- <<<<<< END INCLUDED FILE (code_block): SOURCE readme_files/resolve.md -->
+<!-- <<<<<< END INCLUDED FILE (code_block): SOURCE markdown/resolve.md -->
 
 ## What Should Be Next?
 
@@ -338,5 +338,5 @@ I have opened some enhancement Issues in the GitHub [markdown_helper](https://gi
 * [Pagination](https://github.com/BurdetteLamar/markdown_helper/issues/40):  series of markdown pages connected by prev/next navigation links.
 
 Feel free to comment on any of these, or to add more Issues (enhancement or otherwise).
-<!-- <<<<<< END GENERATED FILE (resolve): SOURCE readme_files/README.template.md -->
-<!-- <<<<<< END GENERATED FILE (include): SOURCE readme_files/temp_resolved.md -->
+<!-- <<<<<< END GENERATED FILE (resolve): SOURCE markdown/README.template.md -->
+<!-- <<<<<< END GENERATED FILE (include): SOURCE markdown/temp_resolved.md -->
