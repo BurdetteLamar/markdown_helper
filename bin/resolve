@@ -6,9 +6,11 @@ require 'markdown_helper'
 
 options = {:pristine => false}
 
-parser = OptionParser.new do|opts|
-  opts.banner = "Usage: #{__FILE__} [options] template_file_path markdown_file_page"
-  opts.on('--pristine', 'No comments added') do |_|
+opts = nil
+parser = OptionParser.new do|_opts|
+  opts = _opts
+  _opts.banner = "Usage: #{__FILE__} [options] template_file_path markdown_file_page"
+  _opts.on('--pristine', 'No comments added') do |_|
     options[:pristine] = true
   end
   opts.on('--help', 'Display help') do
@@ -17,6 +19,7 @@ parser = OptionParser.new do|opts|
 end
 
 def usage(opts)
+  puts ''
   puts opts
   puts <<-EOT
     
