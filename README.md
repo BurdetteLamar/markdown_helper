@@ -184,7 +184,8 @@ This matters because when markdown becomes part of a Ruby gem, its images will h
 <!-- >>>>>> BEGIN INCLUDED FILE (code_block): SOURCE markdown/../bin/usage/resolve.txt -->
 <code>resolve.txt</code>
 ```
-Usage: bin/resolve [options] template_file_path markdown_file_page
+
+Usage: resolve [options] template_file_path markdown_file_page
         --pristine                   No comments added
         --help                       Display help
     
@@ -266,7 +267,8 @@ Use the markdown helper to add image attributes in a markdown (</code>.md</code>
 <!-- >>>>>> BEGIN INCLUDED FILE (code_block): SOURCE markdown/../bin/usage/resolve.txt -->
 <code>resolve.txt</code>
 ```
-Usage: bin/resolve [options] template_file_path markdown_file_page
+
+Usage: resolve [options] template_file_path markdown_file_page
         --pristine                   No comments added
         --help                       Display help
     
