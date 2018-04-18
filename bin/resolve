@@ -6,15 +6,16 @@ require 'markdown_helper'
 
 options = {:pristine => false}
 
+# Save opts for use below.
 opts = nil
-parser = OptionParser.new do|_opts|
+parser = OptionParser.new do |_opts|
   opts = _opts
-  _opts.banner = "Usage: #{__FILE__} [options] template_file_path markdown_file_page"
+  _opts.banner = "Usage: #{File.basename(__FILE__)} [options] template_file_path markdown_file_page"
   _opts.on('--pristine', 'No comments added') do |_|
     options[:pristine] = true
   end
-  opts.on('--help', 'Display help') do
-    usage(opts)
+  _opts.on('--help', 'Display help') do
+    usage(_opts)
   end
 end
 
@@ -40,8 +41,8 @@ parser.parse!
 
 template_file_path, markdown_file_path = ARGV
 
-usage(options) unless ARGV.size == 2
-usage(options) unless File.readable?(template_file_path)
-usage(options) unless File.writable?(File.dirname(markdown_file_path))
+usage(opts) unless ARGV.size == 2
+usage(opts) unless File.readable?(template_file_path)
+usage(opts) unless File.writable?(File.dirname(markdown_file_path))
 
 MarkdownHelper.new(options).resolve(template_file_path, markdown_file_path)
