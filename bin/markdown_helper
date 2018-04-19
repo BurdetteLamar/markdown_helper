@@ -33,5 +33,5 @@ bin_file_path = File.absolute_path(File.join(
                     bindir,
                     '_' + command_keyword,
 ))
-command = "ruby #{bin_file_path}"
+command = "ruby #{bin_file_path} #{ARGV.join(' ')}"
 system(command)
