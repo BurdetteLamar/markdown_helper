@@ -352,7 +352,8 @@ class MarkdownHelperTest < Minitest::Test
         '_' + method_under_test.to_s,
     )
     options = markdown_helper.pristine ? '--pristine' : ''
-    command = format("ruby #{bin_file} #{options} #{template_file_path} #{actual_file_path}")
+    File.delete(actual_file_path)
+    command = "markdown_helper #{method_under_test.to_s} #{options} #{template_file_path} #{actual_file_path}"
     system(command)
     output = File.read(actual_file_path)
     diffs = MarkdownHelperTest.diff_files(expected_file_path, actual_file_path)

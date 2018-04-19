@@ -39,11 +39,9 @@ end
 
 parser.parse!
 
-template_file_path, markdown_file_path = ARGV
+_, template_file_path, markdown_file_path = ARGV
 
-usage(opts) unless ARGV.size == 2
+usage(opts) unless ARGV.size == 3
 usage(opts) unless File.readable?(template_file_path)
-usage(opts) unless File.writable?(File.dirname(markdown_file_path))
 
 MarkdownHelper.new(options).include(template_file_path, markdown_file_path)
-
