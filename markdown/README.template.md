@@ -4,7 +4,10 @@
 
 ## What's New?
 
-Nested file inclusion is now supported, which means that an included file can include more files.  This applies only to a file included verbatim, not to a file included as a code block or as a markdown comment.
+Command-line interface is now supported:
+
+* ```markdown_helper include [options] template_file_path markdown_file_path```
+* ```markdown_helper resolve [options] template_file_path markdown_file_path```
 
 ## What's This?
 
