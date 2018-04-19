@@ -10,7 +10,7 @@ options = {:pristine => false}
 opts = nil
 parser = OptionParser.new do |_opts|
   opts = _opts
-  _opts.banner = "Usage: #{File.basename(__FILE__)} [options] template_file_path markdown_file_path"
+  _opts.banner = "Usage: markdown_helper resolve [options] template_file_path markdown_file_path"
   _opts.on('--pristine', 'No comments added') do |_|
     options[:pristine] = true
   end
@@ -32,8 +32,8 @@ def usage(opts)
   Typically:
 
     * Both file types are .md.
-    * The template file contains file inclusion descriptions.
-EOT
+    * The template file contains image descriptions.
+  EOT
   exit
 end
 
@@ -45,6 +45,4 @@ usage(opts) unless ARGV.size == 2
 usage(opts) unless File.readable?(template_file_path)
 usage(opts) unless File.writable?(File.dirname(markdown_file_path))
 
-warn('This include is deprecated.  Please use command "markdown_helper include".')
-MarkdownHelper.new(options).include(template_file_path, markdown_file_path)
-
+MarkdownHelper.new(options).resolve(template_file_path, markdown_file_path)

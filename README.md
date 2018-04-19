@@ -98,7 +98,7 @@ The verbatim text is itself scanned for nested includes.
 <code>include.txt</code>
 ```
 
-Usage: include [options] template_file_path markdown_file_page
+Usage: markdown_helper include [options] template_file_path markdown_file_path
         --pristine                   No comments added
         --help                       Display help
     
@@ -185,7 +185,7 @@ This matters because when markdown becomes part of a Ruby gem, its images will h
 <code>resolve.txt</code>
 ```
 
-Usage: resolve [options] template_file_path markdown_file_page
+Usage: markdown_helper resolve [options] template_file_path markdown_file_path
         --pristine                   No comments added
         --help                       Display help
     
@@ -268,7 +268,7 @@ Use the markdown helper to add image attributes in a markdown (</code>.md</code>
 <code>resolve.txt</code>
 ```
 
-Usage: resolve [options] template_file_path markdown_file_page
+Usage: markdown_helper resolve [options] template_file_path markdown_file_path
         --pristine                   No comments added
         --help                       Display help
     

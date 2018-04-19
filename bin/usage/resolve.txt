@@ -1,5 +1,5 @@
 
-Usage: resolve [options] template_file_path markdown_file_page
+Usage: markdown_helper resolve [options] template_file_path markdown_file_path
         --pristine                   No comments added
         --help                       Display help
     

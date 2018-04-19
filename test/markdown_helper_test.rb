@@ -349,7 +349,7 @@ class MarkdownHelperTest < Minitest::Test
         TEST_DIR_PATH,
         '..',
         'bin',
-        method_under_test.to_s,
+        '_' + method_under_test.to_s,
     )
     options = markdown_helper.pristine ? '--pristine' : ''
     command = format("ruby #{bin_file} #{options} #{template_file_path} #{actual_file_path}")
