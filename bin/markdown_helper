@@ -29,9 +29,9 @@ unless command_keywords.include?(command_keyword)
 end
 
 bindir = File.dirname(__FILE__)
-file_path = File.absolute_path(File.join(
+bin_file_path = File.absolute_path(File.join(
                     bindir,
                     '_' + command_keyword,
 ))
-command = "ruby #{file_path}"
+command = "ruby #{bin_file_path}"
 system(command)

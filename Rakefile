@@ -33,7 +33,7 @@ namespace :build do
         include
         resolve
     /.each do |executable_name|
-      usage_text = `ruby bin/#{executable_name} --help`
+      usage_text = `ruby bin/_#{executable_name} --help`
       usage_file_path = "bin/usage/#{executable_name}.txt"
       File.open(usage_file_path, 'w') do |file|
         file.puts(usage_text)

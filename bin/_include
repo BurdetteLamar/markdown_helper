@@ -10,7 +10,7 @@ options = {:pristine => false}
 opts = nil
 parser = OptionParser.new do |_opts|
   opts = _opts
-  _opts.banner = "Usage: markdown_helper include [options] template_file_path markdown_file_page"
+  _opts.banner = "Usage: markdown_helper include [options] template_file_path markdown_file_path"
   _opts.on('--pristine', 'No comments added') do |_|
     options[:pristine] = true
   end

@@ -45,4 +45,5 @@ usage(opts) unless ARGV.size == 2
 usage(opts) unless File.readable?(template_file_path)
 usage(opts) unless File.writable?(File.dirname(markdown_file_path))
 
+warn('This resolve is deprecated.  Please use command "markdown_helper resolve".')
 MarkdownHelper.new(options).resolve(template_file_path, markdown_file_path)

@@ -45,5 +45,6 @@ usage(opts) unless ARGV.size == 2
 usage(opts) unless File.readable?(template_file_path)
 usage(opts) unless File.writable?(File.dirname(markdown_file_path))
 
+warn('This include is deprecated.  Please use command "markdown_helper include".')
 MarkdownHelper.new(options).include(template_file_path, markdown_file_path)
 
