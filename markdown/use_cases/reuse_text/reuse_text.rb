@@ -1,68 +1,69 @@
 #!/usr/bin/env ruby
 
-require_relative '../use_case'
+reusable_text_file_name = 'reusable_text.md'
+includer_file_name = 'includer.md'
+included_file_name = 'included.md'
+use_case_file_name = 'reuse_text.md'
+template_file_name = 'template.md'
 
-class ReuseText < UseCase
+include_command = "markdown_helper include #{includer_file_name} #{included_file_name}"
 
-  REUSABLE_TEXT_FILE_NAME = 'reusable_text.md'
+File.write(
+    reusable_text_file_name,
+    <<EOT
+This is some useful text that can be included in more than one place (actually, in more than one file).
+EOT
+)
 
-  def build
+File.write(
+    includer_file_name,
+    <<EOT
+This file includes the useful text.
 
-    template = <<EOT
-### Reusable Text
+@[:verbatim](#{reusable_text_file_name})
+EOT
+)
+
+# Example inclusion.
+system(include_command)
+
+File.write(
+    template_file_name,
+    <<EOT
+### Use Case: Reuse Text
 
 Use file inclusion to stay DRY (Don't Repeat Yourself).
 
 Maintain reusable text in a separate file, then include it wherever it's needed.
 
-#### File to Include
+#### File to Be Included
 
-Here's a file containing some text that can be included in more than one place:
+Here's a file containing some text that can be included:
 
-@[:code_block](#{REUSABLE_TEXT_FILE_NAME})
+@[:code_block](#{reusable_text_file_name})
 
 #### Includer File
 
 Here's a template file that includes it:
 
-@[:code_block](#{INCLUDER_FILE_NAME})
+@[:code_block](#{includer_file_name})
 
 #### Command
 
 Here's the command to perform the inclusion (```--pristine``` suppresses inclusion comments):
 
 ```sh
-#{INCLUDE_COMMAND}
+#{include_command}
 ```
 
 #### File with Inclusion
 
 Here's the finished file with the inclusion:
 
-@[:code_block](#{INCLUDED_FILE_NAME})
+@[:code_block](#{included_file_name})
 EOT
+)
 
-    reusable_text = <<EOT
-This is some useful text that can be included in more than one place (actually, in more than one file).
-EOT
-
-    includer = <<EOT
-This file includes the useful text.
-
-@[:verbatim](#{REUSABLE_TEXT_FILE_NAME})
-EOT
-
-    write_files(
-        REUSABLE_TEXT_FILE_NAME => reusable_text,
-        INCLUDER_FILE_NAME => includer,
-    )
-
-    # Perform the inclusion.
-    system(INCLUDE_COMMAND)
-
-    build_use_case_markdown(template)
-
-  end
-end
-
-ReuseText.new.build
+# Build use case.
+build_command = "markdown_helper include --pristine #{template_file_name} #{use_case_file_name}"
+system(build_command)
