@@ -4,8 +4,8 @@ included_file_name = 'included.md'
 template_file_name = 'template.md'
 use_case_file_name = 'use_case.md'
 
-include_command = "ruby ../../../bin/include --pristine #{includer_file_name} #{included_file_name}"
-build_command = "ruby ../../../bin/include --pristine #{template_file_name} #{use_case_file_name}"
+include_command = "markdown_helper include --pristine #{includer_file_name} #{included_file_name}"
+build_command = "markdown_helper include --pristine #{template_file_name} #{use_case_file_name}"
 
 template = <<EOT
 ### Reusable Text
@@ -14,7 +14,7 @@ Use file inclusion to stay DRY (Don't Repeat Yourself).
 
 Maintain reusable text in a separate file, then include it wherever it's needed.
 
-#### Separate File
+#### File to Include
 
 Here's a file containing some text that can be included in more than one place:
 
@@ -34,7 +34,7 @@ Here's the command to perform the inclusion (```--pristine``` suppresses inclusi
 #{include_command}
 ```
 
-#### Included File
+#### File with Inclusion
 
 Here's the finished file with the inclusion:
 
