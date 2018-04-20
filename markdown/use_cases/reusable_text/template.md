@@ -10,7 +10,7 @@ Here's a file containing some text that can be included in more than one place:
 
 @[:code_block](reusable_text.md)
 
-#### Template File
+#### Includer File
 
 Here's a template file that includes it:
 

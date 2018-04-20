@@ -13,7 +13,7 @@ Here's a file containing some text that can be included in more than one place:
 This is some useful text that can be included in more than one place (actually, in more than one file).
 ```
 
-#### Template File
+#### Includer File
 
 Here's a template file that includes it:
 
