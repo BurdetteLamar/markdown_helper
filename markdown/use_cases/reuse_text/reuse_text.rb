@@ -2,7 +2,7 @@
 
 require_relative '../use_case'
 
-class ReusableText < UseCase
+class ReuseText < UseCase
 
   REUSABLE_TEXT_FILE_NAME = 'reusable_text.md'
 
@@ -65,5 +65,4 @@ EOT
   end
 end
 
-ReusableText.new.build
-
+ReuseText.new.build
