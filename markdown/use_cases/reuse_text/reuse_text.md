@@ -1,19 +1,19 @@
-### Reusable Text
+### Use Case: Reuse Text
 
 Use file inclusion to stay DRY (Don't Repeat Yourself).
 
 Maintain reusable text in a separate file, then include it wherever it's needed.
 
-#### Separate File
+#### File to Be Included
 
-Here's a file containing some text that can be included in more than one place:
+Here's a file containing some text that can be included:
 
 <code>reusable_text.md</code>
 ```
 This is some useful text that can be included in more than one place (actually, in more than one file).
 ```
 
-#### Template File
+#### Includer File
 
 Here's a template file that includes it:
 
@@ -29,16 +29,20 @@ This file includes the useful text.
 Here's the command to perform the inclusion (```--pristine``` suppresses inclusion comments):
 
 ```sh
-ruby ../../../bin/include --pristine includer.md included.md
+markdown_helper include includer.md included.md
 ```
 
-#### Included File
+#### File with Inclusion
 
 Here's the finished file with the inclusion:
 
 <code>included.md</code>
 ```
+<!-- >>>>>> BEGIN GENERATED FILE (include): SOURCE includer.md -->
 This file includes the useful text.
 
+<!-- >>>>>> BEGIN INCLUDED FILE (verbatim): SOURCE ./reusable_text.md -->
 This is some useful text that can be included in more than one place (actually, in more than one file).
+<!-- <<<<<< END INCLUDED FILE (verbatim): SOURCE ./reusable_text.md -->
+<!-- <<<<<< END GENERATED FILE (include): SOURCE includer.md -->
 ```
