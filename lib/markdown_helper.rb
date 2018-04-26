@@ -63,14 +63,14 @@ class MarkdownHelper
   #
   # The path resolves to:
   #
-  #   absolute_file_path = File.join(
+  #   image_path = File.join(
   #       "https://raw.githubusercontent.com/#{repo_user}/#{repo_name}/master",
   #       relative_file_path,
   #   )
   def resolve(template_file_path, markdown_file_path)
     # Method :generate_file does the first things, yields the block, does the last things.
     send(:generate_file, template_file_path, markdown_file_path, __method__) do |input_lines, output_lines|
-      send(:resolve_images, input_lines, output_lines)
+      send(:resolve_images, template_file_path, input_lines, output_lines)
     end
   end
   alias resolve_image_urls resolve
@@ -175,7 +175,7 @@ class MarkdownHelper
     end
   end
 
-  def resolve_images(input_lines, output_lines)
+  def resolve_images(template_file_path, input_lines, output_lines)
     input_lines.each do |input_line|
       scan_data = input_line.scan(IMAGE_REGEXP)
       if scan_data.empty?
@@ -185,7 +185,9 @@ class MarkdownHelper
       output_lines.push(comment(" >>>>>> BEGIN RESOLVED IMAGES: INPUT-LINE '#{input_line}' ")) unless pristine
       output_line = input_line
       scan_data.each do |alt_text, path_and_attributes|
-        relative_file_path, attributes_s =path_and_attributes.split(/\s?\|\s?/, 2)
+        original_image_file_path, attributes_s = path_and_attributes.split(/\s?\|\s?/, 2)
+
+        # Attributes.
         attributes = attributes_s ? attributes_s.split(/\s+/) : []
         formatted_attributes = ['']
         attributes.each do |attribute|
@@ -193,18 +195,35 @@ class MarkdownHelper
           formatted_attributes.push(format('%s="%s"', name, value))
         end
         formatted_attributes_s = formatted_attributes.join(' ')
-        repo_user, repo_name = repo_user_and_name
-        if relative_file_path.start_with?('http')
-          absolute_file_path = relative_file_path
+
+        if original_image_file_path.start_with?('http')
+          image_path = original_image_file_path
         else
+          git_dir = `git rev-parse --git-dir`.chomp
+          if git_dir == '.git'
+            git_clone_dir_path = `pwd`.chomp
+          else
+            git_clone_dir_path = git_dir.chomp
+          end
+          git_clone_dir_pathname = Pathname.new(git_clone_dir_path.sub(%r|/c/|, 'C:/')).realpath
+          git_clone_dir_path = git_clone_dir_pathname.to_s
+          absolute_template_file_path = File.absolute_path(template_file_path)
+          template_dir_path = File.dirname(absolute_template_file_path)
           absolute_file_path = File.join(
+              template_dir_path,
+              original_image_file_path,
+          )
+          absolute_file_path = Pathname.new(absolute_file_path).cleanpath.to_s
+          relative_image_file_path = absolute_file_path.sub(git_clone_dir_path + '/', '')
+          repo_user, repo_name = repo_user_and_name
+          image_path = File.join(
               "https://raw.githubusercontent.com/#{repo_user}/#{repo_name}/master",
-              relative_file_path,
+              relative_image_file_path,
           )
         end
         img_element = format(
             '<img src="%s" alt="%s"%s>',
-            absolute_file_path,
+            image_path,
             alt_text,
             formatted_attributes_s,
         )
