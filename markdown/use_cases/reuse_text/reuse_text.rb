@@ -6,7 +6,7 @@ included_file_name = 'included.md'
 use_case_file_name = 'reuse_text.md'
 template_file_name = 'template.md'
 
-include_command = "markdown_helper include #{includer_file_name} #{included_file_name}"
+include_command = "markdown_helper include --pristine #{includer_file_name} #{included_file_name}"
 
 File.write(
     reusable_text_file_name,

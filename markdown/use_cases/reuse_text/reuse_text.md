@@ -29,7 +29,7 @@ This file includes the useful text.
 Here's the command to perform the inclusion (```--pristine``` suppresses inclusion comments):
 
 ```sh
-markdown_helper include includer.md included.md
+markdown_helper include --pristine includer.md included.md
 ```
 
 #### File with Inclusion
@@ -38,11 +38,7 @@ Here's the finished file with the inclusion:
 
 <code>included.md</code>
 ```
-<!-- >>>>>> BEGIN GENERATED FILE (include): SOURCE includer.md -->
 This file includes the useful text.
 
-<!-- >>>>>> BEGIN INCLUDED FILE (verbatim): SOURCE ./reusable_text.md -->
 This is some useful text that can be included in more than one place (actually, in more than one file).
-<!-- <<<<<< END INCLUDED FILE (verbatim): SOURCE ./reusable_text.md -->
-<!-- <<<<<< END GENERATED FILE (include): SOURCE includer.md -->
 ```

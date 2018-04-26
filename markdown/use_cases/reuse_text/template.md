@@ -21,7 +21,7 @@ Here's a template file that includes it:
 Here's the command to perform the inclusion (```--pristine``` suppresses inclusion comments):
 
 ```sh
-markdown_helper include includer.md included.md
+markdown_helper include --pristine includer.md included.md
 ```
 
 #### File with Inclusion
