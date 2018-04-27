@@ -1,4 +1,4 @@
-### Use Case: Reuse Text
+### Reuse Text
 
 Use file inclusion to stay DRY (Don't Repeat Yourself).
 
@@ -33,7 +33,7 @@ Then includes it again.
 Here's the command to perform the inclusion:
 
 ```sh
-markdown_helper include --pristine includer.md included.md
+markdown_helper include --pristine C:/Users/Burdette/Documents/GitHub/markdown_helper/markdown/use_cases/reuse_text/includer.md C:/Users/Burdette/Documents/GitHub/markdown_helper/markdown/use_cases/reuse_text/included.md
 ```
 
 (Option ```--pristine``` suppresses comment insertion.)

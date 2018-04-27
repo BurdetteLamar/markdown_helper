@@ -1,0 +1,52 @@
+
+namespace :build do
+
+  desc 'Build use case markdown'
+  task :use_cases do
+    dir_path = File.dirname(__FILE__)
+    use_case_file_paths = []
+    tbs_file_paths = []
+    Dir.chdir(dir_path) do
+      dir_names = %w/
+        reuse_text
+      /
+      dir_names.each do |dir_name|
+        ruby_file_path = File.join(
+            dir_path,
+            dir_name,
+            "#{dir_name}.rb"
+        )
+        if File.exist?(ruby_file_path)
+          command = "ruby #{ruby_file_path}"
+          system(command)
+        end
+        use_case_file_path = File.join(
+            dir_path,
+            dir_name,
+            "#{dir_name}.md"
+        )
+        if File.exist?(use_case_file_path)
+          use_case_file_paths.push(use_case_file_path)
+        else
+          tbs_file_paths.push(use_case_file_path)
+        end
+      end
+    end
+    File.open('use_cases.md', 'w') do |use_case_file|
+      use_case_file.puts(
+              <<EOT
+# Use Cases
+
+## Completed
+
+EOT
+      )
+      use_case_file_paths.each do |use_case_file_path|
+        title_line = File.open(use_case_file_path).grep(/^#/).first.chomp
+        title = title_line.split(/\s/, 2).pop
+        use_case_file.puts("* [#{title}](#{use_case_file_path})")
+      end
+    end
+  end
+
+end
