@@ -133,11 +133,13 @@ class MarkdownHelper
       )
       included_real_path = new_inclusion.included_real_path
       if treatment == :verbatim
-        previously_included = verbatim_inclusions.include?(new_inclusion.included_real_path)
+        previously_included = verbatim_inclusions.include?(included_real_path)
         if previously_included
-          backtrace = verbatim_inclusions.values.push(new_inclusion)
+          verbatim_inclusions.store(included_real_path, new_inclusion)
           message_lines = ['Includes are circular:']
-          backtrace.each_with_index do |inclusion, i|
+           i = 0
+          verbatim_inclusions.each_with_index do |path_and_inclusion, i|
+            _, inclusion = *path_and_inclusion
             message_lines.push("  Level #{i}:")
             message_lines.push("    Includer: #{inclusion.includer_file_path}:#{inclusion.includer_line_number}")
             message_lines.push("    Relative file path: #{inclusion.relative_included_file_path}")
@@ -147,7 +149,6 @@ class MarkdownHelper
           message = message_lines.join("\n")
           raise RuntimeError.new(message)
         end
-        verbatim_inclusions[included_real_path] = new_inclusion
       end
       output_lines.push(comment(" >>>>>> BEGIN INCLUDED FILE (#{treatment}): SOURCE #{new_inclusion.included_file_path} ")) unless pristine
       include_lines = File.readlines(new_inclusion.included_file_path)
@@ -158,7 +159,9 @@ class MarkdownHelper
       case treatment
         when :verbatim
           # Pass through unadorned, but honor any nested includes.
+          verbatim_inclusions.store(included_real_path, new_inclusion)
           include_files(new_inclusion.included_file_path, include_lines, output_lines, verbatim_inclusions)
+          verbatim_inclusions.delete(included_real_path)
         when :comment
           output_lines.push(comment(include_lines.join('')))
         else
