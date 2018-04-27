@@ -9,8 +9,8 @@ Maintain reusable text in a separate file, then include it wherever it's needed.
 Here's a file containing some text that can be included:
 
 <code>reusable_text.md</code>
-```
-This is some useful text that can be included in more than one place (actually, in more than one file).
+```markdown
+This is some reusable text that can be included in more than one place (actually, in more than one file).
 ```
 
 #### Includer File
@@ -18,27 +18,37 @@ This is some useful text that can be included in more than one place (actually, 
 Here's a template file that includes it:
 
 <code>includer.md</code>
-```
+```markdown
 This file includes the useful text.
+
+@[:verbatim](reusable_text.md)
+
+Then includes it again.
 
 @[:verbatim](reusable_text.md)
 ```
 
 #### Command
 
-Here's the command to perform the inclusion (```--pristine``` suppresses inclusion comments):
+Here's the command to perform the inclusion:
 
 ```sh
 markdown_helper include --pristine includer.md included.md
 ```
+
+(Option ```--pristine``` suppresses comment insertion.)
 
 #### File with Inclusion
 
 Here's the finished file with the inclusion:
 
 <code>included.md</code>
-```
+```markdown
 This file includes the useful text.
 
-This is some useful text that can be included in more than one place (actually, in more than one file).
+This is some reusable text that can be included in more than one place (actually, in more than one file).
+
+Then includes it again.
+
+This is some reusable text that can be included in more than one place (actually, in more than one file).
 ```

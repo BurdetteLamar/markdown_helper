@@ -11,7 +11,7 @@ include_command = "markdown_helper include --pristine #{includer_file_name} #{in
 File.write(
     reusable_text_file_name,
     <<EOT
-This is some useful text that can be included in more than one place (actually, in more than one file).
+This is some reusable text that can be included in more than one place (actually, in more than one file).
 EOT
 )
 
@@ -19,6 +19,10 @@ File.write(
     includer_file_name,
     <<EOT
 This file includes the useful text.
+
+@[:verbatim](#{reusable_text_file_name})
+
+Then includes it again.
 
 @[:verbatim](#{reusable_text_file_name})
 EOT
@@ -40,27 +44,29 @@ Maintain reusable text in a separate file, then include it wherever it's needed.
 
 Here's a file containing some text that can be included:
 
-@[:code_block](#{reusable_text_file_name})
+@[markdown](#{reusable_text_file_name})
 
 #### Includer File
 
 Here's a template file that includes it:
 
-@[:code_block](#{includer_file_name})
+@[markdown](#{includer_file_name})
 
 #### Command
 
-Here's the command to perform the inclusion (```--pristine``` suppresses inclusion comments):
+Here's the command to perform the inclusion:
 
 ```sh
 #{include_command}
 ```
 
+@[:verbatim](../pristine.md)
+
 #### File with Inclusion
 
 Here's the finished file with the inclusion:
 
-@[:code_block](#{included_file_name})
+@[markdown](#{included_file_name})
 EOT
 )
 
