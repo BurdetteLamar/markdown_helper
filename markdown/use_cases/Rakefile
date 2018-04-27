@@ -46,9 +46,11 @@ EOT
         title = title_line.split(/\s/, 2).pop
         use_case_dir_name = File.basename(File.dirname(use_case_file_path))
         use_case_file_name = File.basename(use_case_file_path)
+        use_case_name = File.basename(use_case_file_path, '.md')
+        use_case_anchor = use_case_name.gsub('_', '-')
         use_case_relative_url = File.join(
             use_case_dir_name,
-            use_case_file_name,
+            use_case_file_name + '#' + use_case_anchor,
         )
         use_case_file.puts("* [#{title}](#{use_case_relative_url})")
       end
