@@ -17,8 +17,6 @@ namespace :build do
             dir_name,
             "#{dir_name}.rb"
         )
-        p ruby_file_path
-        p File.exist?(ruby_file_path)
         if File.exist?(ruby_file_path)
           command = "ruby #{ruby_file_path}"
           system(command)

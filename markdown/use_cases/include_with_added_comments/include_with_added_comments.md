@@ -3,7 +3,7 @@
 By default (that is, without option ```--pristine```) file inclusion adds comments that:
 
 * Identify the includer file.
-* Identify the includee file.
+* Identify each includee file.
 
 #### Includee File
 
@@ -16,8 +16,6 @@ Text to be included.
 
 <code>includer.md</code>
 ```markdown
-This file includes the text.
-
 @[:verbatim](includee.md)
 
 ```
@@ -33,8 +31,6 @@ markdown_helper include includer.md included.md
 <code>included.md</code>
 ```markdown
 <!-- >>>>>> BEGIN GENERATED FILE (include): SOURCE includer.md -->
-This file includes the text.
-
 <!-- >>>>>> BEGIN INCLUDED FILE (verbatim): SOURCE ./includee.md -->
 Text to be included.
 <!-- <<<<<< END INCLUDED FILE (verbatim): SOURCE ./includee.md -->

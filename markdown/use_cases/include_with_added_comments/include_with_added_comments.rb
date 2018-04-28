@@ -40,8 +40,6 @@ EOT
 File.write(
     includer_file_path,
     <<EOT
-This file includes the text.
-
 @[:verbatim](#{includee_file_name})
 
 EOT
