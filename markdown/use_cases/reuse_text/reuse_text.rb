@@ -2,8 +2,6 @@
 
 use_case_dir_path = File.absolute_path(File.dirname(__FILE__))
 
-
-
 reusable_text_file_name = 'reusable_text.md'
 reusable_text_file_path = File.join(
     use_case_dir_path,
@@ -17,10 +15,6 @@ includer_file_path = File.join(
 )
 
 included_file_name = 'included.md'
-included_file_path = File.join(
-    use_case_dir_path,
-    included_file_name,
-)
 
 use_case_file_name = 'reuse_text.md'
 use_case_file_path = File.join(

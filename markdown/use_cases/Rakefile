@@ -9,6 +9,7 @@ namespace :build do
     Dir.chdir(dir_path) do
       dir_names = %w/
         reuse_text
+        include_with_added_comments
       /
       dir_names.each do |dir_name|
         ruby_file_path = File.join(
@@ -16,6 +17,8 @@ namespace :build do
             dir_name,
             "#{dir_name}.rb"
         )
+        p ruby_file_path
+        p File.exist?(ruby_file_path)
         if File.exist?(ruby_file_path)
           command = "ruby #{ruby_file_path}"
           system(command)
