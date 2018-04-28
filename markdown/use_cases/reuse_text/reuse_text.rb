@@ -2,6 +2,8 @@
 
 use_case_dir_path = File.absolute_path(File.dirname(__FILE__))
 
+
+
 reusable_text_file_name = 'reusable_text.md'
 reusable_text_file_path = File.join(
     use_case_dir_path,
@@ -32,7 +34,7 @@ template_file_path = File.join(
     template_file_name,
 )
 
-include_command = "markdown_helper include --pristine #{includer_file_path} #{included_file_path}"
+include_command = "markdown_helper include --pristine #{includer_file_name} #{included_file_name}"
 
 File.write(
     reusable_text_file_path,
@@ -56,7 +58,9 @@ EOT
 )
 
 # Example inclusion.
-system(include_command)
+Dir.chdir(use_case_dir_path) do
+  system(include_command)
+end
 
 File.write(
     template_file_path,

@@ -21,7 +21,7 @@ Here's a template file that includes it:
 Here's the command to perform the inclusion:
 
 ```sh
-markdown_helper include --pristine C:/Users/Burdette/Documents/GitHub/markdown_helper/markdown/use_cases/reuse_text/includer.md C:/Users/Burdette/Documents/GitHub/markdown_helper/markdown/use_cases/reuse_text/included.md
+markdown_helper include --pristine includer.md included.md
 ```
 
 @[:verbatim](../pristine.md)

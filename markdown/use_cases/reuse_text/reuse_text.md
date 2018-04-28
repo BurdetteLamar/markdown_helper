@@ -33,7 +33,7 @@ Then includes it again.
 Here's the command to perform the inclusion:
 
 ```sh
-markdown_helper include --pristine C:/Users/Burdette/Documents/GitHub/markdown_helper/markdown/use_cases/reuse_text/includer.md C:/Users/Burdette/Documents/GitHub/markdown_helper/markdown/use_cases/reuse_text/included.md
+markdown_helper include --pristine includer.md included.md
 ```
 
 (Option ```--pristine``` suppresses comment insertion.)
