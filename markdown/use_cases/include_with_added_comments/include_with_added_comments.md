@@ -17,7 +17,6 @@ Text to be included.
 <code>includer.md</code>
 ```markdown
 @[:verbatim](includee.md)
-
 ```
 
 #### Inclusion Command
@@ -34,6 +33,5 @@ markdown_helper include includer.md included.md
 <!-- >>>>>> BEGIN INCLUDED FILE (verbatim): SOURCE ./includee.md -->
 Text to be included.
 <!-- <<<<<< END INCLUDED FILE (verbatim): SOURCE ./includee.md -->
-
 <!-- <<<<<< END GENERATED FILE (include): SOURCE includer.md -->
 ```

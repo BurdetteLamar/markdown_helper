@@ -41,7 +41,6 @@ File.write(
     includer_file_path,
     <<EOT
 @[:verbatim](#{includee_file_name})
-
 EOT
 )
 
