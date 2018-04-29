@@ -85,7 +85,7 @@ Here's the command to perform the inclusion:
 #{include_command}
 ```
 
-@[:verbatim](../pristine.md)
+@[:verbatim](../../pristine.md)
 
 #### File with Inclusion
 

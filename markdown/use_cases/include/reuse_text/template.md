@@ -24,7 +24,7 @@ Here's the command to perform the inclusion:
 markdown_helper include --pristine includer.md included.md
 ```
 
-@[:verbatim](../pristine.md)
+@[:verbatim](../../pristine.md)
 
 #### File with Inclusion
 
