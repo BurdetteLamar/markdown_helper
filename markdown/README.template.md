@@ -6,8 +6,8 @@
 
 Command-line interface is now supported:
 
-* ```markdown_helper include [options] template_file_path markdown_file_path```
-* ```markdown_helper resolve [options] template_file_path markdown_file_path```
+* Added first [use cases](markdown/use_cases/use_cases.md#use-cases) (there will be more).
+* Deprecated treatment ```:verbatim```, changing to ```:markdown```.  The older term could be confusing, because although text to be treated ```:verbatim``` is included 'verbatim' (without change), it will be processed as GitHub markdown.
 
 ## What's This?
 
