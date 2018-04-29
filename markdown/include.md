@@ -2,4 +2,4 @@
 
 @[:code_block](my_language.xyzzy)
 
-@[:verbatim](my_markdown.md)
+@[:markdown](my_markdown.md)

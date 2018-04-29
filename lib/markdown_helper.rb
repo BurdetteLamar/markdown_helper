@@ -38,11 +38,11 @@ class MarkdownHelper
   # @example pragma to include text as a plain code block.
   #   @[:code_block](foo.xyz)
   #
-  # @example pragma to include text verbatim, to be rendered as markdown.
-  #   @[:verbatim](foo.md)
+  # @example pragma to include text markdown, to be rendered as markdown.
+  #   @[:markdown](foo.md)
   def include(template_file_path, markdown_file_path)
     send(:generate_file, template_file_path, markdown_file_path, __method__) do |input_lines, output_lines|
-      send(:include_files, template_file_path, input_lines, output_lines, verbatim_inclusions = {})
+      send(:include_files, template_file_path, input_lines, output_lines, markdown_inclusions = {})
     end
   end
 
@@ -106,7 +106,7 @@ class MarkdownHelper
     output
   end
 
-  def include_files(includer_file_path, input_lines, output_lines, verbatim_inclusions)
+  def include_files(includer_file_path, input_lines, output_lines, markdown_inclusions)
 
     input_lines.each_with_index do |input_line, line_index|
       match_data = input_line.match(INCLUDE_REGEXP)
@@ -119,8 +119,8 @@ class MarkdownHelper
       treatment = case treatment
                     when ':code_block'
                       :code_block
-                    when ':verbatim'
-                      :verbatim
+                    when ':markdown'
+                      :markdown
                     when ':comment'
                       :comment
                     else
@@ -132,13 +132,13 @@ class MarkdownHelper
           relative_included_file_path
       )
       included_real_path = new_inclusion.included_real_path
-      if treatment == :verbatim
-        previously_included = verbatim_inclusions.include?(included_real_path)
+      if treatment == :markdown
+        previously_included = markdown_inclusions.include?(included_real_path)
         if previously_included
-          verbatim_inclusions.store(included_real_path, new_inclusion)
+          markdown_inclusions.store(included_real_path, new_inclusion)
           message_lines = ['Includes are circular:']
            i = 0
-          verbatim_inclusions.each_with_index do |path_and_inclusion, i|
+          markdown_inclusions.each_with_index do |path_and_inclusion, i|
             _, inclusion = *path_and_inclusion
             message_lines.push("  Level #{i}:")
             message_lines.push("    Includer: #{inclusion.includer_file_path}:#{inclusion.includer_line_number}")
@@ -157,11 +157,11 @@ class MarkdownHelper
         warn(message)
       end
       case treatment
-        when :verbatim
+        when :markdown
           # Pass through unadorned, but honor any nested includes.
-          verbatim_inclusions.store(included_real_path, new_inclusion)
-          include_files(new_inclusion.included_file_path, include_lines, output_lines, verbatim_inclusions)
-          verbatim_inclusions.delete(included_real_path)
+          markdown_inclusions.store(included_real_path, new_inclusion)
+          include_files(new_inclusion.included_file_path, include_lines, output_lines, markdown_inclusions)
+          markdown_inclusions.delete(included_real_path)
         when :comment
           output_lines.push(comment(include_lines.join('')))
         else

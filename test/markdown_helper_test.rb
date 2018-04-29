@@ -52,7 +52,7 @@ class MarkdownHelperTest < Minitest::Test
     # Test combinations of treatments and templates.
     {
         :nothing => :txt,
-        :markdown => :md,
+        :md => :md,
         :python => :py,
         :ruby => :rb,
         :text => :txt,
@@ -60,7 +60,7 @@ class MarkdownHelperTest < Minitest::Test
         :xml => :xml,
     }.each_pair do |file_stem, file_type|
       [
-          :verbatim,
+          :markdown,
           :code_block,
           :comment,
           file_stem.to_s,

@@ -1,1 +1,1 @@
-@[:verbatim](ruby_verbatim.md)
+@[:markdown](ruby_markdown.md)

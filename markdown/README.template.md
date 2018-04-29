@@ -59,11 +59,11 @@ Use the markdown helper to merge external files into a markdown (</code>.md</cod
 
 Comment text is written into the output between the comment delimiters <code>\<!--</code> and <code>--></code>
 
-#### Verbatim
+#### Markdown
 
-Verbatim text is included unadorned.  Most often, verbatim text is markdown to be rendered as part of the markdown page.
+Markdown text is included unadorned.  Most often, markdown text is markdown to be rendered as part of the markdown page.
 
-The verbatim text is itself scanned for nested includes.
+The markdown text is itself scanned for nested includes.
 
 ### Usage
 
@@ -86,7 +86,7 @@ where:
 * *format* (in square brackets) is one of the following:
   * Highlighting mode such as <code>[ruby]</code>, to include a highlighted code block.  This can be any Ace mode mentioned in [GitHub Languages](https://github.com/github/linguist/blob/master/lib/linguist/languages.yml).
   * <code>[:code_block]</code>, to include a plain code block.
-  * <code>[:verbatim]</code>, to include text verbatim (to be rendered as markdown).
+  * <code>[:markdown]</code>, to include text markdown (to be rendered as markdown).
 * *relative_file_path* points to the file to be included.
 
 ##### Example Include Descriptions

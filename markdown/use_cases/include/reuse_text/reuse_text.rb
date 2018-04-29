@@ -43,11 +43,11 @@ File.write(
     <<EOT
 This file includes the useful text.
 
-@[:verbatim](#{reusable_text_file_name})
+@[:markdown](#{reusable_text_file_name})
 
 Then includes it again.
 
-@[:verbatim](#{reusable_text_file_name})
+@[:markdown](#{reusable_text_file_name})
 EOT
 )
 
@@ -85,7 +85,7 @@ Here's the command to perform the inclusion:
 #{include_command}
 ```
 
-@[:verbatim](../../pristine.md)
+@[:markdown](../../pristine.md)
 
 #### File with Inclusion
 

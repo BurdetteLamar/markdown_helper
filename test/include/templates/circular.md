@@ -1,1 +1,1 @@
-@[:verbatim](circular.md)
+@[:markdown](circular.md)
