@@ -1,1 +1,1 @@
-@[:verbatim](includee.md)
+@[:markdown](includee.md)

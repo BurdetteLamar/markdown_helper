@@ -1,1 +1,0 @@
-@[:verbatim](../includes/ruby.rb)

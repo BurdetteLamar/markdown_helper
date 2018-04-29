@@ -1,6 +1,6 @@
 <!-- >>>>>> BEGIN GENERATED FILE (include): SOURCE C:/Users/Burdette/Documents/GitHub/markdown_helper/test/include/templates/nested.md -->
-<!-- >>>>>> BEGIN INCLUDED FILE (verbatim): SOURCE C:/Users/Burdette/Documents/GitHub/markdown_helper/test/include/templates/ruby_verbatim.md -->
-<!-- >>>>>> BEGIN INCLUDED FILE (verbatim): SOURCE C:/Users/Burdette/Documents/GitHub/markdown_helper/test/include/templates/../includes/ruby.rb -->
+<!-- >>>>>> BEGIN INCLUDED FILE (markdown): SOURCE C:/Users/Burdette/Documents/GitHub/markdown_helper/test/include/templates/ruby_markdown.md -->
+<!-- >>>>>> BEGIN INCLUDED FILE (markdown): SOURCE C:/Users/Burdette/Documents/GitHub/markdown_helper/test/include/templates/../includes/ruby.rb -->
 class RubyCode
 
   def initialize
@@ -8,6 +8,6 @@ class RubyCode
   end
 
 end
-<!-- <<<<<< END INCLUDED FILE (verbatim): SOURCE C:/Users/Burdette/Documents/GitHub/markdown_helper/test/include/templates/../includes/ruby.rb -->
-<!-- <<<<<< END INCLUDED FILE (verbatim): SOURCE C:/Users/Burdette/Documents/GitHub/markdown_helper/test/include/templates/ruby_verbatim.md -->
+<!-- <<<<<< END INCLUDED FILE (markdown): SOURCE C:/Users/Burdette/Documents/GitHub/markdown_helper/test/include/templates/../includes/ruby.rb -->
+<!-- <<<<<< END INCLUDED FILE (markdown): SOURCE C:/Users/Burdette/Documents/GitHub/markdown_helper/test/include/templates/ruby_markdown.md -->
 <!-- <<<<<< END GENERATED FILE (include): SOURCE C:/Users/Burdette/Documents/GitHub/markdown_helper/test/include/templates/nested.md -->

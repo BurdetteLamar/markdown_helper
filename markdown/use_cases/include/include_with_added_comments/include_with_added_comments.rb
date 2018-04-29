@@ -40,7 +40,7 @@ EOT
 File.write(
     includer_file_path,
     <<EOT
-@[:verbatim](#{includee_file_name})
+@[:markdown](#{includee_file_name})
 EOT
 )
 

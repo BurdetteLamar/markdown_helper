@@ -1,1 +1,1 @@
-@[:verbatim](include.rb)
+@[:markdown](include.rb)
