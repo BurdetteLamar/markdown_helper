@@ -121,6 +121,10 @@ class MarkdownHelper
                       :code_block
                     when ':markdown'
                       :markdown
+                    when ':verbatim'
+                      message = "Treatment ':verbatim' is deprecated; please use treatment ':markdown'."
+                      warn(message)
+                      :markdown
                     when ':comment'
                       :comment
                     else
@@ -156,18 +160,13 @@ class MarkdownHelper
         message = "Warning:  Included file has no trailing newline: #{relative_included_file_path}"
         warn(message)
       end
-      case
-        when treatment == :markdown || treatment == :verbatim
-          if treatment == :verbatim
-            message = "Warning:  Treatment ':verbatim' is deprecated;  please use treatment ':markdown'."
-            warn(message)
-            treatment = :markdown
-          end
+      case treatment
+        when :markdown
           # Pass through unadorned, but honor any nested includes.
           markdown_inclusions.store(included_real_path, new_inclusion)
           include_files(new_inclusion.included_file_path, include_lines, output_lines, markdown_inclusions)
           markdown_inclusions.delete(included_real_path)
-        when treatment == :comment
+        when :comment
           output_lines.push(comment(include_lines.join('')))
         else
           # Use the file name as a label.
