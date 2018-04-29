@@ -26,7 +26,7 @@ EOT
 ## #{section.to_s.capitalize}
 
 EOT
-)
+) unless dir_names.empty?
           dir_names.each do |dir_name|
             ruby_file_path = File.join(
                 dir_path,
