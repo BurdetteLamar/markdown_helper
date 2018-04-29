@@ -89,7 +89,7 @@ Comment text is written into the output between the comment delimiters <code>\<!
 
 #### Markdown
 
-Markdown text is included unadorned.  Most often, markdown text is markdown to be rendered as part of the markdown page.
+Markdown text is included unadorned, and will be processed on GitHub as markdown.
 
 The markdown text is itself scanned for nested includes.
 
