@@ -56,7 +56,6 @@ EOT
                   use_case_file_name + '#' + use_case_anchor,
               )
               use_case_file.puts("* [#{title}](#{use_case_relative_url})")
-              use_case_file.puts("* #{title}")
             end
           end
         end
