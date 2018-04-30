@@ -2,6 +2,18 @@
 
 use_case_dir_path = File.absolute_path(File.dirname(__FILE__))
 
+use_case_file_name = 'use_case.md'
+use_case_file_path = File.join(
+    use_case_dir_path,
+    use_case_file_name,
+)
+
+template_file_name = 'use_case_template.md'
+template_file_path = File.join(
+    use_case_dir_path,
+    template_file_name,
+)
+
 reusable_text_file_name = 'reusable_text.md'
 reusable_text_file_path = File.join(
     use_case_dir_path,
@@ -15,18 +27,6 @@ includer_file_path = File.join(
 )
 
 included_file_name = 'included.md'
-
-use_case_file_name = 'reuse_text.md'
-use_case_file_path = File.join(
-    use_case_dir_path,
-    use_case_file_name,
-)
-
-template_file_name = 'template.md'
-template_file_path = File.join(
-    use_case_dir_path,
-    template_file_name,
-)
 
 include_command = "markdown_helper include --pristine #{includer_file_name} #{included_file_name}"
 
