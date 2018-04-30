@@ -35,43 +35,35 @@ EOT
 
 EOT
 ) unless dir_names.empty?
-
-          # If the dir has a Ruby file, run it.
+          Dir.pwd
           dir_names.each do |dir_name|
-            ruby_file_path = File.join(
-                dir_path,
-                section.to_s,
-                dir_name,
-                "#{dir_name}.rb"
-            )
-            if File.exist?(ruby_file_path)
-              command = "ruby #{ruby_file_path}"
-              system(command)
-            end
+            Dir.chdir("#{section}/#{dir_name}") do
+              # If the dir has a Ruby file, run it.
+              ruby_file_path = 'build.rb'
+              if File.exist?(ruby_file_path)
+                command = "ruby #{ruby_file_path}"
+                system(command)
+              end
 
-            # If the dir has a conventionally-named markdown file, link to it.
-            use_case_file_path = File.join(
-                dir_path,
-                section.to_s,
-                dir_name,
-                "#{dir_name}.md"
-            )
-            unless File.exist?(use_case_file_path)
-              message = "File #{dir_name}.md does not exist"
-              warn(message)
-              next
+              # If the dir has a use case file, link to it.
+              use_case_file_path = 'use_case.md'
+              unless File.exist?(use_case_file_path)
+                message = "File #{dir_name}/use_case.md does not exist"
+                warn(message)
+                next
+              end
+              title_line = File.open(use_case_file_path).grep(/^#/).first.chomp
+              title = title_line.split(/\s/, 2).pop
+              use_case_file_name = File.basename(use_case_file_path)
+              use_case_name = File.basename(use_case_file_path, '.md')
+              use_case_anchor = use_case_name.gsub('_', '-')
+              use_case_relative_url = File.join(
+                  section.to_s,
+                  dir_name,
+                  use_case_file_name + '#' + use_case_anchor,
+              )
+              use_case_file.puts("* [#{title}](#{use_case_relative_url})")
             end
-            title_line = File.open(use_case_file_path).grep(/^#/).first.chomp
-            title = title_line.split(/\s/, 2).pop
-            use_case_file_name = File.basename(use_case_file_path)
-            use_case_name = File.basename(use_case_file_path, '.md')
-            use_case_anchor = use_case_name.gsub('_', '-')
-            use_case_relative_url = File.join(
-                section.to_s,
-                dir_name,
-                use_case_file_name + '#' + use_case_anchor,
-            )
-            use_case_file.puts("* [#{title}](#{use_case_relative_url})")
           end
         end
       end
