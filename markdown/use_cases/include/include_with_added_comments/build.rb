@@ -4,23 +4,24 @@ include UseCase
 
 use_case_dir_path = File.absolute_path(File.dirname(__FILE__))
 
-includee_file_name = 'includee.md'
-text= <<EOT
+Dir.chdir(use_case_dir_path) do
+  includee_file_name = 'includee.md'
+  text= <<EOT
 Text to be included.
 EOT
-write_file(use_case_dir_path, includee_file_name, text)
+  write_file(includee_file_name, text)
 
-includer_file_name = 'includer.md'
-text = <<EOT
+  includer_file_name = 'includer.md'
+  text = <<EOT
 @[:markdown](#{includee_file_name})
 EOT
-write_file(use_case_dir_path, includer_file_name, text)
+  write_file(includer_file_name, text)
 
-included_file_name = 'included.md'
-include_command = include_command(includer_file_name, included_file_name)
-do_example_inclusion(use_case_dir_path, include_command)
+  included_file_name = 'included.md'
+  include_command = include_command(includer_file_name, included_file_name)
+  system(include_command)
 
-text = <<EOT
+  text = <<EOT
 ### Include with Added Comments
 
 By default (that is, without option ```--pristine```) file inclusion adds comments that:
@@ -46,8 +47,7 @@ By default (that is, without option ```--pristine```) file inclusion adds commen
 
 @[markdown](#{included_file_name})
 EOT
-write_file(use_case_dir_path, template_file_name, text)
+  write_file(template_file_name, text)
 
-template_file_path = template_file_path(use_case_dir_path)
-use_case_file_path = use_case_file_path(use_case_dir_path)
-build_use_case(template_file_path, use_case_file_path)
+  build_use_case
+end
