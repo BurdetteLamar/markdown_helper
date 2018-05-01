@@ -1,35 +1,11 @@
-#!/usr/bin/env ruby
+require_relative '../../use_case'
+
+include UseCase
 
 use_case_dir_path = File.absolute_path(File.dirname(__FILE__))
 
-use_case_file_name = 'use_case.md'
-use_case_file_path = File.join(
-    use_case_dir_path,
-    use_case_file_name,
-)
-
-template_file_name = 'use_case_template.md'
-template_file_path = File.join(
-    use_case_dir_path,
-    template_file_name,
-)
-
 reusable_text_file_name = 'reusable_text.md'
-reusable_text_file_path = File.join(
-    use_case_dir_path,
-    reusable_text_file_name,
-)
-
-includer_file_name = 'includer.md'
-includer_file_path = File.join(
-    use_case_dir_path,
-    includer_file_name,
-)
-
-included_file_name = 'included.md'
-
-include_command = "markdown_helper include --pristine #{includer_file_name} #{included_file_name}"
-
+reusable_text_file_path = file_path(use_case_dir_path, reusable_text_file_name)
 File.write(
     reusable_text_file_path,
     <<EOT
@@ -37,7 +13,8 @@ This is some reusable text that can be included in more than one place (actually
 EOT
 )
 
-
+includer_file_name = 'includer.md'
+includer_file_path = file_path(use_case_dir_path, includer_file_name)
 File.write(
     includer_file_path,
     <<EOT
@@ -51,11 +28,11 @@ Then includes it again.
 EOT
 )
 
-# Example inclusion.
-Dir.chdir(use_case_dir_path) do
-  system(include_command)
-end
+included_file_name = 'included.md'
+include_command = include_command(includer_file_name, included_file_name, pristine = true)
+do_example_inclusion(use_case_dir_path, include_command)
 
+template_file_path = template_file_path(use_case_dir_path)
 File.write(
     template_file_path,
     <<EOT
@@ -95,6 +72,5 @@ Here's the finished file with the inclusion:
 EOT
 )
 
-# Build use case.
-build_command = "markdown_helper include --pristine #{template_file_path} #{use_case_file_path}"
-system(build_command)
+use_case_file_path = use_case_file_path(use_case_dir_path)
+build_use_case(template_file_path, use_case_file_path)

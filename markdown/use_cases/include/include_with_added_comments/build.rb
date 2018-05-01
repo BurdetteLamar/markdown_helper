@@ -1,35 +1,11 @@
-#!/usr/bin/env ruby
+require_relative '../../use_case'
+
+include UseCase
 
 use_case_dir_path = File.absolute_path(File.dirname(__FILE__))
 
-use_case_file_name = 'use_case.md'
-use_case_file_path = File.join(
-    use_case_dir_path,
-    use_case_file_name,
-)
-
-template_file_name = 'use_case_template.md'
-template_file_path = File.join(
-    use_case_dir_path,
-    template_file_name,
-)
-
 includee_file_name = 'includee.md'
-includee_file_path = File.join(
-    use_case_dir_path,
-    includee_file_name,
-)
-
-includer_file_name = 'includer.md'
-includer_file_path = File.join(
-    use_case_dir_path,
-    includer_file_name,
-)
-
-included_file_name = 'included.md'
-
-include_command = "markdown_helper include #{includer_file_name} #{included_file_name}"
-
+includee_file_path = file_path(use_case_dir_path, includee_file_name)
 File.write(
     includee_file_path,
     <<EOT
@@ -37,6 +13,8 @@ Text to be included.
 EOT
 )
 
+includer_file_name = 'includer.md'
+includer_file_path = file_path(use_case_dir_path, includer_file_name)
 File.write(
     includer_file_path,
     <<EOT
@@ -44,11 +22,11 @@ File.write(
 EOT
 )
 
-# Example inclusion.
-Dir.chdir(use_case_dir_path) do
-  system(include_command)
-end
+included_file_name = 'included.md'
+include_command = include_command(includer_file_name, included_file_name)
+do_example_inclusion(use_case_dir_path, include_command)
 
+template_file_path = template_file_path(use_case_dir_path)
 File.write(
     template_file_path,
     <<EOT
@@ -79,6 +57,5 @@ By default (that is, without option ```--pristine```) file inclusion adds commen
 EOT
 )
 
-# Build use case.
-build_command = "markdown_helper include --pristine #{template_file_path} #{use_case_file_path}"
-system(build_command)
+use_case_file_path = use_case_file_path(use_case_dir_path)
+build_use_case(template_file_path, use_case_file_path)
