@@ -63,7 +63,7 @@ Here's the finished file with the inclusion:
 
 @[markdown](#{included_file_name})
 EOT
-  write_file(template_file_name, template_text)
+  write_file(TEMPLATE_FILE_NAME, template_text)
 
   system(include_command)
 
