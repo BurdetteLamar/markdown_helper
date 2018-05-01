@@ -6,7 +6,7 @@ module UseCase
   def build_use_case(use_case_dir_path)
     Dir.chdir(use_case_dir_path) do
       yield
-      build_command = include_command(TEMPLATE_FILE_NAME, USE_CASE_FILE_NAME, pristine = true)
+      build_command = construct_include_command(TEMPLATE_FILE_NAME, USE_CASE_FILE_NAME, pristine = true)
       system(build_command)
     end
   end
@@ -17,7 +17,7 @@ module UseCase
     end
   end
 
-  def include_command(template_file_path, markdown_file_path, pristine = false)
+  def construct_include_command(template_file_path, markdown_file_path, pristine = false)
     pristine_option = pristine ? '--pristine ' : ''
     "markdown_helper include #{pristine_option}#{template_file_path} #{markdown_file_path}"
   end

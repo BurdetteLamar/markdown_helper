@@ -10,7 +10,7 @@ build_use_case(use_case_dir_path) do
   includer_file_name = 'includer.md'
   included_file_name = 'included.md'
 
-  include_command = include_command(includer_file_name, included_file_name)
+  include_command = construct_include_command(includer_file_name, included_file_name)
 
   includee_text= <<EOT
 Text to be included.

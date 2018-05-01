@@ -10,7 +10,7 @@ build_use_case(use_case_dir_path) do
   includer_file_name = 'includer.md'
   included_file_name = 'included.md'
 
-  include_command = include_command(includer_file_name, included_file_name, pristine = true)
+  include_command = construct_include_command(includer_file_name, included_file_name, pristine = true)
 
   reusable_text = <<EOT
 This is some reusable text that can be included in more than one place (actually, in more than one file).
