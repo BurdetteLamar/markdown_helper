@@ -1,19 +1,26 @@
-module UseCase
+class UseCase
+
+  attr_accessor :use_case_dir_path, :files_to_write, :commands_to_execute
 
   USE_CASE_FILE_NAME = 'use_case.md'
   TEMPLATE_FILE_NAME = 'use_case_template.md'
 
-  def build_use_case(use_case_dir_path)
-    Dir.chdir(use_case_dir_path) do
-      yield
-      build_command = construct_include_command(TEMPLATE_FILE_NAME, USE_CASE_FILE_NAME, pristine = true)
-      system(build_command)
-    end
+  def initialize(use_case_dir_path)
+    self.use_case_dir_path = use_case_dir_path
+    self.files_to_write = {}
+    self.commands_to_execute = []
   end
 
-  def write_file(file_name, text)
-    File.open(file_name, 'w') do |file|
-      file.write(text)
+  def build
+    Dir.chdir(use_case_dir_path) do
+      files_to_write.each_pair do |file_name, text|
+        File.open(file_name, 'w') do |file|
+          file.write(text)
+        end
+      end
+      commands_to_execute.each do |command|
+        system(command)
+      end
     end
   end
 

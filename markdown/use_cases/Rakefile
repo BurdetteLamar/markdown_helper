@@ -1,6 +1,10 @@
 
 namespace :build do
 
+  def camelize(snake_case_string)
+    snake_case_string.split('_').collect(&:capitalize).join
+  end
+
   desc 'Build use case markdown'
   task :use_cases do
     # Page that links to use cases.
@@ -39,9 +43,10 @@ EOT
           dir_names.each do |dir_name|
             Dir.chdir("#{section}/#{dir_name}") do
               # If the dir has a Ruby file, run it.
-              ruby_file_path = 'build.rb'
+              ruby_file_path = "#{dir_name}.rb"
               if File.exist?(ruby_file_path)
-                command = "ruby #{ruby_file_path}"
+                class_name = camelize(dir_name)
+                command = "ruby -I . -r #{dir_name} -e #{class_name}.build"
                 system(command)
               end
 
@@ -55,7 +60,6 @@ EOT
               title_line = File.open(use_case_file_path).grep(/^#/).first.chomp
               title = title_line.split(/\s/, 2).pop
               use_case_file_name = File.basename(use_case_file_path)
-              use_case_name = File.basename(use_case_file_path, '.md')
               use_case_anchor = dir_name.gsub('_', '-')
               use_case_relative_url = File.join(
                   section.to_s,

@@ -1,23 +1,35 @@
 require_relative '../../use_case'
 
-include UseCase
+class ReuseText < UseCase
 
-use_case_dir_path = File.absolute_path(File.dirname(__FILE__))
+  def self.build
 
-build_use_case(use_case_dir_path) do
+    use_case_dir_path = File.absolute_path(File.dirname(__FILE__))
 
-  reusable_text_file_name = 'reusable_text.md'
-  includer_file_name = 'includer.md'
-  included_file_name = 'included.md'
+    use_case = self.new(use_case_dir_path)
 
-  include_command = construct_include_command(includer_file_name, included_file_name, pristine = true)
+    reusable_text_file_name = 'reusable_text.md'
+    includer_file_name = 'includer.md'
+    included_file_name = 'included.md'
 
-  reusable_text = <<EOT
+    include_command = use_case.construct_include_command(includer_file_name, included_file_name, pristine = true)
+    build_command = use_case.construct_include_command(TEMPLATE_FILE_NAME, USE_CASE_FILE_NAME, pristine = true)
+
+    use_case.commands_to_execute.push(
+        include_command,
+        build_command,
+    )
+
+    use_case.files_to_write.store(
+        reusable_text_file_name,
+        <<EOT
 This is some reusable text that can be included in more than one place (actually, in more than one file).
 EOT
-  write_file(reusable_text_file_name, reusable_text)
+    )
 
-  includer_text = <<EOT
+    use_case.files_to_write.store(
+        includer_file_name,
+        <<EOT
 This file includes the useful text.
 
 @[:markdown](#{reusable_text_file_name})
@@ -26,9 +38,11 @@ Then includes it again.
 
 @[:markdown](#{reusable_text_file_name})
 EOT
-  write_file(includer_file_name, includer_text)
+    )
 
-  template_text = <<EOT
+    use_case.files_to_write.store(
+        TEMPLATE_FILE_NAME,
+        <<EOT
 ### Reuse Text
 
 Use file inclusion to stay DRY (Don't Repeat Yourself).
@@ -63,8 +77,10 @@ Here's the finished file with the inclusion:
 
 @[markdown](#{included_file_name})
 EOT
-  write_file(TEMPLATE_FILE_NAME, template_text)
+    )
 
-  system(include_command)
+    use_case.build
+
+  end
 
 end
