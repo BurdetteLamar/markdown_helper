@@ -4,12 +4,23 @@ module UseCase
     File.join(dir_path, 'use_case.md')
   end
 
+  def template_file_name
+    'use_case_template.md'
+  end
+
   def template_file_path(dir_path)
     File.join(dir_path, 'use_case_template.md')
   end
   
   def file_path(dir_path, file_name)
     File.join(dir_path, file_name)
+  end
+
+  def write_file(dir_path, file_name, text)
+    file_path = File.join(dir_path, file_name)
+    File.open(file_path, 'w') do |file|
+      file.write(text)
+    end
   end
 
   def include_command(template_file_path, markdown_file_path, pristine = false)
