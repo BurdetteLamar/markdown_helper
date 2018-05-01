@@ -4,7 +4,8 @@ include UseCase
 
 use_case_dir_path = File.absolute_path(File.dirname(__FILE__))
 
-Dir.chdir(use_case_dir_path) do
+build_use_case(use_case_dir_path) do
+
   includee_file_name = 'includee.md'
   text= <<EOT
 Text to be included.
@@ -49,5 +50,4 @@ By default (that is, without option ```--pristine```) file inclusion adds commen
 EOT
   write_file(template_file_name, text)
 
-  build_use_case
 end

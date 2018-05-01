@@ -3,7 +3,8 @@ require_relative '../../use_case'
 include UseCase
 
 use_case_dir_path = File.absolute_path(File.dirname(__FILE__))
-Dir.chdir(use_case_dir_path) do
+
+build_use_case(use_case_dir_path) do
 
   reusable_text_file_name = 'reusable_text.md'
   text = <<EOT
@@ -64,5 +65,4 @@ Here's the finished file with the inclusion:
 EOT
   write_file(template_file_name, text)
 
-  build_use_case
 end
