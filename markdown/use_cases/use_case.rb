@@ -8,10 +8,6 @@ module UseCase
     'use_case_template.md'
   end
 
-  def file_path(dir_path, file_name)
-    File.join(dir_path, file_name)
-  end
-
   def write_file(file_name, text)
     File.open(file_name, 'w') do |file|
       file.write(text)
