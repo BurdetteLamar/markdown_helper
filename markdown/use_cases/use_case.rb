@@ -3,18 +3,11 @@ module UseCase
   def use_case_file_name
     'use_case.md'
   end
-  def use_case_file_path(dir_path)
-    File.join(dir_path, use_case_file_name)
-  end
 
   def template_file_name
     'use_case_template.md'
   end
 
-  def template_file_path(dir_path)
-    File.join(dir_path, 'use_case_template.md')
-  end
-  
   def file_path(dir_path, file_name)
     File.join(dir_path, file_name)
   end
