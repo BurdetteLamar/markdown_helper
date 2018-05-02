@@ -38,7 +38,6 @@ EOT
 
 EOT
 ) unless dir_names.empty?
-          Dir.pwd
           dir_names.each do |dir_name|
             Dir.chdir("#{section}/#{dir_name}") do
               # If the dir has a Ruby file, run it.
