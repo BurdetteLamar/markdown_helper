@@ -7,3 +7,4 @@
 * [Include Markdown](include/include_markdown/use_case.md#include-markdown)
 * [Include a Code Block](include/include_code_block/use_case.md#include-code-block)
 * [Include a Code Block](include/include_code_block/use_case.md#include-code-block)
+* [Include Highlighted Code](include/include_highlighted_code/use_case.md#include-highlighted-code)
