@@ -20,7 +20,6 @@ EOT
             :include => %w/
                 reuse_text
                 include_with_added_comments
-                include_without_added_comments
                 include_markdown
                 include_code_block
                 include_code_block
