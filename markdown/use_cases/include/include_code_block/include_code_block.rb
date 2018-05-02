@@ -1,6 +1,6 @@
 require_relative '../../use_case'
 
-class IncludeMarkdown < UseCase
+class IncludeCodeBlock < UseCase
 
   def self.build
 
@@ -8,7 +8,7 @@ class IncludeMarkdown < UseCase
 
     use_case = self.new(use_case_dir_path)
 
-    includee_file_name = 'markdown.md'
+    includee_file_name = 'hello.rb'
     includer_file_name = 'includer.md'
     included_file_name = 'included.md'
 
@@ -23,25 +23,23 @@ class IncludeMarkdown < UseCase
     use_case.files_to_write.store(
         includee_file_name,
         <<EOT
-This fiie, to be included, is markdown.
-
-### This is a level-three title.
-
-Here's a [link](http://yahoo.com).
-
-This is an unordered list:
-* One.
-* Two.
-* Three.
+class HelloWorld
+   def initialize(name)
+      @name = name.capitalize
+   end
+   def sayHi
+      puts "Hello #{@name}!"
+   end
+end
 EOT
     )
 
     use_case.files_to_write.store(
         includer_file_name,
         <<EOT
-This file includes the markdown file.
+This file includes the code as a code block.
 
-@[:markdown](#{includee_file_name})
+@[:code_block](#{includee_file_name})
 
 EOT
     )
@@ -49,13 +47,13 @@ EOT
     use_case.files_to_write.store(
         TEMPLATE_FILE_NAME,
         <<EOT
-### Include Markdown
+### Include a Code Block
 
-Use file inclusion to include markdown.  The whole page, includer and includee, will be rendered when it's pushed to GitHub.
+Use file inclusion to include text as a code block.
 
 #### File to Be Included
 
-Here's a file containing markdown to be included:
+Here's a file containing code to be included:
 
 @[markdown](#{includee_file_name})
 
@@ -65,7 +63,7 @@ Here's a template file that includes it:
 
 @[markdown](#{includer_file_name})
 
-The treatment token ```:markdown``` specifies that the included text is to be treated as markdown.
+The treatment token ```:code_block``` specifies that the included text is to be treated as a code block.
 
 #### Command
 
@@ -79,9 +77,9 @@ Here's the command to perform the inclusion:
 
 #### File with Inclusion
 
-Here's the finished file with the inclusion:
+Here's the finished file with the included code block:
 
-@[markdown](#{included_file_name})
+@[:code_block](#{included_file_name})
 
 And here's the finished markdown, as rendered on this page:
 
