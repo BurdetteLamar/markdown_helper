@@ -30,7 +30,7 @@ markdown_helper include --pristine includer.md included.md
 
 Here's the finished file with the included code block:
 
-@[:code_block](included.md)
+@[:pre](included.md)
 
 And here's the finished markdown, as rendered on this page:
 

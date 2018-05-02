@@ -46,8 +46,7 @@ markdown_helper include --pristine includer.md included.md
 
 Here's the finished file with the included code block:
 
-<code>included.md</code>
-```
+<pre>
 This file includes the code as a code block.
 
 <code>hello.rb</code>
@@ -62,7 +61,7 @@ class HelloWorld
 end
 ```
 
-```
+</pre>
 
 And here's the finished markdown, as rendered on this page:
 

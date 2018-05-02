@@ -79,7 +79,7 @@ Here's the command to perform the inclusion:
 
 Here's the finished file with the included code block:
 
-@[:code_block](#{included_file_name})
+@[:pre](#{included_file_name})
 
 And here's the finished markdown, as rendered on this page:
 
