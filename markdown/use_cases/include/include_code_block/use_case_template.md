@@ -36,6 +36,6 @@ And here's the finished markdown, as rendered on this page:
 
 ---
 
-@[:markdown](hello.rb)
+@[:markdown](included.md)
 
 ---

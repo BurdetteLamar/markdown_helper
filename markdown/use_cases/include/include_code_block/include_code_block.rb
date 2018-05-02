@@ -85,7 +85,7 @@ And here's the finished markdown, as rendered on this page:
 
 ---
 
-@[:markdown](#{includee_file_name})
+@[:markdown](#{included_file_name})
 
 ---
 EOT

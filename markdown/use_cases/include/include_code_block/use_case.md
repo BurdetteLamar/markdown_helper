@@ -67,6 +67,10 @@ And here's the finished markdown, as rendered on this page:
 
 ---
 
+This file includes the code as a code block.
+
+<code>hello.rb</code>
+```
 class HelloWorld
    def initialize(name)
       @name = name.capitalize
@@ -75,5 +79,7 @@ class HelloWorld
       puts "Hello !"
    end
 end
+```
+
 
 ---
