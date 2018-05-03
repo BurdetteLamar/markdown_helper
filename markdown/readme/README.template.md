@@ -35,7 +35,7 @@ You can suppress those comments using the <code>pristine</code> option.
 
 ## File Inclusion 
 
-![include_icon](../images/include.png | width=50)
+![include_icon](../../../images/include.png | width=50)
 
 This markdown helper enables file inclusion in GitHub markdown.
 
@@ -95,7 +95,7 @@ where:
 
 ## Image Path Resolution 
 
-![image_icon](../images/image.png | width=50)
+![image_icon](../../../images/image.png | width=50)
 
 This markdown helper enables image path resolution in GitHub markdown.
 
@@ -133,7 +133,7 @@ where:
 
 ## Image Attributes
 
-![html_icon](../images/html.png | width=50)
+![html_icon](../../../images/html.png | width=50)
 
 This markdown helper enables HTML image attributes in GitHub markdown [image descriptions](https://github.github.com/gfm/#image-description).
 
