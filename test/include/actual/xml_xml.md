@@ -1,6 +1,6 @@
 <!-- >>>>>> BEGIN GENERATED FILE (include): SOURCE C:/Users/Burdette/Documents/GitHub/markdown_helper/test/include/templates/xml_xml.md -->
 <!-- >>>>>> BEGIN INCLUDED FILE (xml): SOURCE C:/Users/Burdette/Documents/GitHub/markdown_helper/test/include/templates/../includes/xml.xml -->
-<code>xml.xml</code>
+```xml.xml```:
 ```xml
 <root>
   <element attribute="value">

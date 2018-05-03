@@ -176,7 +176,7 @@ class MarkdownHelper
           output_lines.push("</pre>\n")
         else
           # Use the file name as a label.
-          file_name_line = format("<code>%s</code>\n", File.basename(relative_included_file_path))
+          file_name_line = format("```%s```:\n", File.basename(relative_included_file_path))
           output_lines.push(file_name_line)
           # Put into code block.
           language = treatment == :code_block ? '' : treatment
