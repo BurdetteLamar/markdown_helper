@@ -16,7 +16,7 @@ Here's a template file that includes it:
 
 The treatment token ```ruby``` specifies that the included text is to be highlighted as Ruby code.
 
-The treatment token can be any Ace mode mentioned in [GitHub Languages](https://github.com/github/linguist/blob/master/lib/linguist/languages.yml).
+The treatment token can be any Ace mode mentioned in [GitHub Languages](https://github.com/github/linguist/blob/master/lib/linguist/languages.yml).  The file lists about 100 Ace modes, covering just about every language and format.
 
 #### Command
 
