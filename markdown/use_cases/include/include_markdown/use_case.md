@@ -65,7 +65,7 @@ This is an unordered list:
 
 ```
 
-And here's the included markdown, as rendered on this page:
+And here's the finished markdown, as rendered on this page:
 
 ---
 

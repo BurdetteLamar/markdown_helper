@@ -127,6 +127,8 @@ class MarkdownHelper
                       :markdown
                     when ':comment'
                       :comment
+                    when ':pre'
+                      :pre
                     else
                       treatment
                   end
@@ -168,6 +170,10 @@ class MarkdownHelper
           markdown_inclusions.delete(included_real_path)
         when :comment
           output_lines.push(comment(include_lines.join('')))
+        when :pre
+          output_lines.push("<pre>\n")
+          output_lines.push(include_lines.join(''))
+          output_lines.push("</pre>\n")
         else
           # Use the file name as a label.
           file_name_line = format("<code>%s</code>\n", File.basename(relative_included_file_path))
