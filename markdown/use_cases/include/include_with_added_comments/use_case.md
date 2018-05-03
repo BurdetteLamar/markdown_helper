@@ -7,14 +7,14 @@ By default (that is, without option ```--pristine```) file inclusion adds commen
 
 #### Includee File
 
-<code>includee.md</code>
+```includee.md```
 ```markdown
 Text to be included.
 ```
 
 #### Includer File
 
-<code>includer.md</code>
+```includer.md```
 ```markdown
 @[:markdown](includee.md)
 ```
@@ -27,7 +27,7 @@ markdown_helper include includer.md included.md
 
 #### File with Inclusion and Added Comments
 
-<code>included.md</code>
+```included.md```
 ```markdown
 <!-- >>>>>> BEGIN GENERATED FILE (include): SOURCE includer.md -->
 <!-- >>>>>> BEGIN INCLUDED FILE (markdown): SOURCE ./includee.md -->

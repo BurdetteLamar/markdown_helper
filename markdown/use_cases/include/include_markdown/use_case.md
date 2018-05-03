@@ -6,7 +6,7 @@ Use file inclusion to include markdown.  The whole page, includer and includee, 
 
 Here's a file containing markdown to be included:
 
-<code>markdown.md</code>
+```markdown.md```
 ```markdown
 This fiie, to be included, is markdown.
 
@@ -24,7 +24,7 @@ This is an unordered list:
 
 Here's a template file that includes it:
 
-<code>includer.md</code>
+```includer.md```
 ```markdown
 This file includes the markdown file.
 
@@ -48,7 +48,7 @@ markdown_helper include --pristine includer.md included.md
 
 Here's the finished file with the inclusion:
 
-<code>included.md</code>
+```included.md```
 ```markdown
 This file includes the markdown file.
 

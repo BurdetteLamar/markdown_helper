@@ -1,6 +1,6 @@
 <!-- >>>>>> BEGIN GENERATED FILE (include): SOURCE markdown/highlight_ruby_template.md -->
 <!-- >>>>>> BEGIN INCLUDED FILE (ruby): SOURCE markdown/include.rb -->
-<code>include.rb</code>
+```include.rb```
 ```ruby
 class RubyCode
   def initialize
