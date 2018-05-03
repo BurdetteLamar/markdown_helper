@@ -43,7 +43,7 @@ You can suppress those comments using the <code>pristine</code> option.
 
 <!-- >>>>>> BEGIN RESOLVED IMAGES: INPUT-LINE '![include_icon](../../images/include.png | width=50)
 ' -->
-<img src="https://raw.githubusercontent.com/BurdetteLamar/markdown_helper/master/C:/Users/Burdette/Documents/GitHub/markdown_helper/images/include.png" alt="include_icon" width="50">
+<img src="https://raw.githubusercontent.com/BurdetteLamar/markdown_helper/master/images/include.png" alt="include_icon" width="50">
 <!-- <<<<<< END RESOLVED IMAGES: INPUT-LINE '![include_icon](../../images/include.png | width=50)
 ' -->
 
@@ -168,7 +168,7 @@ where:
 
 <!-- >>>>>> BEGIN RESOLVED IMAGES: INPUT-LINE '![image_icon](../../images/image.png | width=50)
 ' -->
-<img src="https://raw.githubusercontent.com/BurdetteLamar/markdown_helper/master/C:/Users/Burdette/Documents/GitHub/markdown_helper/images/image.png" alt="image_icon" width="50">
+<img src="https://raw.githubusercontent.com/BurdetteLamar/markdown_helper/master/images/image.png" alt="image_icon" width="50">
 <!-- <<<<<< END RESOLVED IMAGES: INPUT-LINE '![image_icon](../../images/image.png | width=50)
 ' -->
 
@@ -253,7 +253,7 @@ where:
 
 <!-- >>>>>> BEGIN RESOLVED IMAGES: INPUT-LINE '![html_icon](../../images/html.png | width=50)
 ' -->
-<img src="https://raw.githubusercontent.com/BurdetteLamar/markdown_helper/master/C:/Users/Burdette/Documents/GitHub/markdown_helper/images/html.png" alt="html_icon" width="50">
+<img src="https://raw.githubusercontent.com/BurdetteLamar/markdown_helper/master/images/html.png" alt="html_icon" width="50">
 <!-- <<<<<< END RESOLVED IMAGES: INPUT-LINE '![html_icon](../../images/html.png | width=50)
 ' -->
 

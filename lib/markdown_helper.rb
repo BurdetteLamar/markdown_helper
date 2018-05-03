@@ -216,7 +216,7 @@ class MarkdownHelper
           if git_dir == '.git'
             git_clone_dir_path = `pwd`.chomp
           else
-            git_clone_dir_path = git_dir.chomp
+            git_clone_dir_path = File.dirname(git_dir).chomp
           end
           git_clone_dir_pathname = Pathname.new(git_clone_dir_path.sub(%r|/c/|, 'C:/')).realpath
           git_clone_dir_path = git_clone_dir_pathname.to_s
