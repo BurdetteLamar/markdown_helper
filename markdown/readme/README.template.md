@@ -35,7 +35,7 @@ You can suppress those comments using the <code>pristine</code> option.
 
 ## File Inclusion 
 
-![include_icon](../images/include.png | width=50)
+![include_icon](../../images/include.png | width=50)
 
 This markdown helper enables file inclusion in GitHub markdown.
 
@@ -69,7 +69,7 @@ The markdown text is itself scanned for nested includes.
 
 #### CLI
 
-@[:code_block](../bin/usage/include.txt)
+@[:code_block](../../bin/usage/include.txt)
 
 #### API
 
@@ -95,7 +95,7 @@ where:
 
 ## Image Path Resolution 
 
-![image_icon](../images/image.png | width=50)
+![image_icon](../../images/image.png | width=50)
 
 This markdown helper enables image path resolution in GitHub markdown.
 
@@ -109,7 +109,7 @@ This matters because when markdown becomes part of a Ruby gem, its images will h
 
 #### CLI
 
-@[:code_block](../bin/usage/resolve.txt)
+@[:code_block](../../bin/usage/resolve.txt)
 
 #### API
 
@@ -133,7 +133,7 @@ where:
 
 ## Image Attributes
 
-![html_icon](../images/html.png | width=50)
+![html_icon](../../images/html.png | width=50)
 
 This markdown helper enables HTML image attributes in GitHub markdown [image descriptions](https://github.github.com/gfm/#image-description).
 
@@ -145,7 +145,7 @@ Use the markdown helper to add image attributes in a markdown (</code>.md</code>
 
 #### CLI
 
-@[:code_block](../bin/usage/resolve.txt)
+@[:code_block](../../bin/usage/resolve.txt)
 
 #### API
 
