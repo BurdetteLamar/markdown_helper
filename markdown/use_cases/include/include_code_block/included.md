@@ -1,6 +1,6 @@
 This file includes the code as a code block.
 
-```hello.rb```
+```hello.rb```:
 ```
 class HelloWorld
    def initialize(name)

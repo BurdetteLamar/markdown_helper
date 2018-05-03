@@ -6,7 +6,7 @@ Use file inclusion to include text as a code block.
 
 Here's a file containing code to be included:
 
-```hello.rb```
+```hello.rb```:
 ```markdown
 class HelloWorld
    def initialize(name)
@@ -22,7 +22,7 @@ end
 
 Here's a template file that includes it:
 
-```includer.md```
+```includer.md```:
 ```markdown
 This file includes the code as a code block.
 
@@ -49,7 +49,7 @@ Here's the finished file with the included code block:
 <pre>
 This file includes the code as a code block.
 
-```hello.rb```
+```hello.rb```:
 ```
 class HelloWorld
    def initialize(name)
@@ -69,7 +69,7 @@ And here's the finished markdown, as rendered on this page:
 
 This file includes the code as a code block.
 
-```hello.rb```
+```hello.rb```:
 ```
 class HelloWorld
    def initialize(name)
