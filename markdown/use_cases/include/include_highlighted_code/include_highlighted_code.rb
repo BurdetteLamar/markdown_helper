@@ -53,7 +53,7 @@ Use file inclusion to include text as highlighted code.
 
 #### File to Be Included
 
-Here's a file containing code to be included:
+Here's a file containing Ruby code to be included:
 
 @[markdown](#{includee_file_name})
 
@@ -64,6 +64,8 @@ Here's a template file that includes it:
 @[markdown](#{includer_file_name})
 
 The treatment token ```ruby``` specifies that the included text is to be highlighted as Ruby code.
+
+The treatment token can be any Ace mode mentioned in [GitHub Languages](https://github.com/github/linguist/blob/master/lib/linguist/languages.yml).
 
 #### Command
 
