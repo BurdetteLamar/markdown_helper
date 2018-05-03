@@ -1,6 +1,6 @@
 <!-- >>>>>> BEGIN GENERATED FILE (include): SOURCE C:/Users/Burdette/Documents/GitHub/markdown_helper/test/include/templates/md_code_block.md -->
 <!-- >>>>>> BEGIN INCLUDED FILE (code_block): SOURCE C:/Users/Burdette/Documents/GitHub/markdown_helper/test/include/templates/../includes/md.md -->
-<code>md.md</code>
+```md.md```:
 ```
 This is markdown.
 

@@ -1,6 +1,6 @@
 <!-- >>>>>> BEGIN GENERATED FILE (include): SOURCE C:/Users/Burdette/Documents/GitHub/markdown_helper/test/include/templates/python_python.md -->
 <!-- >>>>>> BEGIN INCLUDED FILE (python): SOURCE C:/Users/Burdette/Documents/GitHub/markdown_helper/test/include/templates/../includes/python.py -->
-<code>python.py</code>
+```python.py```:
 ```python
 
 class MyClass:

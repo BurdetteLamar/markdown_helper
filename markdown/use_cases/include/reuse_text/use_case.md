@@ -8,7 +8,7 @@ Maintain reusable text in a separate file, then include it wherever it's needed.
 
 Here's a file containing some text that can be included:
 
-<code>reusable_text.md</code>
+```reusable_text.md```:
 ```markdown
 This is some reusable text that can be included in more than one place (actually, in more than one file).
 ```
@@ -17,7 +17,7 @@ This is some reusable text that can be included in more than one place (actually
 
 Here's a template file that includes it:
 
-<code>includer.md</code>
+```includer.md```:
 ```markdown
 This file includes the useful text.
 
@@ -42,7 +42,7 @@ markdown_helper include --pristine includer.md included.md
 
 Here's the finished file with the inclusion:
 
-<code>included.md</code>
+```included.md```:
 ```markdown
 This file includes the useful text.
 

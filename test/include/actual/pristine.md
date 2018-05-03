@@ -1,4 +1,4 @@
-<code>ruby.rb</code>
+```ruby.rb```:
 ```
 class RubyCode
 

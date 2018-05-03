@@ -6,7 +6,7 @@ Use file inclusion to include text as highlighted code.
 
 Here's a file containing Ruby code to be included:
 
-<code>hello.rb</code>
+```hello.rb```:
 ```markdown
 class HelloWorld
    def initialize(name)
@@ -22,7 +22,7 @@ end
 
 Here's a template file that includes it:
 
-<code>includer.md</code>
+```includer.md```:
 ```markdown
 This file includes the code as highlighted code.
 
@@ -51,7 +51,7 @@ Here's the finished file with the included highlighted code:
 <pre>
 This file includes the code as highlighted code.
 
-<code>hello.rb</code>
+```hello.rb```:
 ```ruby
 class HelloWorld
    def initialize(name)
@@ -71,7 +71,7 @@ And here's the finished markdown, as rendered on this page:
 
 This file includes the code as highlighted code.
 
-<code>hello.rb</code>
+```hello.rb```:
 ```ruby
 class HelloWorld
    def initialize(name)

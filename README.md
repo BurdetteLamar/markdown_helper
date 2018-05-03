@@ -58,7 +58,7 @@ Use the markdown helper to merge external files into a markdown (</code>.md</cod
 #### Highlighted Code Block
 
 <!-- >>>>>> BEGIN INCLUDED FILE (ruby): SOURCE markdown/include.rb -->
-<code>include.rb</code>
+```include.rb```:
 ```ruby
 class RubyCode
   def initialize
@@ -71,7 +71,7 @@ end
 #### Plain Code Block
 
 <!-- >>>>>> BEGIN INCLUDED FILE (code_block): SOURCE markdown/include.rb -->
-<code>include.rb</code>
+```include.rb```:
 ```
 class RubyCode
   def initialize
@@ -98,7 +98,7 @@ The markdown text is itself scanned for nested includes.
 #### CLI
 
 <!-- >>>>>> BEGIN INCLUDED FILE (code_block): SOURCE markdown/../bin/usage/include.txt -->
-<code>include.txt</code>
+```include.txt```:
 ```
 
 Usage: markdown_helper include [options] template_file_path markdown_file_path
@@ -120,7 +120,7 @@ Usage: markdown_helper include [options] template_file_path markdown_file_path
 #### API
 
 <!-- >>>>>> BEGIN INCLUDED FILE (ruby): SOURCE markdown/include_usage.rb -->
-<code>include_usage.rb</code>
+```include_usage.rb```:
 ```ruby
 require 'markdown_helper'
 
@@ -154,7 +154,7 @@ where:
 ##### Example Include Descriptions
 
 <!-- >>>>>> BEGIN INCLUDED FILE (code_block): SOURCE markdown/include.md -->
-<code>include.md</code>
+```include.md```:
 ```code_block
 @[ruby](my_ruby.rb)
 
@@ -185,7 +185,7 @@ This matters because when markdown becomes part of a Ruby gem, its images will h
 #### CLI
 
 <!-- >>>>>> BEGIN INCLUDED FILE (code_block): SOURCE markdown/../bin/usage/resolve.txt -->
-<code>resolve.txt</code>
+```resolve.txt```:
 ```
 
 Usage: markdown_helper resolve [options] template_file_path markdown_file_path
@@ -207,7 +207,7 @@ Usage: markdown_helper resolve [options] template_file_path markdown_file_path
 #### API
 
 <!-- >>>>>> BEGIN INCLUDED FILE (ruby): SOURCE markdown/resolve_usage.rb -->
-<code>resolve_usage.rb</code>
+```resolve_usage.rb```:
 ```ruby
 require 'markdown_helper'
 
@@ -239,7 +239,7 @@ where:
 ##### Example Image Descriptions
 
 <!-- >>>>>> BEGIN INCLUDED FILE (code_block): SOURCE markdown/resolve.md -->
-<code>resolve.md</code>
+```resolve.md```:
 ```code_block
 ![my_alt](image/image.png)
 
@@ -268,7 +268,7 @@ Use the markdown helper to add image attributes in a markdown (</code>.md</code>
 #### CLI
 
 <!-- >>>>>> BEGIN INCLUDED FILE (code_block): SOURCE markdown/../bin/usage/resolve.txt -->
-<code>resolve.txt</code>
+```resolve.txt```:
 ```
 
 Usage: markdown_helper resolve [options] template_file_path markdown_file_path
@@ -290,7 +290,7 @@ Usage: markdown_helper resolve [options] template_file_path markdown_file_path
 #### API
 
 <!-- >>>>>> BEGIN INCLUDED FILE (ruby): SOURCE markdown/resolve_usage.rb -->
-<code>resolve_usage.rb</code>
+```resolve_usage.rb```:
 ```ruby
 require 'markdown_helper'
 
@@ -322,7 +322,7 @@ where:
 ##### Example Image Descriptions
 
 <!-- >>>>>> BEGIN INCLUDED FILE (code_block): SOURCE markdown/resolve.md -->
-<code>resolve.md</code>
+```resolve.md```:
 ```code_block
 ![my_alt](image/image.png)
 
