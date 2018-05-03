@@ -69,7 +69,7 @@ The markdown text is itself scanned for nested includes.
 
 #### CLI
 
-@[:code_block](../bin/usage/include.txt)
+@[:code_block](../../bin/usage/include.txt)
 
 #### API
 
@@ -109,7 +109,7 @@ This matters because when markdown becomes part of a Ruby gem, its images will h
 
 #### CLI
 
-@[:code_block](../bin/usage/resolve.txt)
+@[:code_block](../../bin/usage/resolve.txt)
 
 #### API
 
@@ -145,7 +145,7 @@ Use the markdown helper to add image attributes in a markdown (</code>.md</code>
 
 #### CLI
 
-@[:code_block](../bin/usage/resolve.txt)
+@[:code_block](../../bin/usage/resolve.txt)
 
 #### API
 
