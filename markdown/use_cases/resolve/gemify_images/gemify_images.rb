@@ -15,7 +15,7 @@ EOT
 )
 
 # Example resolution.
-system(resolve_command)
+# system(resolve_command)
 
 File.write(
     template_file_name,
@@ -24,9 +24,13 @@ File.write(
 
 Use the markdown helper to resolve image paths for a Ruby gem.
 
+#### The Problem
+
 When you release your GitHub project to  gem at RubyGems.org, the documentation is rebuilt into files on RubyDoc.info.  When YARD performs this rebuilding, it does some directory restructuring.
 
 If a markdown file contains an image description that has a relative file path, that path will not be valid in the documentation on RubyDoc.info, and the image will not display in the documentation.
+
+#### The Solution
 
 To avoid that error, use the markdown helper to resolve the relative path to an absolute path.
 
@@ -35,5 +39,5 @@ EOT
 )
 
 # Build use case.
-build_command = "markdown_helper include --pristine #{template_file_name} #{use_case_file_name}"
-system(build_command)
+# build_command = "markdown_helper include --pristine #{template_file_name} #{use_case_file_name}"
+# system(build_command)

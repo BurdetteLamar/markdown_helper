@@ -28,6 +28,8 @@ EOT
                 include_via_api
             /,
             :resolve => %w/
+                resize_images
+                gemify_images
             /
         }
         use_case_dirs.each_pair do |section, dir_names|
