@@ -29,7 +29,9 @@ EOT
             /,
             :resolve => %w/
                 resize_images
+                resolve_with_added_comments
                 gemify_images
+                resolve_via_api
             /
         }
         use_case_dirs.each_pair do |section, dir_names|

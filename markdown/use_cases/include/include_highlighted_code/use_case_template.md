@@ -23,7 +23,7 @@ The treatment token can be any Ace mode mentioned in [GitHub Languages](https://
 Here's the command to perform the inclusion:
 
 ```sh
-markdown_helper include --pristine includer.md included.md
+markdown_helper include includer.md included.md
 ```
 
 @[:markdown](../../pristine.md)
