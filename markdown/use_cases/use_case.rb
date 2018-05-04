@@ -24,9 +24,17 @@ class UseCase
     end
   end
 
-  def construct_include_command(template_file_path, markdown_file_path, pristine = false)
+  def construct_command(command, template_file_path, markdown_file_path, pristine = false)
     pristine_option = pristine ? '--pristine ' : ''
-    "markdown_helper include #{pristine_option}#{template_file_path} #{markdown_file_path}"
+    "markdown_helper #{command} #{pristine_option}#{template_file_path} #{markdown_file_path}"
+  end
+
+  def construct_include_command(template_file_path, markdown_file_path, pristine = false)
+    construct_command(:include, template_file_path, markdown_file_path)
+  end
+
+  def construct_resolve_command(template_file_path, markdown_file_path, pristine = false)
+    construct_command(:resolve, template_file_path, markdown_file_path)
   end
 
 end

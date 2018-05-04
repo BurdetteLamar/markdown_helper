@@ -1,5 +1,7 @@
+<!-- >>>>>> BEGIN GENERATED FILE (include): SOURCE includer.md -->
 This file includes the code as highlighted code.
 
+<!-- >>>>>> BEGIN INCLUDED FILE (ruby): SOURCE ./hello.rb -->
 ```hello.rb```:
 ```ruby
 class HelloWorld
@@ -11,4 +13,6 @@ class HelloWorld
    end
 end
 ```
+<!-- <<<<<< END INCLUDED FILE (ruby): SOURCE ./hello.rb -->
 
+<!-- <<<<<< END GENERATED FILE (include): SOURCE includer.md -->
