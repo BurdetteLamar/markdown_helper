@@ -4,7 +4,7 @@
 
 ## What's New?
 
-Use cases for ```include``` are now [available](./blob/use_cases/markdown/use_cases/use_cases.md#use-cases).
+Use cases for ```include``` are now [available](markdown/use_cases/use_cases.md#use-cases).
 
 ## What's This?
 
