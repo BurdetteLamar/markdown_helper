@@ -4,9 +4,28 @@ class IncludeUseCase < UseCase
 
   attr_accessor :use_case_dir_name
 
+  INCLUDEE_FILE_NAME = 'includee.md'
+  INCLUDER_FILE_NAME = 'includer.md'
+  INCLUDED_FILE_NAME = 'included.md'
+  RUBY_FILE_NAME = 'include.rb'
+  RUBY_COMMAND = "ruby #{RUBY_FILE_NAME}"
+  INCLUDE_COMMAND = IncludeUseCase.construct_include_command(INCLUDER_FILE_NAME, INCLUDED_FILE_NAME, pristine = true)
+  BUILD_COMMAND = IncludeUseCase.construct_include_command(TEMPLATE_FILE_NAME, USE_CASE_FILE_NAME, pristine = true)
+
+
+
   def initialize(use_case_dir_name)
+
     super
+
     self.use_case_dir_name = use_case_dir_name
+
+    commands_to_execute.push(
+        INCLUDE_COMMAND,
+        RUBY_COMMAND,
+        BUILD_COMMAND,
+    )
+
   end
 
   def use_case_dir_path

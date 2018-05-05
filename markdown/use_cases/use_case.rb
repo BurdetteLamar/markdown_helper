@@ -37,4 +37,9 @@ class UseCase
     construct_command(:resolve, template_file_path, markdown_file_path, pristine)
   end
 
+  def UseCase.construct_include_command(template_file_path, markdown_file_path, pristine = false)
+    pristine_option = pristine ? '--pristine ' : ''
+    "markdown_helper include #{pristine_option}#{template_file_path} #{markdown_file_path}"
+  end
+
 end
