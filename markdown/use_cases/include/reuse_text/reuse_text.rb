@@ -1,6 +1,6 @@
-require_relative '../../use_case'
+require_relative '../include_use_case'
 
-class ReuseText < UseCase
+class ReuseText < IncludeUseCase
 
   def self.build
 
