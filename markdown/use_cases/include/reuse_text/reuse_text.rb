@@ -5,36 +5,11 @@ class ReuseText < IncludeUseCase
   def self.build
 
     use_case = self.new('reuse_text')
+    use_case.write_includee_file
+    use_case.write_includer_file
+    use_case.write_ruby_file(pristine = true)
 
-    use_case.files_to_write.store(
-        INCLUDEE_FILE_NAME,
-        <<EOT
-Text in includee file.
-EOT
-    )
-
-    use_case.files_to_write.store(
-        INCLUDER_FILE_NAME,
-        <<EOT
-Text in includer file.
-
-@[:markdown](#{INCLUDEE_FILE_NAME})
-
-EOT
-    )
-
-    use_case.files_to_write.store(
-        RUBY_FILE_NAME,
-        <<EOT
-require 'markdown_helper'
-
-# Option :pristine suppresses comment insertion.
-markdown_helper = MarkdownHelper.new(:pristine => true)
-markdown_helper.include('#{INCLUDER_FILE_NAME}', '#{INCLUDED_FILE_NAME}')
-EOT
-    )
-
-    use_case.files_to_write.store(
+    File.write(
         TEMPLATE_FILE_NAME,
         <<EOT
 ### Reuse Text
