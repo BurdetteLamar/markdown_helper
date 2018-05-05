@@ -21,6 +21,8 @@ Text in includer file.
 
 ```
 
+The treatment token ```:markdown``` specifies that the included text is to be treated as more markdown.
+
 #### CLI
 
 You can use the command-line interface to perform the inclusion.

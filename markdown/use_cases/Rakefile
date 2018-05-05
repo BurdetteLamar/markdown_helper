@@ -19,8 +19,8 @@ EOT
         use_case_dirs = {
             :include => %w/
                 reuse_text
-                nest_inclusions
                 include_with_added_comments
+                nest_inclusions
                 include_markdown
                 include_code_block
                 include_highlighted_code
