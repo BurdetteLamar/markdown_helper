@@ -4,9 +4,7 @@ class ReuseText < IncludeUseCase
 
   def self.build
 
-    use_case_dir_path = File.absolute_path(File.dirname(__FILE__))
-
-    use_case = self.new(use_case_dir_path)
+    use_case = self.new('reuse_text')
 
     includee_file_name = 'includee.md'
     includer_file_name = 'includer.md'
