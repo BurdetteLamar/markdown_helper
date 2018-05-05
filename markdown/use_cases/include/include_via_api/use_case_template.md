@@ -10,11 +10,25 @@ Use Ruby code to include files via the API.
 
 @[markdown](includer.md)
 
-#### Ruby File
+#### CLI
+
+##### Command
+
+Here's the command to perform the inclusion:
+
+```sh
+markdown_helper include --pristine includer.md included.md
+```
+
+@[:markdown](../../pristine.md)
+
+API
+
+##### Ruby File
 
 @[ruby](include.rb)
 
-#### Command
+##### Command
 
 ```sh
 ruby include.rb

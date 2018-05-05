@@ -30,11 +30,11 @@ class UseCase
   end
 
   def construct_include_command(template_file_path, markdown_file_path, pristine = false)
-    construct_command(:include, template_file_path, markdown_file_path)
+    construct_command(:include, template_file_path, markdown_file_path, pristine)
   end
 
   def construct_resolve_command(template_file_path, markdown_file_path, pristine = false)
-    construct_command(:resolve, template_file_path, markdown_file_path)
+    construct_command(:resolve, template_file_path, markdown_file_path, pristine)
   end
 
 end

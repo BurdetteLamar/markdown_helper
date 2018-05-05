@@ -1,7 +1,4 @@
-This file includes the useful text.
+Text in includer file.
 
-@[:markdown](reusable_text.md)
+@[:markdown](includee.md)
 
-Then includes it again.
-
-@[:markdown](reusable_text.md)
