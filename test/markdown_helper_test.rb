@@ -150,75 +150,28 @@ class MarkdownHelperTest < Minitest::Test
     create_template(test_info)
     common_test(MarkdownHelper.new, test_info)
 
-    # md_file_name = 'comment.md'
-    # template_file_path = File.join(
-    #     templates_dir_path,
-    #     md_file_name
-    # )
-    # expected_file_path = File.join(
-    #     expected_dir_path,
-    #     md_file_name
-    # )
-    # actual_file_path = File.join(
-    #     actual_dir_path,
-    #     md_file_name
-    # )
-    # include_file_path = '../includes/comment.txt'
-    # create_template(template_file_path, include_file_path, 'comment', :comment)
-    # common_test(
-    #     MarkdownHelper.new,
-    #     method_under_test,
-    #     template_file_path,
-    #     expected_file_path,
-    #     actual_file_path
-    # )
-    #
-    # # Test nested includes.
-    # md_file_name = 'nested.md'
-    # template_file_path = File.join(
-    #     templates_dir_path,
-    #     md_file_name
-    # )
-    # expected_file_path = File.join(
-    #     expected_dir_path,
-    #     md_file_name
-    # )
-    # actual_file_path = File.join(
-    #     actual_dir_path,
-    #     md_file_name
-    # )
-    # common_test(
-    #     MarkdownHelper.new,
-    #     method_under_test,
-    #     template_file_path,
-    #     expected_file_path,
-    #     actual_file_path
-    # )
-    #
-    # # Test circular include.
-    # md_file_name = 'circular.md'
-    # template_file_path = File.join(
-    #     templates_dir_path,
-    #     md_file_name
-    # )
-    # expected_file_path = File.join(
-    #     expected_dir_path,
-    #     md_file_name
-    # )
-    # actual_file_path = File.join(
-    #     actual_dir_path,
-    #     md_file_name
-    # )
-    # assert_raises(RuntimeError) do
-    #   common_test(
-    #       MarkdownHelper.new,
-    #       method_under_test,
-    #       template_file_path,
-    #       expected_file_path,
-    #       actual_file_path
-    #   )
-    # end
-    #
+    # Test nested includes.
+    test_info = TestInfo.new(
+        method,
+        file_stem = 'nested',
+        file_type = 'md',
+        treatment = :markdown,
+    )
+    create_template(test_info)
+    common_test(MarkdownHelper.new, test_info)
+
+    # Test circular includes.
+    test_info = TestInfo.new(
+        method,
+        file_stem = 'circular',
+        file_type = 'md',
+        treatment = :markdown,
+    )
+    create_template(test_info)
+    assert_raises(RuntimeError) do
+      common_test(MarkdownHelper.new, test_info)
+    end
+
     # # Test option pristine.
     # md_file_name = 'pristine.md'
     # template_file_path = File.join(
