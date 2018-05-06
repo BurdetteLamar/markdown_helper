@@ -101,8 +101,6 @@ class MarkdownHelperTest < Minitest::Test
 
     # Create the template for this test.
     def create_template(test_info)
-      # p 'CREATE_TEMPLATE'
-      # p test_info.template_file_path
       File.open(test_info.template_file_path, 'w') do |file|
         if test_info.file_stem == :nothing
           file.puts 'This file includes nothing.'
@@ -111,7 +109,6 @@ class MarkdownHelperTest < Minitest::Test
           treatment_for_include = test_info.treatment.inspect.gsub('"','')
           include_line = "@[#{treatment_for_include}](#{test_info.include_file_path})"
           file.puts(include_line)
-          # p include_line
         end
       end
     end
@@ -144,14 +141,15 @@ class MarkdownHelperTest < Minitest::Test
     end
 
     # Test treatment as comment.
-    # test_info = TestInfo.new(
-    #     method,
-    #     file_stem = nil,
-    #     file_type = 'txt',
-    #     treatment = :comment,
-    # )
-    # create_template(test_info)
-    # common_test(MarkdownHelper.new, test_info)
+    test_info = TestInfo.new(
+        method,
+        file_stem = 'comment',
+        file_type = 'txt',
+        treatment = :comment,
+    )
+    create_template(test_info)
+    common_test(MarkdownHelper.new, test_info)
+
     # md_file_name = 'comment.md'
     # template_file_path = File.join(
     #     templates_dir_path,
@@ -383,10 +381,6 @@ class MarkdownHelperTest < Minitest::Test
   end
 
   def common_test(markdown_helper, test_info)
-    # p 'COMMON_TEST'
-    # p test_info.method_under_test
-    # p test_info.template_file_path
-    # p test_info.actual_file_path
     markdown_helper.send(
         test_info.method_under_test,
         test_info.template_file_path,
