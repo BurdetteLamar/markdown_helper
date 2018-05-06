@@ -97,7 +97,7 @@ class MarkdownHelperTest < Minitest::Test
 
   def test_include
 
-    method = :include
+    method_under_test = :include
 
     # Create the template for this test.
     def create_template(test_info)
@@ -130,7 +130,7 @@ class MarkdownHelperTest < Minitest::Test
           file_stem.to_s,
       ].each do |treatment|
         test_info = TestInfo.new(
-            method,
+            method_under_test,
             file_stem,
             file_type,
             treatment,
@@ -142,7 +142,7 @@ class MarkdownHelperTest < Minitest::Test
 
     # Test treatment as comment.
     test_info = TestInfo.new(
-        method,
+        method_under_test,
         file_stem = 'comment',
         file_type = 'txt',
         treatment = :comment,
@@ -152,7 +152,7 @@ class MarkdownHelperTest < Minitest::Test
 
     # Test nested includes.
     test_info = TestInfo.new(
-        method,
+        method_under_test,
         file_stem = 'nested',
         file_type = 'md',
         treatment = :markdown,
@@ -162,7 +162,7 @@ class MarkdownHelperTest < Minitest::Test
 
     # Test circular includes.
     test_info = TestInfo.new(
-        method,
+        method_under_test,
         file_stem = 'circular',
         file_type = 'md',
         treatment = :markdown,
@@ -177,7 +177,7 @@ class MarkdownHelperTest < Minitest::Test
     [ true, false ].each do |pristine|
       markdown_helper.pristine = pristine
       test_info = TestInfo.new(
-          method,
+          method_under_test,
           file_stem = "pristine_#{pristine}",
           file_type = 'md',
           treatment = :markdown,
