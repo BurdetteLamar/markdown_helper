@@ -1,4 +1,3 @@
-<!-- >>>>>> BEGIN GENERATED FILE (include): SOURCE use_case_template.md -->
 ### Include Generated Text
 
 #### Generate Includable Text
@@ -17,4 +16,3 @@ An especially handy use of file inclusion is seen in including example code and 
 2.  Then both are included in markdown that uses the example.
 
 Running the example each time the markdown is built keeps the example code "green," because it confirms that the code still works.
-<!-- <<<<<< END GENERATED FILE (include): SOURCE use_case_template.md -->

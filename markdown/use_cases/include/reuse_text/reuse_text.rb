@@ -1,46 +1,15 @@
-require_relative '../../use_case'
+require_relative '../include_use_case'
 
-class ReuseText < UseCase
+class ReuseText < IncludeUseCase
 
   def self.build
 
-    use_case_dir_path = File.absolute_path(File.dirname(__FILE__))
+    use_case = self.new('reuse_text')
+    use_case.write_includee_file
+    use_case.write_includer_file
+    use_case.write_ruby_file(pristine = true)
 
-    use_case = self.new(use_case_dir_path)
-
-    reusable_text_file_name = 'reusable_text.md'
-    includer_file_name = 'includer.md'
-    included_file_name = 'included.md'
-
-    include_command = use_case.construct_include_command(includer_file_name, included_file_name, pristine = true)
-    build_command = use_case.construct_include_command(TEMPLATE_FILE_NAME, USE_CASE_FILE_NAME, pristine = true)
-
-    use_case.commands_to_execute.push(
-        include_command,
-        build_command,
-    )
-
-    use_case.files_to_write.store(
-        reusable_text_file_name,
-        <<EOT
-This is some reusable text that can be included in more than one place (actually, in more than one file).
-EOT
-    )
-
-    use_case.files_to_write.store(
-        includer_file_name,
-        <<EOT
-This file includes the useful text.
-
-@[:markdown](#{reusable_text_file_name})
-
-Then includes it again.
-
-@[:markdown](#{reusable_text_file_name})
-EOT
-    )
-
-    use_case.files_to_write.store(
+    File.write(
         TEMPLATE_FILE_NAME,
         <<EOT
 ### Reuse Text
@@ -49,33 +18,47 @@ Use file inclusion to stay DRY (Don't Repeat Yourself).
 
 Maintain reusable text in a separate file, then include it wherever it's needed.
 
-#### File to Be Included
+#### File To Be Included
 
-Here's a file containing some text that can be included:
-
-@[markdown](#{reusable_text_file_name})
+@[markdown](#{INCLUDEE_FILE_NAME})
 
 #### Includer File
 
-Here's a template file that includes it:
+@[markdown](#{INCLUDER_FILE_NAME})
 
-@[markdown](#{includer_file_name})
+The treatment token ```:markdown``` specifies that the included text is to be treated as more markdown.
 
-#### Command
+#### CLI
 
-Here's the command to perform the inclusion:
+You can use the command-line interface to perform the inclusion.
+
+##### Command
 
 ```sh
-#{include_command}
+#{INCLUDE_COMMAND}
 ```
 
 @[:markdown](../../pristine.md)
 
+#### API
+
+You can use the API to perform the inclusion.
+
+##### Ruby Code
+
+@[ruby](#{RUBY_FILE_NAME})
+
+##### Command
+
+```sh
+#{RUBY_COMMAND}
+```
+
 #### File with Inclusion
 
-Here's the finished file with the inclusion:
+Here's the output file, after inclusion.
 
-@[markdown](#{included_file_name})
+@[markdown](#{INCLUDED_FILE_NAME})
 EOT
     )
 

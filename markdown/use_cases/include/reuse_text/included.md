@@ -1,13 +1,4 @@
-<!-- >>>>>> BEGIN GENERATED FILE (include): SOURCE includer.md -->
-This file includes the useful text.
+Text in includer file.
 
-<!-- >>>>>> BEGIN INCLUDED FILE (markdown): SOURCE ./reusable_text.md -->
-This is some reusable text that can be included in more than one place (actually, in more than one file).
-<!-- <<<<<< END INCLUDED FILE (markdown): SOURCE ./reusable_text.md -->
+Text in includee file.
 
-Then includes it again.
-
-<!-- >>>>>> BEGIN INCLUDED FILE (markdown): SOURCE ./reusable_text.md -->
-This is some reusable text that can be included in more than one place (actually, in more than one file).
-<!-- <<<<<< END INCLUDED FILE (markdown): SOURCE ./reusable_text.md -->
-<!-- <<<<<< END GENERATED FILE (include): SOURCE includer.md -->

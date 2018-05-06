@@ -1,70 +1,69 @@
-<!-- >>>>>> BEGIN GENERATED FILE (include): SOURCE use_case_template.md -->
 ### Reuse Text
 
 Use file inclusion to stay DRY (Don't Repeat Yourself).
 
 Maintain reusable text in a separate file, then include it wherever it's needed.
 
-#### File to Be Included
+#### File To Be Included
 
-Here's a file containing some text that can be included:
-
-<!-- >>>>>> BEGIN INCLUDED FILE (markdown): SOURCE ./reusable_text.md -->
-```reusable_text.md```:
+```includee.md```:
 ```markdown
-This is some reusable text that can be included in more than one place (actually, in more than one file).
+Text in includee file.
 ```
-<!-- <<<<<< END INCLUDED FILE (markdown): SOURCE ./reusable_text.md -->
 
 #### Includer File
 
-Here's a template file that includes it:
-
-<!-- >>>>>> BEGIN INCLUDED FILE (markdown): SOURCE ./includer.md -->
 ```includer.md```:
 ```markdown
-This file includes the useful text.
+Text in includer file.
 
-@[:markdown](reusable_text.md)
+@[:markdown](includee.md)
 
-Then includes it again.
-
-@[:markdown](reusable_text.md)
 ```
-<!-- <<<<<< END INCLUDED FILE (markdown): SOURCE ./includer.md -->
 
-#### Command
+The treatment token ```:markdown``` specifies that the included text is to be treated as more markdown.
 
-Here's the command to perform the inclusion:
+#### CLI
+
+You can use the command-line interface to perform the inclusion.
+
+##### Command
 
 ```sh
-markdown_helper include includer.md included.md
+markdown_helper include --pristine includer.md included.md
 ```
 
-<!-- >>>>>> BEGIN INCLUDED FILE (markdown): SOURCE ./../../pristine.md -->
 (Option ```--pristine``` suppresses comment insertion.)
-<!-- <<<<<< END INCLUDED FILE (markdown): SOURCE ./../../pristine.md -->
+
+#### API
+
+You can use the API to perform the inclusion.
+
+##### Ruby Code
+
+```include.rb```:
+```ruby
+require 'markdown_helper'
+
+# Option :pristine suppresses comment insertion.
+markdown_helper = MarkdownHelper.new(:pristine => true)
+markdown_helper.include('includer.md', 'included.md')
+```
+
+##### Command
+
+```sh
+ruby include.rb
+```
 
 #### File with Inclusion
 
-Here's the finished file with the inclusion:
+Here's the output file, after inclusion.
 
-<!-- >>>>>> BEGIN INCLUDED FILE (markdown): SOURCE ./included.md -->
 ```included.md```:
 ```markdown
-<!-- >>>>>> BEGIN GENERATED FILE (include): SOURCE includer.md -->
-This file includes the useful text.
+Text in includer file.
 
-<!-- >>>>>> BEGIN INCLUDED FILE (markdown): SOURCE ./reusable_text.md -->
-This is some reusable text that can be included in more than one place (actually, in more than one file).
-<!-- <<<<<< END INCLUDED FILE (markdown): SOURCE ./reusable_text.md -->
+Text in includee file.
 
-Then includes it again.
-
-<!-- >>>>>> BEGIN INCLUDED FILE (markdown): SOURCE ./reusable_text.md -->
-This is some reusable text that can be included in more than one place (actually, in more than one file).
-<!-- <<<<<< END INCLUDED FILE (markdown): SOURCE ./reusable_text.md -->
-<!-- <<<<<< END GENERATED FILE (include): SOURCE includer.md -->
 ```
-<!-- <<<<<< END INCLUDED FILE (markdown): SOURCE ./included.md -->
-<!-- <<<<<< END GENERATED FILE (include): SOURCE use_case_template.md -->

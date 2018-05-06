@@ -13,7 +13,8 @@ class IncludeViaApi < UseCase
     included_file_name = 'included.md'
     ruby_file_name = 'include.rb'
 
-    include_command = "ruby include.rb"
+    include_command = use_case.construct_include_command(includer_file_name, included_file_name, pristine = true)
+    ruby_command = 'ruby include.rb'
     build_command = use_case.construct_include_command(TEMPLATE_FILE_NAME, USE_CASE_FILE_NAME, pristine = true)
 
     use_case.commands_to_execute.push(
@@ -63,14 +64,28 @@ Use Ruby code to include files via the API.
 
 @[markdown](#{includer_file_name})
 
-#### Ruby File
+#### CLI
 
-@[ruby](#{ruby_file_name})
+##### Command
 
-#### Command
+Here's the command to perform the inclusion:
 
 ```sh
 #{include_command}
+```
+
+@[:markdown](../../pristine.md)
+
+API
+
+##### Ruby File
+
+@[ruby](#{ruby_file_name})
+
+##### Command
+
+```sh
+#{ruby_command}
 ```
 
 @[:markdown](../../pristine.md)

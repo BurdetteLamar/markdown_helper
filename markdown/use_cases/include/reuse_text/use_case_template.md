@@ -4,30 +4,44 @@ Use file inclusion to stay DRY (Don't Repeat Yourself).
 
 Maintain reusable text in a separate file, then include it wherever it's needed.
 
-#### File to Be Included
+#### File To Be Included
 
-Here's a file containing some text that can be included:
-
-@[markdown](reusable_text.md)
+@[markdown](includee.md)
 
 #### Includer File
 
-Here's a template file that includes it:
-
 @[markdown](includer.md)
 
-#### Command
+The treatment token ```:markdown``` specifies that the included text is to be treated as more markdown.
 
-Here's the command to perform the inclusion:
+#### CLI
+
+You can use the command-line interface to perform the inclusion.
+
+##### Command
 
 ```sh
-markdown_helper include includer.md included.md
+markdown_helper include --pristine includer.md included.md
 ```
 
 @[:markdown](../../pristine.md)
 
+#### API
+
+You can use the API to perform the inclusion.
+
+##### Ruby Code
+
+@[ruby](include.rb)
+
+##### Command
+
+```sh
+ruby include.rb
+```
+
 #### File with Inclusion
 
-Here's the finished file with the inclusion:
+Here's the output file, after inclusion.
 
 @[markdown](included.md)
