@@ -14,36 +14,91 @@ class MarkdownHelperTest < Minitest::Test
     refute_nil MarkdownHelper::VERSION
   end
 
+  class TestInfo
+
+    attr_accessor \
+      :method_under_test,
+      :method_name,
+      :md_file_basename,
+      :md_file_name,
+      :test_dir_path,
+      :template_file_path,
+      :expected_file_path,
+      :actual_file_path,
+      :include_file_path
+
+    def initialize(method_under_test)
+      self.method_under_test = method_under_test
+      self.method_name = method_under_test.to_s
+      self.md_file_name = "#{md_file_basename}.md"
+      self.test_dir_path = File.join(
+          TEST_DIR_PATH,
+          method_under_test.to_s
+      )
+      self.template_file_path = File.join(
+          test_dir_path,
+          TEMPLATES_DIR_NAME,
+          md_file_name
+      )
+      self.expected_file_path = File.join(
+          test_dir_path,
+          EXPECTED_DIR_NAME,
+          md_file_name
+      )
+      self.actual_file_path = File.join(
+          test_dir_path,
+          ACTUAL_DIR_NAME,
+          md_file_name
+      )
+    end
+
+    def templates_dir_path
+      File.dirname(template_file_path)
+    end
+
+    def expected_dir_path
+      File.dirname(expected_file_path)
+    end
+
+  end
+
+  class IncludeInfo < TestInfo
+
+    attr_accessor \
+      :file_stem,
+      :file_type,
+      :treatment
+
+    def initialize(file_stem, file_type, treatment)
+      self.file_stem = file_stem
+      self.file_type = file_type
+      self.treatment = treatment
+      self.md_file_basename = "#{file_stem}_#{treatment}"
+      self.include_file_path = "../includes/#{file_stem}.#{file_type}"
+      super(:include)
+    end
+
+  end
+
+  class ResolveInfo < TestInfo
+
+    def initialize(md_file_basename)
+      self.md_file_basename = md_file_basename
+      super(:resolve)
+    end
+  end
+
   def test_include
 
-    method_under_test = :include
-
-    test_dir_path = File.join(
-        TEST_DIR_PATH,
-        method_under_test.to_s,
-    )
-    templates_dir_path = File.join(
-        test_dir_path,
-        TEMPLATES_DIR_NAME,
-    )
-    expected_dir_path = File.join(
-        test_dir_path,
-        EXPECTED_DIR_NAME,
-    )
-    actual_dir_path = File.join(
-        test_dir_path,
-        ACTUAL_DIR_NAME,
-    )
-
     # Create the template for this test.
-    def create_template(template_file_path, include_file_path, file_stem, treatment)
-      File.open(template_file_path, 'w') do |file|
-        if file_stem == :nothing
+    def create_template(test_info)
+      File.open(test_info.template_file_path, 'w') do |file|
+        if test_info.file_stem == :nothing
           file.puts 'This file includes nothing.'
         else
           # Inspect, in case it's a symbol, and remove double quotes after inspection.
-          treatment_for_include = treatment.inspect.gsub('"','')
-          include_line = "@[#{treatment_for_include}](#{include_file_path})"
+          treatment_for_include = test_info.treatment.inspect.gsub('"','')
+          include_line = "@[#{treatment_for_include}](#{test_info.include_file_path})"
           file.puts(include_line)
         end
       end
@@ -65,157 +120,61 @@ class MarkdownHelperTest < Minitest::Test
           :comment,
           file_stem.to_s,
       ].each do |treatment|
-        file_basename = "#{file_stem}_#{treatment}"
-        md_file_name = "#{file_basename}.md"
-        template_file_path = File.join(
-            templates_dir_path,
-            md_file_name
+        test_info = IncludeInfo.new(
+            file_stem,
+            file_type,
+            treatment,
         )
-        expected_file_path = File.join(
-            expected_dir_path,
-            md_file_name
-        )
-        actual_file_path = File.join(
-            actual_dir_path,
-            md_file_name
-        )
-        include_file_path = "../includes/#{file_stem}.#{file_type}"
-        create_template(template_file_path, include_file_path, file_stem, treatment)
-        common_test(
-            MarkdownHelper.new,
-            method_under_test,
-            template_file_path,
-            expected_file_path,
-            actual_file_path
-        )
+        create_template(test_info)
+        common_test(MarkdownHelper.new, test_info)
       end
     end
 
     # Test treatment as comment.
-    md_file_name = 'comment.md'
-    template_file_path = File.join(
-        templates_dir_path,
-        md_file_name
+    test_info = IncludeInfo.new(
+        file_stem = 'comment',
+        file_type = 'txt',
+        treatment = :comment,
     )
-    expected_file_path = File.join(
-        expected_dir_path,
-        md_file_name
-    )
-    actual_file_path = File.join(
-        actual_dir_path,
-        md_file_name
-    )
-    include_file_path = '../includes/comment.txt'
-    create_template(template_file_path, include_file_path, 'comment', :comment)
-    common_test(
-        MarkdownHelper.new,
-        method_under_test,
-        template_file_path,
-        expected_file_path,
-        actual_file_path
-    )
+    create_template(test_info)
+    common_test(MarkdownHelper.new, test_info)
 
     # Test nested includes.
-    md_file_name = 'nested.md'
-    template_file_path = File.join(
-        templates_dir_path,
-        md_file_name
+    test_info = IncludeInfo.new(
+        file_stem = 'nested',
+        file_type = 'md',
+        treatment = :markdown,
     )
-    expected_file_path = File.join(
-        expected_dir_path,
-        md_file_name
-    )
-    actual_file_path = File.join(
-        actual_dir_path,
-        md_file_name
-    )
-    common_test(
-        MarkdownHelper.new,
-        method_under_test,
-        template_file_path,
-        expected_file_path,
-        actual_file_path
-    )
+    create_template(test_info)
+    common_test(MarkdownHelper.new, test_info)
 
-    # Test circular include.
-    md_file_name = 'circular.md'
-    template_file_path = File.join(
-        templates_dir_path,
-        md_file_name
+    # Test circular includes.
+    test_info = IncludeInfo.new(
+        file_stem = 'circular',
+        file_type = 'md',
+        treatment = :markdown,
     )
-    expected_file_path = File.join(
-        expected_dir_path,
-        md_file_name
-    )
-    actual_file_path = File.join(
-        actual_dir_path,
-        md_file_name
-    )
+    create_template(test_info)
     assert_raises(RuntimeError) do
-      common_test(
-          MarkdownHelper.new,
-          method_under_test,
-          template_file_path,
-          expected_file_path,
-          actual_file_path
-      )
+      common_test(MarkdownHelper.new, test_info)
     end
 
     # Test option pristine.
-    md_file_name = 'pristine.md'
-    template_file_path = File.join(
-        templates_dir_path,
-        md_file_name
-    )
-    expected_file_path = File.join(
-        expected_dir_path,
-        md_file_name
-    )
-    actual_file_path = File.join(
-        actual_dir_path,
-        md_file_name
-    )
-    include_file_path = '../includes/ruby.rb'
-    create_template(template_file_path, include_file_path, 'pristine', :code_block)
-    common_test(
-        MarkdownHelper.new(:pristine => true),
-        method_under_test,
-        template_file_path,
-        expected_file_path,
-        actual_file_path
-    )
     markdown_helper = MarkdownHelper.new
-    markdown_helper.pristine = true
-    common_test(
-        markdown_helper,
-        method_under_test,
-        template_file_path,
-        expected_file_path,
-        actual_file_path
-    )
+    [ true, false ].each do |pristine|
+      markdown_helper.pristine = pristine
+      test_info = IncludeInfo.new(
+          file_stem = "pristine_#{pristine}",
+          file_type = 'md',
+          treatment = :markdown,
+      )
+      create_template(test_info)
+      common_test(markdown_helper, test_info)
+    end
 
   end
 
   def test_resolve
-
-    method_under_test = :resolve
-
-    test_dir_path = File.join(
-        TEST_DIR_PATH,
-        method_under_test.to_s,
-    )
-    templates_dir_path = File.join(
-        test_dir_path,
-        TEMPLATES_DIR_NAME,
-    )
-    expected_dir_path = File.join(
-        test_dir_path,
-        EXPECTED_DIR_NAME,
-    )
-    actual_dir_path = File.join(
-        test_dir_path,
-        ACTUAL_DIR_NAME,
-    )
 
     # Condition file with repo user and repo name.
     def condition_file(markdown_helper, dir_path, file_name, type)
@@ -248,22 +207,24 @@ class MarkdownHelperTest < Minitest::Test
         :simple_image,
         :width_image,
         :width_and_height_image,
-    ].each do |file_basename|
+    ].each do |md_file_basename|
       markdown_helper = MarkdownHelper.new
-      md_file_name = "#{file_basename}.md"
-      template_file = condition_file(markdown_helper, templates_dir_path, md_file_name, 'template')
-      expected_markdown_file = condition_file(markdown_helper, expected_dir_path, md_file_name, 'expected')
-      actual_file_path = File.join(
-          actual_dir_path,
-          md_file_name
-      )
-      common_test(
+      test_info = ResolveInfo.new(md_file_basename)
+      template_file = condition_file(
           markdown_helper,
-          method_under_test,
-          template_file.path,
-          expected_markdown_file.path,
-          actual_file_path
+          test_info.templates_dir_path,
+          test_info.md_file_name,
+          'template'
       )
+      test_info.template_file_path = template_file.path
+      expected_markdown_file = condition_file(
+          markdown_helper,
+          test_info.expected_dir_path,
+          test_info.md_file_name,
+          'expected'
+      )
+      test_info.expected_file_path = expected_markdown_file.path
+      common_test(markdown_helper, test_info)
     end
 
     # Test some special cases.
@@ -271,99 +232,56 @@ class MarkdownHelperTest < Minitest::Test
         :not_relative,
         :multiple_images,
         :absolute_and_relative,
-    ].each do |basename|
-      md_file_name = "#{basename}.md"
-      markdown_helper = MarkdownHelper.new
-      template_file_path = File.join(
-          templates_dir_path,
-          md_file_name
-      )
-      expected_file_path = File.join(
-          expected_dir_path,
-          md_file_name
-      )
-      actual_file_path = File.join(
-          actual_dir_path,
-          md_file_name
-      )
-      common_test(markdown_helper, method_under_test, template_file_path, expected_file_path, actual_file_path)
+    ].each do |md_file_basename|
+      test_info = ResolveInfo.new(md_file_basename)
+      common_test(MarkdownHelper.new, test_info)
     end
 
     # Test option pristine.
-    md_file_name = 'pristine.md'
-    template_file_path = File.join(
-        templates_dir_path,
-        md_file_name
-    )
-    expected_file_path = File.join(
-        expected_dir_path,
-        md_file_name
-    )
-    actual_file_path = File.join(
-        actual_dir_path,
-        md_file_name
-    )
+    md_file_basename = 'pristine'
+    test_info = ResolveInfo.new(md_file_basename)
     common_test(
         MarkdownHelper.new(:pristine => true),
-        method_under_test,
-        template_file_path,
-        expected_file_path,
-        actual_file_path
+        test_info
     )
     markdown_helper = MarkdownHelper.new
     markdown_helper.pristine = true
     common_test(
         markdown_helper,
-        method_under_test,
-        template_file_path,
-        expected_file_path,
-        actual_file_path
+        test_info
     )
 
   end
 
-  def common_test(
-      markdown_helper,
-      method_under_test,
-      template_file_path,
-      expected_file_path,
-      actual_file_path
-  )
-    # API
+  def common_test(markdown_helper, test_info)
     markdown_helper.send(
-        method_under_test,
-        template_file_path,
-        actual_file_path,
+        test_info.method_under_test,
+        test_info.template_file_path,
+        test_info.actual_file_path,
     )
-    diffs = MarkdownHelperTest.diff_files(expected_file_path, actual_file_path)
+    diffs = MarkdownHelperTest.diff_files(test_info.expected_file_path, test_info.actual_file_path)
     unless diffs.empty?
       puts 'EXPECTED'
-      puts File.read(expected_file_path)
+      puts File.read(test_info.expected_file_path)
       puts 'ACTUAL'
-      puts File.read(actual_file_path)
+      puts File.read(test_info.actual_file_path)
       puts 'END'
     end
-    assert_empty(diffs, actual_file_path)
+    assert_empty(diffs, test_info.actual_file_path)
     # CLI
-    bin_file = File.join(
-        TEST_DIR_PATH,
-        '..',
-        'bin',
-        '_' + method_under_test.to_s,
-    )
     options = markdown_helper.pristine ? '--pristine' : ''
-    File.delete(actual_file_path)
-    command = "markdown_helper #{method_under_test.to_s} #{options} #{template_file_path} #{actual_file_path}"
+    File.delete(test_info.actual_file_path)
+    command = "markdown_helper #{test_info.method_under_test} #{options} #{test_info.template_file_path} #{test_info.actual_file_path}"
     system(command)
-    output = File.read(actual_file_path)
-    diffs = MarkdownHelperTest.diff_files(expected_file_path, actual_file_path)
+    output = File.read(test_info.actual_file_path)
+    diffs = MarkdownHelperTest.diff_files(test_info.expected_file_path, test_info.actual_file_path)
     unless diffs.empty?
       puts 'Expected:'
-      puts File.read(expected_file_path)
+      puts File.read(test_info.expected_file_path)
       puts 'Got:'
       puts output
     end
-    assert_empty(diffs, actual_file_path)
+    assert_empty(diffs, test_info.actual_file_path)
   end
 
   def self.diff_files(expected_file_path, actual_file_path)
