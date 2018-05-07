@@ -10,7 +10,11 @@ class MarkdownHelperTest < Minitest::Test
   EXPECTED_DIR_NAME = 'expected'
   ACTUAL_DIR_NAME = 'actual'
 
-  class Info
+  def test_version
+    refute_nil MarkdownHelper::VERSION
+  end
+
+  class TestInfo
 
     attr_accessor \
       :method_under_test,
@@ -50,7 +54,7 @@ class MarkdownHelperTest < Minitest::Test
 
   end
 
-  class IncludeInfo < Info
+  class IncludeInfo < TestInfo
 
     attr_accessor \
       :file_stem,
@@ -66,10 +70,6 @@ class MarkdownHelperTest < Minitest::Test
       super(method_under_test)
     end
 
-  end
-
-  def test_version
-    refute_nil MarkdownHelper::VERSION
   end
 
   def test_include
