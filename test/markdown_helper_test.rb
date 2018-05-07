@@ -106,7 +106,7 @@ class MarkdownHelperTest < Minitest::Test
             treatment,
         )
         create_template(test_info)
-        common_test(MarkdownHelper.new, test_info)
+        common_include_test(MarkdownHelper.new, test_info)
       end
     end
 
@@ -118,7 +118,7 @@ class MarkdownHelperTest < Minitest::Test
         treatment = :comment,
     )
     create_template(test_info)
-    common_test(MarkdownHelper.new, test_info)
+    common_include_test(MarkdownHelper.new, test_info)
 
     # Test nested includes.
     test_info = IncludeInfo.new(
@@ -128,7 +128,7 @@ class MarkdownHelperTest < Minitest::Test
         treatment = :markdown,
     )
     create_template(test_info)
-    common_test(MarkdownHelper.new, test_info)
+    common_include_test(MarkdownHelper.new, test_info)
 
     # Test circular includes.
     test_info = IncludeInfo.new(
@@ -139,7 +139,7 @@ class MarkdownHelperTest < Minitest::Test
     )
     create_template(test_info)
     assert_raises(RuntimeError) do
-      common_test(MarkdownHelper.new, test_info)
+      common_include_test(MarkdownHelper.new, test_info)
     end
 
     # Test option pristine.
@@ -153,7 +153,7 @@ class MarkdownHelperTest < Minitest::Test
           treatment = :markdown,
       )
       create_template(test_info)
-      common_test(markdown_helper, test_info)
+      common_include_test(markdown_helper, test_info)
     end
 
   end
@@ -219,7 +219,7 @@ class MarkdownHelperTest < Minitest::Test
   #         actual_dir_path,
   #         md_file_name
   #     )
-  #     common_test(
+  #     common_include_test(
   #         markdown_helper,
   #         method_under_test,
   #         template_file.path,
@@ -248,7 +248,7 @@ class MarkdownHelperTest < Minitest::Test
   #         actual_dir_path,
   #         md_file_name
   #     )
-  #     common_test(markdown_helper, method_under_test, template_file_path, expected_file_path, actual_file_path)
+  #     common_include_test(markdown_helper, method_under_test, template_file_path, expected_file_path, actual_file_path)
   #   end
   #
   #   # Test option pristine.
@@ -265,7 +265,7 @@ class MarkdownHelperTest < Minitest::Test
   #       actual_dir_path,
   #       md_file_name
   #   )
-  #   common_test(
+  #   common_include_test(
   #       MarkdownHelper.new(:pristine => true),
   #       method_under_test,
   #       template_file_path,
@@ -274,7 +274,7 @@ class MarkdownHelperTest < Minitest::Test
   #   )
   #   markdown_helper = MarkdownHelper.new
   #   markdown_helper.pristine = true
-  #   common_test(
+  #   common_include_test(
   #       markdown_helper,
   #       method_under_test,
   #       template_file_path,
@@ -284,35 +284,51 @@ class MarkdownHelperTest < Minitest::Test
 
   end
 
-  def common_test(markdown_helper, test_info)
-    markdown_helper.send(
+  def common_include_test(markdown_helper, test_info)
+    common_test(
+        markdown_helper,
         test_info.method_under_test,
         test_info.template_file_path,
-        test_info.actual_file_path,
+        test_info.expected_file_path,
+        test_info.actual_file_path
     )
-    diffs = MarkdownHelperTest.diff_files(test_info.expected_file_path, test_info.actual_file_path)
+  end
+
+  def common_test(
+    markdown_helper,
+    method_under_test,
+    template_file_path,
+    expected_file_path,
+    actual_file_path
+  )
+    markdown_helper.send(
+        method_under_test,
+        template_file_path,
+        actual_file_path,
+    )
+    diffs = MarkdownHelperTest.diff_files(expected_file_path, actual_file_path)
     unless diffs.empty?
       puts 'EXPECTED'
-      puts File.read(test_info.expected_file_path)
+      puts File.read(expected_file_path)
       puts 'ACTUAL'
-      puts File.read(test_info.actual_file_path)
+      puts File.read(actual_file_path)
       puts 'END'
     end
-    assert_empty(diffs, test_info.actual_file_path)
+    assert_empty(diffs, actual_file_path)
     # CLI
     options = markdown_helper.pristine ? '--pristine' : ''
-    File.delete(test_info.actual_file_path)
-    command = "markdown_helper #{test_info.method_name} #{options} #{test_info.template_file_path} #{test_info.actual_file_path}"
+    File.delete(actual_file_path)
+    command = "markdown_helper #{method_under_test} #{options} #{template_file_path} #{actual_file_path}"
     system(command)
-    output = File.read(test_info.actual_file_path)
-    diffs = MarkdownHelperTest.diff_files(test_info.expected_file_path, test_info.actual_file_path)
+    output = File.read(actual_file_path)
+    diffs = MarkdownHelperTest.diff_files(expected_file_path, actual_file_path)
     unless diffs.empty?
       puts 'Expected:'
       puts File.read(expected_file_path)
       puts 'Got:'
       puts output
     end
-    assert_empty(diffs, test_info.actual_file_path)
+    assert_empty(diffs, actual_file_path)
   end
 
   def self.diff_files(expected_file_path, actual_file_path)
