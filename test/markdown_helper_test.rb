@@ -61,13 +61,13 @@ class MarkdownHelperTest < Minitest::Test
       :file_type,
       :treatment
 
-    def initialize(method_under_test, file_stem, file_type, treatment)
+    def initialize(file_stem, file_type, treatment)
       self.file_stem = file_stem
       self.file_type = file_type
       self.treatment = treatment
       self.md_file_basename = "#{file_stem}_#{treatment}"
       self.md_file_name = "#{md_file_basename}.md"
-      super(method_under_test)
+      super(:include)
     end
 
   end
@@ -107,7 +107,6 @@ class MarkdownHelperTest < Minitest::Test
           file_stem.to_s,
       ].each do |treatment|
         test_info = IncludeInfo.new(
-            method_under_test,
             file_stem,
             file_type,
             treatment,
@@ -119,7 +118,6 @@ class MarkdownHelperTest < Minitest::Test
 
     # Test treatment as comment.
     test_info = IncludeInfo.new(
-        method_under_test,
         file_stem = 'comment',
         file_type = 'txt',
         treatment = :comment,
@@ -129,7 +127,6 @@ class MarkdownHelperTest < Minitest::Test
 
     # Test nested includes.
     test_info = IncludeInfo.new(
-        method_under_test,
         file_stem = 'nested',
         file_type = 'md',
         treatment = :markdown,
@@ -139,7 +136,6 @@ class MarkdownHelperTest < Minitest::Test
 
     # Test circular includes.
     test_info = IncludeInfo.new(
-        method_under_test,
         file_stem = 'circular',
         file_type = 'md',
         treatment = :markdown,
@@ -154,7 +150,6 @@ class MarkdownHelperTest < Minitest::Test
     [ true, false ].each do |pristine|
       markdown_helper.pristine = pristine
       test_info = IncludeInfo.new(
-          method_under_test,
           file_stem = "pristine_#{pristine}",
           file_type = 'md',
           treatment = :markdown,
