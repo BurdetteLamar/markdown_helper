@@ -10,78 +10,52 @@ class MarkdownHelperTest < Minitest::Test
   EXPECTED_DIR_NAME = 'expected'
   ACTUAL_DIR_NAME = 'actual'
 
-  class TestInfo
+  class IncludeInfo
 
     attr_accessor \
       :method_under_test,
       :method_name,
       :file_stem,
       :file_type,
-      :treatment
+      :treatment,
+      :test_dir_path,
+      :template_file_path,
+      :expected_file_path,
+      :actual_file_path
 
     def initialize(method_under_test, file_stem, file_type, treatment)
       self.method_under_test = method_under_test
-      self.method_name = method_under_test.to_s
       self.file_stem = file_stem
       self.file_type = file_type
       self.treatment = treatment
-    end
-
-    def file_basename
-      "#{file_stem}_#{treatment}"
-    end
-
-    def md_file_name
-      "#{file_basename}.md"
-    end
-
-    def  templates_dir_path
-      File.join(
+      self.method_name = method_under_test.to_s
+      self.test_dir_path = File.join(
+          TEST_DIR_PATH,
+          method_under_test.to_s
+      )
+      self.template_file_path = File.join(
           test_dir_path,
           TEMPLATES_DIR_NAME,
+          md_file_name
       )
-    end
-
-    def test_dir_path
-      File.join(
-          TEST_DIR_PATH,
-          method_under_test.to_s,
-      )
-    end
-
-    def expected_dir_path
-      File.join(
+      self.expected_file_path = File.join(
           test_dir_path,
           EXPECTED_DIR_NAME,
+          md_file_name
       )
-    end
-
-    def actual_dir_path
-      File.join(
+      self.actual_file_path = File.join(
           test_dir_path,
           ACTUAL_DIR_NAME,
-      )
-    end
-
-    def template_file_path
-      File.join(
-          templates_dir_path,
           md_file_name
       )
     end
 
-    def expected_file_path
-      File.join(
-        expected_dir_path,
-        md_file_name
-    )
+    def md_file_basename
+      "#{file_stem}_#{treatment}"
     end
 
-    def actual_file_path
-      File.join(
-        actual_dir_path,
-        md_file_name,
-    )
+    def md_file_name
+      "#{md_file_basename}.md"
     end
 
     def include_file_path
@@ -129,7 +103,7 @@ class MarkdownHelperTest < Minitest::Test
           :comment,
           file_stem.to_s,
       ].each do |treatment|
-        test_info = TestInfo.new(
+        test_info = IncludeInfo.new(
             method_under_test,
             file_stem,
             file_type,
@@ -141,7 +115,7 @@ class MarkdownHelperTest < Minitest::Test
     end
 
     # Test treatment as comment.
-    test_info = TestInfo.new(
+    test_info = IncludeInfo.new(
         method_under_test,
         file_stem = 'comment',
         file_type = 'txt',
@@ -151,7 +125,7 @@ class MarkdownHelperTest < Minitest::Test
     common_test(MarkdownHelper.new, test_info)
 
     # Test nested includes.
-    test_info = TestInfo.new(
+    test_info = IncludeInfo.new(
         method_under_test,
         file_stem = 'nested',
         file_type = 'md',
@@ -161,7 +135,7 @@ class MarkdownHelperTest < Minitest::Test
     common_test(MarkdownHelper.new, test_info)
 
     # Test circular includes.
-    test_info = TestInfo.new(
+    test_info = IncludeInfo.new(
         method_under_test,
         file_stem = 'circular',
         file_type = 'md',
@@ -176,7 +150,7 @@ class MarkdownHelperTest < Minitest::Test
     markdown_helper = MarkdownHelper.new
     [ true, false ].each do |pristine|
       markdown_helper.pristine = pristine
-      test_info = TestInfo.new(
+      test_info = IncludeInfo.new(
           method_under_test,
           file_stem = "pristine_#{pristine}",
           file_type = 'md',
@@ -240,9 +214,9 @@ class MarkdownHelperTest < Minitest::Test
   #       :simple_image,
   #       :width_image,
   #       :width_and_height_image,
-  #   ].each do |file_basename|
+  #   ].each do |md_file_basename|
   #     markdown_helper = MarkdownHelper.new
-  #     md_file_name = "#{file_basename}.md"
+  #     md_file_name = "#{md_file_basename}.md"
   #     template_file = condition_file(markdown_helper, templates_dir_path, md_file_name, 'template')
   #     expected_markdown_file = condition_file(markdown_helper, expected_dir_path, md_file_name, 'expected')
   #     actual_file_path = File.join(
