@@ -30,6 +30,7 @@ class MarkdownHelperTest < Minitest::Test
     def initialize(method_under_test)
       self.method_under_test = method_under_test
       self.method_name = method_under_test.to_s
+      self.md_file_name = "#{md_file_basename}.md"
       self.test_dir_path = File.join(
           TEST_DIR_PATH,
           method_under_test.to_s
@@ -66,7 +67,6 @@ class MarkdownHelperTest < Minitest::Test
       self.file_type = file_type
       self.treatment = treatment
       self.md_file_basename = "#{file_stem}_#{treatment}"
-      self.md_file_name = "#{md_file_basename}.md"
       super(:include)
     end
 
