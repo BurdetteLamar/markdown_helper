@@ -10,13 +10,10 @@ class MarkdownHelperTest < Minitest::Test
   EXPECTED_DIR_NAME = 'expected'
   ACTUAL_DIR_NAME = 'actual'
 
-  class IncludeInfo
+  class Info
 
     attr_accessor \
       :method_under_test,
-      :file_stem,
-      :file_type,
-      :treatment,
       :method_name,
       :md_file_basename,
       :md_file_name,
@@ -26,17 +23,9 @@ class MarkdownHelperTest < Minitest::Test
       :actual_file_path,
       :include_file_path
 
-    def initialize(method_under_test, file_stem, file_type, treatment)
-
+    def initialize(method_under_test)
       self.method_under_test = method_under_test
-      self.file_stem = file_stem
-      self.file_type = file_type
-      self.treatment = treatment
-
       self.method_name = method_under_test.to_s
-      self.md_file_basename = "#{file_stem}_#{treatment}"
-      self.md_file_name = "#{md_file_basename}.md"
-
       self.test_dir_path = File.join(
           TEST_DIR_PATH,
           method_under_test.to_s
@@ -57,6 +46,24 @@ class MarkdownHelperTest < Minitest::Test
           md_file_name
       )
       self.include_file_path = "../includes/#{file_stem}.#{file_type}"
+    end
+
+  end
+
+  class IncludeInfo < Info
+
+    attr_accessor \
+      :file_stem,
+      :file_type,
+      :treatment
+
+    def initialize(method_under_test, file_stem, file_type, treatment)
+      self.file_stem = file_stem
+      self.file_type = file_type
+      self.treatment = treatment
+      self.md_file_basename = "#{file_stem}_#{treatment}"
+      self.md_file_name = "#{md_file_basename}.md"
+      super(method_under_test)
     end
 
   end
