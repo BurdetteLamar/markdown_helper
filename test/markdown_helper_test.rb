@@ -74,8 +74,6 @@ class MarkdownHelperTest < Minitest::Test
 
   def test_include
 
-    method_under_test = :include
-
     # Create the template for this test.
     def create_template(test_info)
       File.open(test_info.template_file_path, 'w') do |file|
