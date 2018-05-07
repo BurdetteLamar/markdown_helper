@@ -210,9 +210,19 @@ class MarkdownHelperTest < Minitest::Test
     ].each do |md_file_basename|
       markdown_helper = MarkdownHelper.new
       test_info = ResolveInfo.new(md_file_basename)
-      template_file = condition_file(markdown_helper, test_info.templates_dir_path, test_info.md_file_name, 'template')
+      template_file = condition_file(
+          markdown_helper,
+          test_info.templates_dir_path,
+          test_info.md_file_name,
+          'template'
+      )
       test_info.template_file_path = template_file.path
-      expected_markdown_file = condition_file(markdown_helper, test_info.expected_dir_path, test_info.md_file_name, 'expected')
+      expected_markdown_file = condition_file(
+          markdown_helper,
+          test_info.expected_dir_path,
+          test_info.md_file_name,
+          'expected'
+      )
       test_info.expected_file_path = expected_markdown_file.path
       common_test(markdown_helper, test_info)
     end
