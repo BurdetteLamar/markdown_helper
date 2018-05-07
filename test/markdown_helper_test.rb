@@ -50,7 +50,14 @@ class MarkdownHelperTest < Minitest::Test
           ACTUAL_DIR_NAME,
           md_file_name
       )
-      self.include_file_path = "../includes/#{file_stem}.#{file_type}"
+    end
+
+    def templates_dir_path
+      File.dirname(template_file_path)
+    end
+
+    def expected_dir_path
+      File.dirname(expected_file_path)
     end
 
   end
@@ -67,6 +74,7 @@ class MarkdownHelperTest < Minitest::Test
       self.file_type = file_type
       self.treatment = treatment
       self.md_file_basename = "#{file_stem}_#{treatment}"
+      self.include_file_path = "../includes/#{file_stem}.#{file_type}"
       super(:include)
     end
 
@@ -193,83 +201,45 @@ class MarkdownHelperTest < Minitest::Test
       conditioned_file
     end
 
-  #   # Test results of various templates.
-  #   [
-  #       :no_image,
-  #       :simple_image,
-  #       :width_image,
-  #       :width_and_height_image,
-  #   ].each do |md_file_basename|
-  #     markdown_helper = MarkdownHelper.new
-  #     md_file_name = "#{md_file_basename}.md"
-  #     template_file = condition_file(markdown_helper, templates_dir_path, md_file_name, 'template')
-  #     expected_markdown_file = condition_file(markdown_helper, expected_dir_path, md_file_name, 'expected')
-  #     actual_file_path = File.join(
-  #         actual_dir_path,
-  #         md_file_name
-  #     )
-  #     common_test(
-  #         markdown_helper,
-  #         method_under_test,
-  #         template_file.path,
-  #         expected_markdown_file.path,
-  #         actual_file_path
-  #     )
-  #   end
-  #
-  #   # Test some special cases.
-  #   [
-  #       :not_relative,
-  #       :multiple_images,
-  #       :absolute_and_relative,
-  #   ].each do |basename|
-  #     md_file_name = "#{basename}.md"
-  #     markdown_helper = MarkdownHelper.new
-  #     template_file_path = File.join(
-  #         templates_dir_path,
-  #         md_file_name
-  #     )
-  #     expected_file_path = File.join(
-  #         expected_dir_path,
-  #         md_file_name
-  #     )
-  #     actual_file_path = File.join(
-  #         actual_dir_path,
-  #         md_file_name
-  #     )
-  #     common_test(markdown_helper, method_under_test, template_file_path, expected_file_path, actual_file_path)
-  #   end
-  #
-  #   # Test option pristine.
-  #   md_file_name = 'pristine.md'
-  #   template_file_path = File.join(
-  #       templates_dir_path,
-  #       md_file_name
-  #   )
-  #   expected_file_path = File.join(
-  #       expected_dir_path,
-  #       md_file_name
-  #   )
-  #   actual_file_path = File.join(
-  #       actual_dir_path,
-  #       md_file_name
-  #   )
-  #   common_test(
-  #       MarkdownHelper.new(:pristine => true),
-  #       method_under_test,
-  #       template_file_path,
-  #       expected_file_path,
-  #       actual_file_path
-  #   )
-  #   markdown_helper = MarkdownHelper.new
-  #   markdown_helper.pristine = true
-  #   common_test(
-  #       markdown_helper,
-  #       method_under_test,
-  #       template_file_path,
-  #       expected_file_path,
-  #       actual_file_path
-  #   )
+    # Test results of various templates.
+    [
+        :no_image,
+        :simple_image,
+        :width_image,
+        :width_and_height_image,
+    ].each do |md_file_basename|
+      markdown_helper = MarkdownHelper.new
+      test_info = ResolveInfo.new(md_file_basename)
+      template_file = condition_file(markdown_helper, test_info.templates_dir_path, test_info.md_file_name, 'template')
+      test_info.template_file_path = template_file.path
+      expected_markdown_file = condition_file(markdown_helper, test_info.expected_dir_path, test_info.md_file_name, 'expected')
+      test_info.expected_file_path = expected_markdown_file.path
+      common_test(markdown_helper, test_info)
+    end
+
+    # Test some special cases.
+    [
+        :not_relative,
+        :multiple_images,
+        :absolute_and_relative,
+    ].each do |md_file_basename|
+      test_info = ResolveInfo.new(md_file_basename)
+      common_test(MarkdownHelper.new, test_info)
+    end
+
+    # Test option pristine.
+    md_file_basename = 'pristine'
+    test_info = ResolveInfo.new(md_file_basename)
+    common_test(
+        MarkdownHelper.new(:pristine => true),
+        test_info
+    )
+    markdown_helper = MarkdownHelper.new
+    markdown_helper.pristine = true
+    common_test(
+        markdown_helper,
+        test_info
+    )
 
   end
 
