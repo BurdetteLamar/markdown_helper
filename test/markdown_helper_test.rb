@@ -174,10 +174,7 @@ class MarkdownHelperTest < Minitest::Test
       includee_file_name = "circular_#{includee_index}.md"
       level_lines = lines.shift(5)
       level_line, includer_line, relative_line, included_line, real_line = *level_lines
-      assert_match(
-          Regexp.new("    Level #{level_index}:"),
-          level_line
-      )
+      MarkdownHelper::Inclusions.assert_level(self, level_index, level_line)
       assert_match(
           /^      Includer: /,
           includer_line
@@ -215,10 +212,7 @@ class MarkdownHelperTest < Minitest::Test
     level_lines = lines.shift(5)
     level_line, includer_line, relative_line, included_line, real_line = *level_lines
     assert_empty(lines)
-    assert_match(
-        Regexp.new('    Level 3:'),
-        level_line
-    )
+    MarkdownHelper::Inclusions.assert_level(self, 3, level_line)
     assert_match(
         /^      Includer: /,
         includer_line

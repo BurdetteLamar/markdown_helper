@@ -1,6 +1,8 @@
 require 'pathname'
 require 'markdown_helper/version'
 
+require_relative '../test/test_helper'
+
 # Helper class for working with GitHub markdown.
 #  Supports file inclusion.
 #
@@ -234,7 +236,6 @@ class MarkdownHelper
 
   class Inclusions
 
-
     def initialize
       @inclusions = []
     end
@@ -256,16 +257,26 @@ class MarkdownHelper
       end
     end
 
+    LEVEL_LABEL = '    Level'
+
     def backtrace(label, markdown_inclusions, exception_name)
       message_lines = ["#{label}:"]
       message_lines.push('  Backtrace (innermost include first):')
       markdown_inclusions.reverse.each_with_index do |inclusion, i|
-        message_lines.push("    Level #{i}:")
+        message_lines.push("#{LEVEL_LABEL} #{i}:")
         level_lines = inclusion.to_lines('      ')
         message_lines.push(*level_lines)
       end
       message = message_lines.join("\n")
       raise Object.const_get(exception_name).new(message)
+    end
+
+    def self.assert_level(test, level_index, level_line)
+      test.assert_match(
+          Regexp.new("^#{LEVEL_LABEL} #{level_index}:$"),
+          level_line
+      )
+
     end
 
   end
