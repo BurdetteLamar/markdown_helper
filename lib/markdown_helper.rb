@@ -42,7 +42,7 @@ class MarkdownHelper
   #   @[:markdown](foo.md)
   def include(template_file_path, markdown_file_path)
     send(:generate_file, template_file_path, markdown_file_path, __method__) do |input_lines, output_lines|
-      send(:include_files, template_file_path, input_lines, output_lines, markdown_inclusions = [])
+      send(:include_files, template_file_path, input_lines, output_lines, Inclusions.new)
     end
   end
 
@@ -106,7 +106,7 @@ class MarkdownHelper
     output
   end
 
-  def include_files(includer_file_path, input_lines, output_lines, markdown_inclusions)
+  def include_files(includer_file_path, input_lines, output_lines, inclusions)
 
     input_lines.each_with_index do |input_line, line_index|
       match_data = input_line.match(INCLUDE_REGEXP)
@@ -137,14 +137,8 @@ class MarkdownHelper
           includer_line_number = line_index + 1,
           relative_included_file_path
       )
-      included_real_path = new_inclusion.included_real_path
       if treatment == :markdown
-        previous_inclusions = markdown_inclusions.collect {|x| x.included_real_path}
-        previously_included = previous_inclusions.include?(included_real_path)
-        if previously_included
-          markdown_inclusions.push(new_inclusion)
-          backtrace('Includes are circular', markdown_inclusions, 'RuntimeError')
-        end
+        inclusions.check_circularity(new_inclusion)
       end
       output_lines.push(comment(" >>>>>> BEGIN INCLUDED FILE (#{treatment}): SOURCE #{new_inclusion.included_file_path} ")) unless pristine
       include_lines = File.readlines(new_inclusion.included_file_path)
@@ -155,9 +149,9 @@ class MarkdownHelper
       case treatment
         when :markdown
           # Pass through unadorned, but honor any nested includes.
-          markdown_inclusions.push(new_inclusion)
-          include_files(new_inclusion.included_file_path, include_lines, output_lines, markdown_inclusions)
-          markdown_inclusions.pop
+          inclusions.begin_inclusion(new_inclusion)
+          include_files(new_inclusion.included_file_path, include_lines, output_lines, inclusions)
+          inclusions.end_inclusion
         when :comment
           output_lines.push(comment(include_lines.join('')))
         when :pre
@@ -238,18 +232,44 @@ class MarkdownHelper
 
   end
 
-  def backtrace(label, markdown_inclusions, exception_name)
-    message_lines = ["#{label}:"]
-    message_lines.push('  Backtrace (innermost include first):')
-    markdown_inclusions.reverse.each_with_index do |inclusion, i|
-      message_lines.push("    Level #{i}:")
-      message_lines.push("      Includer: #{inclusion.includer_file_path}:#{inclusion.includer_line_number}")
-      message_lines.push("      Relative file path: #{inclusion.relative_included_file_path}")
-      message_lines.push("      Included file path: #{inclusion.included_file_path}")
-      message_lines.push("      Real file path: #{inclusion.included_real_path}")
+  class Inclusions
+
+
+    def initialize
+      @inclusions = []
     end
-    message = message_lines.join("\n")
-    raise Object.const_get(exception_name).new(message)
+
+    def begin_inclusion(inclusion)
+      @inclusions.push(inclusion)
+    end
+
+    def end_inclusion
+      @inclusions.pop
+    end
+
+    def check_circularity(new_inclusion)
+      previous_inclusions = @inclusions.collect {|x| x.included_real_path}
+      previously_included = previous_inclusions.include?(new_inclusion.included_real_path)
+      if previously_included
+        @inclusions.push(new_inclusion)
+        backtrace('Includes are circular', @inclusions, 'RuntimeError')
+      end
+    end
+
+    def backtrace(label, markdown_inclusions, exception_name)
+      message_lines = ["#{label}:"]
+      message_lines.push('  Backtrace (innermost include first):')
+      markdown_inclusions.reverse.each_with_index do |inclusion, i|
+        message_lines.push("    Level #{i}:")
+        message_lines.push("      Includer: #{inclusion.includer_file_path}:#{inclusion.includer_line_number}")
+        message_lines.push("      Relative file path: #{inclusion.relative_included_file_path}")
+        message_lines.push("      Included file path: #{inclusion.included_file_path}")
+        message_lines.push("      Real file path: #{inclusion.included_real_path}")
+      end
+      message = message_lines.join("\n")
+      raise Object.const_get(exception_name).new(message)
+    end
+
   end
 
   class Inclusion
