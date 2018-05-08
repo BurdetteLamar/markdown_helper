@@ -261,10 +261,8 @@ class MarkdownHelper
       message_lines.push('  Backtrace (innermost include first):')
       markdown_inclusions.reverse.each_with_index do |inclusion, i|
         message_lines.push("    Level #{i}:")
-        message_lines.push("      Includer: #{inclusion.includer_file_path}:#{inclusion.includer_line_number}")
-        message_lines.push("      Relative file path: #{inclusion.relative_included_file_path}")
-        message_lines.push("      Included file path: #{inclusion.included_file_path}")
-        message_lines.push("      Real file path: #{inclusion.included_real_path}")
+        level_lines = inclusion.to_lines('      ')
+        message_lines.push(*level_lines)
       end
       message = message_lines.join("\n")
       raise Object.const_get(exception_name).new(message)
@@ -295,6 +293,15 @@ class MarkdownHelper
       self.relative_included_file_path = relative_included_file_path
       self.included_file_path = included_file_path
       self.included_real_path = Pathname.new(included_file_path).realpath.to_s
+    end
+
+    def to_lines(indentation)
+      lines = []
+      lines.push("#{indentation}Includer: #{includer_file_path}:#{includer_line_number}")
+      lines.push("#{indentation}Relative file path: #{relative_included_file_path}")
+      lines.push("#{indentation}Included file path: #{included_file_path}")
+      lines.push("#{indentation}Real file path: #{included_real_path}")
+      lines
     end
 
   end
