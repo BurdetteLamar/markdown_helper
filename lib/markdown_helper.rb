@@ -142,18 +142,7 @@ class MarkdownHelper
         previously_included = markdown_inclusions.include?(included_real_path)
         if previously_included
           markdown_inclusions.store(included_real_path, new_inclusion)
-          message_lines = ['Includes are circular:']
-           i = 0
-          markdown_inclusions.each_with_index do |path_and_inclusion, i|
-            _, inclusion = *path_and_inclusion
-            message_lines.push("  Level #{i}:")
-            message_lines.push("    Includer: #{inclusion.includer_file_path}:#{inclusion.includer_line_number}")
-            message_lines.push("    Relative file path: #{inclusion.relative_included_file_path}")
-            message_lines.push("    Included file path: #{inclusion.included_file_path}")
-            message_lines.push("    Real file_path: #{inclusion.included_real_path}")
-          end
-          message = message_lines.join("\n")
-          raise RuntimeError.new(message)
+          backtrace('Includes are circular', markdown_inclusions, 'RuntimeError')
         end
       end
       output_lines.push(comment(" >>>>>> BEGIN INCLUDED FILE (#{treatment}): SOURCE #{new_inclusion.included_file_path} ")) unless pristine
@@ -246,6 +235,22 @@ class MarkdownHelper
       output_lines.push(comment(" <<<<<< END RESOLVED IMAGES: INPUT-LINE '#{input_line}' ")) unless pristine
     end
 
+  end
+
+  def backtrace(label, markdown_inclusions, exception_name)
+    message_lines = ["#{label}:"]
+    i = 0
+    markdown_inclusions.each_with_index do |path_and_inclusion, i|
+      _, inclusion = *path_and_inclusion
+      message_lines.push("  Level #{i}:")
+      message_lines.push("    Includer: #{inclusion.includer_file_path}:#{inclusion.includer_line_number}")
+      message_lines.push("    Relative file path: #{inclusion.relative_included_file_path}")
+      message_lines.push("    Included file path: #{inclusion.included_file_path}")
+      message_lines.push("    Real file_path: #{inclusion.included_real_path}")
+    end
+    message = message_lines.join("\n")
+    raise Object.const_get(exception_name).new(message)
+    raise RuntimeError.new(message)
   end
 
   class Inclusion
