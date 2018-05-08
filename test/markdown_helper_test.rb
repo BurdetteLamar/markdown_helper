@@ -160,7 +160,6 @@ class MarkdownHelperTest < Minitest::Test
     end
     assert_equal(RuntimeError, e.class)
     lines = e.message.split("\n")
-    puts lines
     message_line = lines.shift
     assert_match(/^Includes are circular:$/, message_line)
     backtrace_line = lines.shift
@@ -212,6 +211,46 @@ class MarkdownHelperTest < Minitest::Test
           real_line
       )
     end
+    # Now the outer inclusion.
+    level_lines = lines.shift(5)
+    level_line, includer_line, relative_line, included_line, real_line = *level_lines
+    assert_empty(lines)
+    assert_match(
+        Regexp.new('    Level 3:'),
+        level_line
+    )
+    assert_match(
+        /^      Includer: /,
+        includer_line
+    )
+    assert_match(
+        Regexp.new('include/templates/circular_0_markdown.md:1$'),
+        includer_line
+    )
+    assert_match(
+        /^      Relative file path: /,
+        relative_line
+    )
+    assert_match(
+        Regexp.new('../includes/circular_0.md'),
+        relative_line
+    )
+    assert_match(
+        /^      Included file path: /,
+        included_line
+    )
+    assert_match(
+        Regexp.new('include/templates/../includes/circular_0.md'),
+        included_line
+    )
+    assert_match(
+        /^      Real file path: /,
+        real_line
+    )
+    assert_match(
+        Regexp.new('include/includes/circular_0.md'),
+        real_line
+    )
 
     # Test option pristine.
     markdown_helper = MarkdownHelper.new
