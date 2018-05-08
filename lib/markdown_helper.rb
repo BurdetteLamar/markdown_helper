@@ -246,7 +246,7 @@ class MarkdownHelper
       message_lines.push("    Includer: #{inclusion.includer_file_path}:#{inclusion.includer_line_number}")
       message_lines.push("    Relative file path: #{inclusion.relative_included_file_path}")
       message_lines.push("    Included file path: #{inclusion.included_file_path}")
-      message_lines.push("    Real file_path: #{inclusion.included_real_path}")
+      message_lines.push("    Real file path: #{inclusion.included_real_path}")
     end
     message = message_lines.join("\n")
     raise Object.const_get(exception_name).new(message)
