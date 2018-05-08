@@ -42,7 +42,7 @@ class MarkdownHelper
   #   @[:markdown](foo.md)
   def include(template_file_path, markdown_file_path)
     send(:generate_file, template_file_path, markdown_file_path, __method__) do |input_lines, output_lines|
-      send(:include_files, template_file_path, input_lines, output_lines, markdown_inclusions = {})
+      send(:include_files, template_file_path, input_lines, output_lines, markdown_inclusions = [])
     end
   end
 
@@ -139,9 +139,10 @@ class MarkdownHelper
       )
       included_real_path = new_inclusion.included_real_path
       if treatment == :markdown
-        previously_included = markdown_inclusions.include?(included_real_path)
+        previous_inclusions = markdown_inclusions.collect {|x| x.included_real_path}
+        previously_included = previous_inclusions.include?(included_real_path)
         if previously_included
-          markdown_inclusions.store(included_real_path, new_inclusion)
+          markdown_inclusions.push(new_inclusion)
           backtrace('Includes are circular', markdown_inclusions, 'RuntimeError')
         end
       end
@@ -154,9 +155,9 @@ class MarkdownHelper
       case treatment
         when :markdown
           # Pass through unadorned, but honor any nested includes.
-          markdown_inclusions.store(included_real_path, new_inclusion)
+          markdown_inclusions.push(new_inclusion)
           include_files(new_inclusion.included_file_path, include_lines, output_lines, markdown_inclusions)
-          markdown_inclusions.delete(included_real_path)
+          markdown_inclusions.pop
         when :comment
           output_lines.push(comment(include_lines.join('')))
         when :pre
@@ -239,18 +240,16 @@ class MarkdownHelper
 
   def backtrace(label, markdown_inclusions, exception_name)
     message_lines = ["#{label}:"]
-    i = 0
-    markdown_inclusions.each_with_index do |path_and_inclusion, i|
-      _, inclusion = *path_and_inclusion
-      message_lines.push("  Level #{i}:")
-      message_lines.push("    Includer: #{inclusion.includer_file_path}:#{inclusion.includer_line_number}")
-      message_lines.push("    Relative file path: #{inclusion.relative_included_file_path}")
-      message_lines.push("    Included file path: #{inclusion.included_file_path}")
-      message_lines.push("    Real file path: #{inclusion.included_real_path}")
+    message_lines.push('  Backtrace (innermost include first):')
+    markdown_inclusions.reverse.each_with_index do |inclusion, i|
+      message_lines.push("    Level #{i}:")
+      message_lines.push("      Includer: #{inclusion.includer_file_path}:#{inclusion.includer_line_number}")
+      message_lines.push("      Relative file path: #{inclusion.relative_included_file_path}")
+      message_lines.push("      Included file path: #{inclusion.included_file_path}")
+      message_lines.push("      Real file path: #{inclusion.included_real_path}")
     end
     message = message_lines.join("\n")
     raise Object.const_get(exception_name).new(message)
-    raise RuntimeError.new(message)
   end
 
   class Inclusion
