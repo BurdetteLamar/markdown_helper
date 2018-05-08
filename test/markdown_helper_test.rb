@@ -171,6 +171,8 @@ class MarkdownHelperTest < Minitest::Test
         [0, 1],
     ].each_with_index do |indexes, level_index|
       includer_index, includee_index = *indexes
+      includer_file_name = "circular_#{includer_index}.md"
+      includee_file_name = "circular_#{includee_index}.md"
       level_lines = lines.shift(5)
       level_line, includer_line, relative_line, included_line, real_line = *level_lines
       assert_match(
@@ -182,7 +184,7 @@ class MarkdownHelperTest < Minitest::Test
           includer_line
       )
       assert_match(
-          Regexp.new("/include/templates/\.\./includes/circular_#{includer_index}.md:1$"),
+          Regexp.new("/include/templates/\.\./includes/#{includer_file_name}:1$"),
           includer_line
       )
       assert_match(
@@ -190,7 +192,7 @@ class MarkdownHelperTest < Minitest::Test
           relative_line
       )
       assert_match(
-          Regexp.new("circular_#{includee_index}.md$"),
+          Regexp.new("#{includee_file_name}$"),
           relative_line
       )
       assert_match(
@@ -198,7 +200,7 @@ class MarkdownHelperTest < Minitest::Test
           included_line
       )
       assert_match(
-          Regexp.new("/include/templates/\.\./includes/circular_#{includee_index}.md$"),
+          Regexp.new("/include/templates/\.\./includes/#{includee_file_name}$"),
           included_line
       )
       assert_match(
@@ -206,7 +208,7 @@ class MarkdownHelperTest < Minitest::Test
           real_line
       )
       assert_match(
-          Regexp.new("/include/includes/circular_#{includee_index}.md$"),
+          Regexp.new("/include/includes/#{includee_file_name}$"),
           real_line
       )
     end
