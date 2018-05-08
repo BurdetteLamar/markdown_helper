@@ -150,7 +150,7 @@ class MarkdownHelperTest < Minitest::Test
 
     # Test circular includes.
     test_info = IncludeInfo.new(
-        file_stem = 'circular',
+        file_stem = 'circular_0',
         file_type = 'md',
         treatment = :markdown,
     )
@@ -160,26 +160,56 @@ class MarkdownHelperTest < Minitest::Test
     end
     assert_equal(RuntimeError, e.class)
     lines = e.message.split("\n")
-    {
-        /^Includes are circular:$/ => lines[0],
-        /^  Level 0:/ => lines[1],
-        /^    Includer: / => lines[2],
-        %r|/include/templates/\.\./includes/circular.md:1$| => lines[2],
-        /^    Relative file path: circular.md$/ => lines[3],
-        /^    Included file path: / => lines[4],
-        %r|/include/templates/\.\./includes/circular.md$| => lines[4],
-        /^    Real file path: / => lines[5],
-        %r|/include/includes/circular.md$| => lines[5]
-    }.each_pair do |regexp, text|
-      assert_match(regexp, text)
+    puts lines
+    message_line = lines.shift
+    assert_match(/^Includes are circular:$/, message_line)
+    backtrace_line = lines.shift
+    assert_match('  Backtrace (innermost include first):', backtrace_line)
+    [
+        [2, 0],
+        [1, 2],
+        [0, 1],
+    ].each_with_index do |indexes, level_index|
+      includer_index, includee_index = *indexes
+      level_lines = lines.shift(5)
+      level_line, includer_line, relative_line, included_line, real_line = *level_lines
+      assert_match(
+          Regexp.new("    Level #{level_index}:"),
+          level_line
+      )
+      assert_match(
+          /^      Includer: /,
+          includer_line
+      )
+      assert_match(
+          Regexp.new("/include/templates/\.\./includes/circular_#{includer_index}.md:1$"),
+          includer_line
+      )
+      assert_match(
+          /^      Relative file path: /,
+          relative_line
+      )
+      assert_match(
+          Regexp.new("circular_#{includee_index}.md$"),
+          relative_line
+      )
+      assert_match(
+          /^      Included file path: /,
+          included_line
+      )
+      assert_match(
+          Regexp.new("/include/templates/\.\./includes/circular_#{includee_index}.md$"),
+          included_line
+      )
+      assert_match(
+          /^      Real file path: /,
+          real_line
+      )
+      assert_match(
+          Regexp.new("/include/includes/circular_#{includee_index}.md$"),
+          real_line
+      )
     end
-
-    # Includes are circular:
-    #                  Level 0:
-    #     Includer: C:/Users/Burdette/Documents/GitHub/markdown_helper/test/include/templates/../includes/circular.md:1
-    # Relative file path: circular.md
-    # Included file path: C:/Users/Burdette/Documents/GitHub/markdown_helper/test/include/templates/../includes/circular.md
-    # Real file_path: C:/Users/Burdette/Documents/GitHub/markdown_helper/test/include/includes/circular.md
 
     # Test option pristine.
     markdown_helper = MarkdownHelper.new
