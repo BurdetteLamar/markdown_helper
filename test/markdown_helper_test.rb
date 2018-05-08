@@ -155,9 +155,31 @@ class MarkdownHelperTest < Minitest::Test
         treatment = :markdown,
     )
     create_template(test_info)
-    assert_raises(RuntimeError) do
+    e = assert_raises(RuntimeError) do
       common_test(MarkdownHelper.new, test_info)
     end
+    assert_equal(RuntimeError, e.class)
+    lines = e.message.split("\n")
+    {
+        /^Includes are circular:$/ => lines[0],
+        /^  Level 0:/ => lines[1],
+        /^    Includer: / => lines[2],
+        %r|/include/templates/\.\./includes/circular.md:1$| => lines[2],
+        /^    Relative file path: circular.md$/ => lines[3],
+        /^    Included file path: / => lines[4],
+        %r|/include/templates/\.\./includes/circular.md$| => lines[4],
+        /^    Real file path: / => lines[5],
+        %r|/include/includes/circular.md$| => lines[5]
+    }.each_pair do |regexp, text|
+      assert_match(regexp, text)
+    end
+
+    # Includes are circular:
+    #                  Level 0:
+    #     Includer: C:/Users/Burdette/Documents/GitHub/markdown_helper/test/include/templates/../includes/circular.md:1
+    # Relative file path: circular.md
+    # Included file path: C:/Users/Burdette/Documents/GitHub/markdown_helper/test/include/templates/../includes/circular.md
+    # Real file_path: C:/Users/Burdette/Documents/GitHub/markdown_helper/test/include/includes/circular.md
 
     # Test option pristine.
     markdown_helper = MarkdownHelper.new
@@ -171,6 +193,15 @@ class MarkdownHelperTest < Minitest::Test
       create_template(test_info)
       common_test(markdown_helper, test_info)
     end
+
+    # Test includee not found.
+    test_info = IncludeInfo.new(
+                               file_stem = 'includer_0',
+                               file_type = 'md',
+                               treatment = :markdown,
+    )
+    create_template(test_info)
+    # common_test(markdown_helper, test_info)
 
   end
 
