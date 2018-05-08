@@ -155,15 +155,8 @@ class MarkdownHelperTest < Minitest::Test
         treatment = :markdown,
     )
     create_template(test_info)
-    e = assert_raises(RuntimeError) do
-      common_test(MarkdownHelper.new, test_info)
-    end
-    assert_equal(RuntimeError, e.class)
-    lines = e.message.split("\n")
-    message_line = lines.shift
-    assert_match(/^Includes are circular:$/, message_line)
-    backtrace_line = lines.shift
-    assert_match('  Backtrace (innermost include first):', backtrace_line)
+    expected_values = []
+    # The three nested inclusions.
     [
         [2, 0],
         [1, 2],
@@ -172,79 +165,38 @@ class MarkdownHelperTest < Minitest::Test
       includer_index, includee_index = *indexes
       includer_file_name = "circular_#{includer_index}.md"
       includee_file_name = "circular_#{includee_index}.md"
-      level_lines = lines.shift(5)
-      level_line, includer_line, relative_line, included_line, real_line = *level_lines
-      MarkdownHelper::Inclusions.assert_level(self, level_index, level_line)
-      assert_match(
-          /^      Includer: /,
-          includer_line
-      )
-      assert_match(
-          Regexp.new("/include/templates/\.\./includes/#{includer_file_name}:1$"),
-          includer_line
-      )
-      assert_match(
-          /^      Relative file path: /,
-          relative_line
-      )
-      assert_match(
-          Regexp.new("#{includee_file_name}$"),
-          relative_line
-      )
-      assert_match(
-          /^      Included file path: /,
-          included_line
-      )
-      assert_match(
-          Regexp.new("/include/templates/\.\./includes/#{includee_file_name}$"),
-          included_line
-      )
-      assert_match(
-          /^      Real file path: /,
-          real_line
-      )
-      assert_match(
-          Regexp.new("/include/includes/#{includee_file_name}$"),
-          real_line
+      expected_values.push(
+          {
+              :includer => {
+                  :path => "/include/templates/../includes/#{includer_file_name}",
+                  :line_number => 1,
+              },
+              :includee => {
+                  :cited_path => includee_file_name,
+                  :relative_path => "/include/templates/../includes/#{includee_file_name}",
+                  :real_path => "/include/includes/#{includee_file_name}",
+              },
+          },
       )
     end
     # Now the outer inclusion.
-    level_lines = lines.shift(5)
-    level_line, includer_line, relative_line, included_line, real_line = *level_lines
-    assert_empty(lines)
-    MarkdownHelper::Inclusions.assert_level(self, 3, level_line)
-    assert_match(
-        /^      Includer: /,
-        includer_line
+    expected_values.push(
+        {
+            :includer => {
+                :path => 'include/templates/circular_0_markdown.md',
+                :line_number => 1,
+            },
+            :includee => {
+                :cited_path => '../includes/circular_0.md',
+                :relative_path => 'include/templates/../includes/circular_0.md',
+                :real_path => 'include/includes/circular_0.md',
+            },
+        },
     )
-    assert_match(
-        Regexp.new('include/templates/circular_0_markdown.md:1$'),
-        includer_line
-    )
-    assert_match(
-        /^      Relative file path: /,
-        relative_line
-    )
-    assert_match(
-        Regexp.new('../includes/circular_0.md'),
-        relative_line
-    )
-    assert_match(
-        /^      Included file path: /,
-        included_line
-    )
-    assert_match(
-        Regexp.new('include/templates/../includes/circular_0.md'),
-        included_line
-    )
-    assert_match(
-        /^      Real file path: /,
-        real_line
-    )
-    assert_match(
-        Regexp.new('include/includes/circular_0.md'),
-        real_line
-    )
+    e = assert_raises(RuntimeError) do
+      common_test(MarkdownHelper.new, test_info)
+    end
+    MarkdownHelper::Inclusions.assert_circular_exception(self, expected_values, e)
 
     # Test option pristine.
     markdown_helper = MarkdownHelper.new

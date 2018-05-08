@@ -248,23 +248,26 @@ class MarkdownHelper
       @inclusions.pop
     end
 
+    CIRCULAR_EXCEPTION_LABEL = 'Includes are circular:'
+    CIRCULAR_EXCEPTION_CLASS_NAME = 'RuntimeError'
+    LEVEL_LABEL = '    Level'
+    BACKTRACE_LABEL = '  Backtrace (innermost include first):'
+
     def check_circularity(new_inclusion)
       previous_inclusions = @inclusions.collect {|x| x.included_real_path}
       previously_included = previous_inclusions.include?(new_inclusion.included_real_path)
       if previously_included
         @inclusions.push(new_inclusion)
-        backtrace('Includes are circular', @inclusions, 'RuntimeError')
+        backtrace(CIRCULAR_EXCEPTION_LABEL, @inclusions, CIRCULAR_EXCEPTION_CLASS_NAME)
       end
     end
 
-    LEVEL_LABEL = '    Level'
-
     def backtrace(label, markdown_inclusions, exception_name)
-      message_lines = ["#{label}:"]
-      message_lines.push('  Backtrace (innermost include first):')
+      message_lines = ["#{label}"]
+      message_lines.push(BACKTRACE_LABEL)
       markdown_inclusions.reverse.each_with_index do |inclusion, i|
         message_lines.push("#{LEVEL_LABEL} #{i}:")
-        level_lines = inclusion.to_lines('      ')
+        level_lines = inclusion.to_lines(indentation_level = 3)
         message_lines.push(*level_lines)
       end
       message = message_lines.join("\n")
@@ -276,12 +279,30 @@ class MarkdownHelper
           Regexp.new("^#{LEVEL_LABEL} #{level_index}:$"),
           level_line
       )
+    end
 
+    def self.assert_circular_exception(test, expected_values, e)
+      test.assert_equal(CIRCULAR_EXCEPTION_CLASS_NAME, e.class.name)
+      lines = e.message.split("\n")
+      label_line = lines.shift
+      test.assert_equal(CIRCULAR_EXCEPTION_LABEL, label_line)
+      backtrace_line = lines.shift
+      test.assert_equal(BACKTRACE_LABEL, backtrace_line)
+      level_line_count = 1 + Inclusion::LINE_COUNT
+      level_count = lines.size / level_line_count
+      (0...level_count).each do |level_index|
+        level_line = lines.shift
+        inclusion_lines = lines.shift(Inclusion::LINE_COUNT)
+        test.assert_equal("#{LEVEL_LABEL} #{level_index}:", level_line)
+        Inclusion.assert_lines(test, expected_values[level_index], inclusion_lines)
+      end
     end
 
   end
 
   class Inclusion
+
+    LINE_COUNT = 7
 
     attr_accessor \
       :includer_file_path,
@@ -306,13 +327,54 @@ class MarkdownHelper
       self.included_real_path = Pathname.new(included_file_path).realpath.to_s
     end
 
-    def to_lines(indentation)
-      lines = []
-      lines.push("#{indentation}Includer: #{includer_file_path}:#{includer_line_number}")
-      lines.push("#{indentation}Relative file path: #{relative_included_file_path}")
-      lines.push("#{indentation}Included file path: #{included_file_path}")
-      lines.push("#{indentation}Real file path: #{included_real_path}")
-      lines
+    def to_lines(indentation_level)
+      def indentation(level)
+        '  ' * level
+      end
+      text = <<EOT
+#{indentation(indentation_level)}Includer:
+#{indentation(indentation_level+1)}File path: #{includer_file_path}
+#{indentation(indentation_level+1)}Line number: #{includer_line_number}
+#{indentation(indentation_level)}Includee:
+#{indentation(indentation_level+1)}Cited path: #{relative_included_file_path}
+#{indentation(indentation_level+1)}Absolute path: #{included_file_path}
+#{indentation(indentation_level+1)}Real path: #{included_real_path}
+EOT
+      text.split("\n")
+    end
+
+    def self.assert_lines(test, expected_values, actual_lines)
+      # Includer label.
+      actual = actual_lines.shift
+      test.assert_match(/^\s*Includer:$/, actual)
+      # Includer file path.
+      expected_includer_file_path = expected_values[:includer][:path]
+      actual = actual_lines.shift
+      test.assert_match(/^\s*File path:/, actual)
+      test.assert_match(Regexp.new("#{expected_includer_file_path}$"), actual)
+      # Includer line number.
+      expected_includer_line_number = expected_values[:includer][:line_number]
+      actual = actual_lines.shift
+      test.assert_match(/^\s*Line number:/, actual)
+      test.assert_match(Regexp.new("#{expected_includer_line_number}$"), actual)
+      # Includee label.
+      actual = actual_lines.shift
+      test.assert_match(/^\s*Includee:$/, actual)
+      # Includee cited file path.
+      expected_includee_cited_file_path = expected_values[:includee][:cited_path]
+      actual = actual_lines.shift
+      test.assert_match(/^\s*Cited path:/, actual)
+      test.assert_match(Regexp.new("#{expected_includee_cited_file_path}$"), actual)
+      # Includee relative file path.
+      expected_includee_relative_file_path = expected_values[:includee][:relative_path]
+      actual = actual_lines.shift
+      test.assert_match(/^\s*Absolute path:/, actual)
+      test.assert_match(Regexp.new("#{expected_includee_relative_file_path}$"), actual)
+      # Includee real file path.
+      expected_includee_real_file_path = expected_values[:includee][:real_path]
+      actual = actual_lines.shift
+      test.assert_match(/^\s*Real path:/, actual)
+      test.assert_match(Regexp.new("#{expected_includee_real_file_path}$"), actual)
     end
 
   end
