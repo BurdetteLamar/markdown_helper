@@ -117,7 +117,7 @@ class MarkdownHelper
         next
       end
       treatment = match_data[1]
-      relative_included_file_path = match_data[2]
+      cited_includee_file_path = match_data[2]
       treatment = case treatment
                     when ':code_block'
                       :code_block
@@ -137,22 +137,22 @@ class MarkdownHelper
       new_inclusion = Inclusion.new(
           includer_file_path,
           includer_line_number = line_index + 1,
-          relative_included_file_path
+          cited_includee_file_path
       )
       if treatment == :markdown
         inclusions.check_circularity(new_inclusion)
       end
-      output_lines.push(comment(" >>>>>> BEGIN INCLUDED FILE (#{treatment}): SOURCE #{new_inclusion.included_file_path} ")) unless pristine
-      include_lines = File.readlines(new_inclusion.included_file_path)
+      output_lines.push(comment(" >>>>>> BEGIN INCLUDED FILE (#{treatment}): SOURCE #{new_inclusion.absolute_includee_file_path} ")) unless pristine
+      include_lines = File.readlines(new_inclusion.absolute_includee_file_path)
       unless include_lines.last.match("\n")
-        message = "Warning:  Included file has no trailing newline: #{relative_included_file_path}"
+        message = "Warning:  Included file has no trailing newline: #{cited_includee_file_path}"
         warn(message)
       end
       case treatment
         when :markdown
           # Pass through unadorned, but honor any nested includes.
           inclusions.begin_inclusion(new_inclusion)
-          include_files(new_inclusion.included_file_path, include_lines, output_lines, inclusions)
+          include_files(new_inclusion.absolute_includee_file_path, include_lines, output_lines, inclusions)
           inclusions.end_inclusion
         when :comment
           output_lines.push(comment(include_lines.join('')))
@@ -162,7 +162,7 @@ class MarkdownHelper
           output_lines.push("</pre>\n")
         else
           # Use the file name as a label.
-          file_name_line = format("```%s```:\n", File.basename(relative_included_file_path))
+          file_name_line = format("```%s```:\n", File.basename(cited_includee_file_path))
           output_lines.push(file_name_line)
           # Put into code block.
           language = treatment == :code_block ? '' : treatment
@@ -170,7 +170,7 @@ class MarkdownHelper
           output_lines.push(*include_lines)
           output_lines.push("```\n")
       end
-      output_lines.push(comment(" <<<<<< END INCLUDED FILE (#{treatment}): SOURCE #{new_inclusion.included_file_path} ")) unless pristine
+      output_lines.push(comment(" <<<<<< END INCLUDED FILE (#{treatment}): SOURCE #{new_inclusion.absolute_includee_file_path} ")) unless pristine
     end
   end
 
@@ -254,8 +254,8 @@ class MarkdownHelper
     BACKTRACE_LABEL = '  Backtrace (innermost include first):'
 
     def check_circularity(new_inclusion)
-      previous_inclusions = @inclusions.collect {|x| x.included_real_path}
-      previously_included = previous_inclusions.include?(new_inclusion.included_real_path)
+      previous_inclusions = @inclusions.collect {|x| x.real_includee_file_path}
+      previously_included = previous_inclusions.include?(new_inclusion.real_includee_file_path)
       if previously_included
         @inclusions.push(new_inclusion)
         backtrace(CIRCULAR_EXCEPTION_LABEL, @inclusions, CIRCULAR_EXCEPTION_CLASS_NAME)
@@ -307,24 +307,24 @@ class MarkdownHelper
     attr_accessor \
       :includer_file_path,
       :includer_line_number,
-      :relative_included_file_path,
-      :included_file_path,
-      :included_real_path
+      :cited_includee_file_path,
+      :absolute_includee_file_path,
+      :real_includee_file_path
 
     def initialize(
         includer_file_path,
         includer_line_number,
-        relative_included_file_path
+        cited_includee_file_path
     )
-      included_file_path = File.join(
+      absolute_includee_file_path = File.join(
           File.dirname(includer_file_path),
-          relative_included_file_path,
+          cited_includee_file_path,
       )
       self.includer_file_path = includer_file_path
       self.includer_line_number = includer_line_number
-      self.relative_included_file_path = relative_included_file_path
-      self.included_file_path = included_file_path
-      self.included_real_path = Pathname.new(included_file_path).realpath.to_s
+      self.cited_includee_file_path = cited_includee_file_path
+      self.absolute_includee_file_path = absolute_includee_file_path
+      self.real_includee_file_path = Pathname.new(absolute_includee_file_path).realpath.to_s
     end
 
     def to_lines(indentation_level)
@@ -336,9 +336,9 @@ class MarkdownHelper
 #{indentation(indentation_level+1)}File path: #{includer_file_path}
 #{indentation(indentation_level+1)}Line number: #{includer_line_number}
 #{indentation(indentation_level)}Includee:
-#{indentation(indentation_level+1)}Cited path: #{relative_included_file_path}
-#{indentation(indentation_level+1)}Absolute path: #{included_file_path}
-#{indentation(indentation_level+1)}Real path: #{included_real_path}
+#{indentation(indentation_level+1)}Cited path: #{cited_includee_file_path}
+#{indentation(indentation_level+1)}Absolute path: #{absolute_includee_file_path}
+#{indentation(indentation_level+1)}Real path: #{real_includee_file_path}
 EOT
       text.split("\n")
     end
