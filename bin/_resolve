@@ -42,6 +42,5 @@ parser.parse!
 _, template_file_path, markdown_file_path = ARGV
 
 usage(opts) unless ARGV.size == 3
-usage(opts) unless File.readable?(template_file_path)
 
 MarkdownHelper.new(options).resolve(template_file_path, markdown_file_path)
