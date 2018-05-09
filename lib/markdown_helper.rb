@@ -293,11 +293,14 @@ class MarkdownHelper
       test.assert_equal(BACKTRACE_LABEL, backtrace_line)
       level_line_count = 1 + Inclusion::LINE_COUNT
       level_count = lines.size / level_line_count
+      # Backtrace levels are innermost first, opposite of inclusions.
+      reversed_inclusions = expected_inclusions.inclusions.reverse
       (0...level_count).each do |level_index|
         level_line = lines.shift
         inclusion_lines = lines.shift(Inclusion::LINE_COUNT)
         test.assert_equal("#{LEVEL_LABEL} #{level_index}:", level_line)
-        Inclusion.assert_lines(test, expected_inclusions[level_index], inclusion_lines)
+        expected_inclusion = reversed_inclusions[level_index]
+        expected_inclusion.assert_lines(test, inclusion_lines)
       end
     end
 
@@ -346,17 +349,17 @@ EOT
       text.split("\n")
     end
 
-    def self.assert_lines(test, expected_inclusion, actual_lines)
+    def assert_lines(test, actual_lines)
       # Includer label.
       actual = actual_lines.shift
       test.assert_match(/^\s*Includer:$/, actual)
       # Includer file path.
-      expected_includer_file_path = expected_inclusion.includer_file_path
+      expected_includer_file_path = includer_file_path
       actual = actual_lines.shift
       test.assert_match(/^\s*File path:/, actual)
       test.assert_match(Regexp.new("#{expected_includer_file_path}$"), actual)
       # Includer line number.
-      expected_includer_line_number = expected_inclusion.includer_line_number
+      expected_includer_line_number = includer_line_number
       actual = actual_lines.shift
       test.assert_match(/^\s*Line number:/, actual)
       test.assert_match(Regexp.new("#{expected_includer_line_number}$"), actual)
@@ -365,16 +368,16 @@ EOT
       test.assert_match(/^\s*Includee:$/, actual)
       # Includee cited file path.
       actual = actual_lines.shift
-      expected_includee_cited_file_path = expected_inclusion.cited_includee_file_path
+      expected_includee_cited_file_path = cited_includee_file_path
       test.assert_match(/^\s*Cited path:/, actual)
       test.assert_match(Regexp.new("#{expected_includee_cited_file_path}$"), actual)
       # Includee relative file path.
-      expected_includee_relative_file_path = expected_inclusion.absolute_includee_file_path
+      expected_includee_relative_file_path = absolute_includee_file_path
       actual = actual_lines.shift
       test.assert_match(/^\s*Absolute path:/, actual)
       test.assert_match(Regexp.new("#{expected_includee_relative_file_path}$"), actual)
       # Includee real file path.
-      expected_includee_real_file_path = expected_inclusion.real_includee_file_path
+      expected_includee_real_file_path = real_includee_file_path
       actual = actual_lines.shift
       test.assert_match(/^\s*Real path:/, actual)
       test.assert_match(Regexp.new("#{expected_includee_real_file_path}$"), actual)
