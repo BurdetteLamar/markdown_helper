@@ -155,48 +155,42 @@ class MarkdownHelperTest < Minitest::Test
         treatment = :markdown,
     )
     create_template(test_info)
-    expected_values = []
+    expected_inclusions = []
     # The three nested inclusions.
     [
         [2, 0],
         [1, 2],
         [0, 1],
-    ].each_with_index do |indexes, level_index|
+    ].each do |indexes|
       includer_index, includee_index = *indexes
       includer_file_name = "circular_#{includer_index}.md"
       includee_file_name = "circular_#{includee_index}.md"
-      expected_values.push(
-          {
-              :includer => {
-                  :path => "/include/templates/../includes/#{includer_file_name}",
-                  :line_number => 1,
-              },
-              :includee => {
-                  :cited_path => includee_file_name,
-                  :relative_path => "/include/templates/../includes/#{includee_file_name}",
-                  :real_path => "/include/includes/#{includee_file_name}",
-              },
-          },
+      includer_file_path = File.join(
+          TEST_DIR_PATH,
+          "include/templates/../includes/#{includer_file_name}"
       )
+      inclusion = MarkdownHelper::Inclusion.new(
+          includer_file_path,
+          includer_line_number = 1,
+          cited_includee_file_path = includee_file_name
+      )
+      expected_inclusions.push(inclusion)
     end
     # Now the outer inclusion.
-    expected_values.push(
-        {
-            :includer => {
-                :path => 'include/templates/circular_0_markdown.md',
-                :line_number => 1,
-            },
-            :includee => {
-                :cited_path => '../includes/circular_0.md',
-                :relative_path => 'include/templates/../includes/circular_0.md',
-                :real_path => 'include/includes/circular_0.md',
-            },
-        },
+    includer_file_path = File.join(
+        TEST_DIR_PATH,
+        'include/templates/circular_0_markdown.md'
     )
+    inclusion = MarkdownHelper::Inclusion.new(
+        includer_file_path,
+        includer_line_number = 1,
+        cited_includee_file_path = '../includes/circular_0.md'
+    )
+    expected_inclusions.push(inclusion)
     e = assert_raises(RuntimeError) do
       common_test(MarkdownHelper.new, test_info)
     end
-    MarkdownHelper::Inclusions.assert_circular_exception(self, expected_values, e)
+    MarkdownHelper::Inclusions.assert_circular_exception(self, expected_inclusions, e)
 
     # Test option pristine.
     markdown_helper = MarkdownHelper.new
