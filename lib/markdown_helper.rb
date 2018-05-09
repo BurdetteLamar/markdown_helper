@@ -77,7 +77,7 @@ class MarkdownHelper
 
   private
 
-  def comment(text)
+  def self.comment(text)
     "<!--#{text}-->\n"
   end
 
@@ -94,10 +94,10 @@ class MarkdownHelper
   def generate_file(template_file_path, markdown_file_path, method)
     output_lines = []
     File.open(template_file_path, 'r') do |template_file|
-      output_lines.push(comment(" >>>>>> BEGIN GENERATED FILE (#{method.to_s}): SOURCE #{template_file_path} ")) unless pristine
+      output_lines.push(MarkdownHelper.comment(" >>>>>> BEGIN GENERATED FILE (#{method.to_s}): SOURCE #{template_file_path} ")) unless pristine
       input_lines = template_file.readlines
       yield input_lines, output_lines
-      output_lines.push(comment(" <<<<<< END GENERATED FILE (#{method.to_s}): SOURCE #{template_file_path} ")) unless pristine
+      output_lines.push(MarkdownHelper.comment(" <<<<<< END GENERATED FILE (#{method.to_s}): SOURCE #{template_file_path} ")) unless pristine
     end
     output = output_lines.join('')
     File.open(markdown_file_path, 'w') do |md_file|
@@ -116,59 +116,14 @@ class MarkdownHelper
       end
       treatment = match_data[1]
       cited_includee_file_path = match_data[2]
-      treatment = case treatment
-                    when ':code_block'
-                      :code_block
-                    when ':markdown'
-                      :markdown
-                    when ':verbatim'
-                      message = "Treatment ':verbatim' is deprecated; please use treatment ':markdown'."
-                      warn(message)
-                      :markdown
-                    when ':comment'
-                      :comment
-                    when ':pre'
-                      :pre
-                    else
-                      treatment
-                  end
-      new_inclusion = Inclusion.new(
+      inclusions.include(
           includer_file_path,
-          includer_line_number = line_index + 1,
-          cited_includee_file_path
+          line_index + 1,
+          cited_includee_file_path,
+          treatment,
+          output_lines,
+          self
       )
-      if treatment == :markdown
-        inclusions.check_circularity(new_inclusion)
-      end
-      output_lines.push(comment(" >>>>>> BEGIN INCLUDED FILE (#{treatment}): SOURCE #{new_inclusion.absolute_includee_file_path} ")) unless pristine
-      include_lines = File.readlines(new_inclusion.absolute_includee_file_path)
-      unless include_lines.last.match("\n")
-        message = "Warning:  Included file has no trailing newline: #{cited_includee_file_path}"
-        warn(message)
-      end
-      case treatment
-        when :markdown
-          # Pass through unadorned, but honor any nested includes.
-          inclusions.begin_inclusion(new_inclusion)
-          include_files(new_inclusion.absolute_includee_file_path, include_lines, output_lines, inclusions)
-          inclusions.end_inclusion
-        when :comment
-          output_lines.push(comment(include_lines.join('')))
-        when :pre
-          output_lines.push("<pre>\n")
-          output_lines.push(include_lines.join(''))
-          output_lines.push("</pre>\n")
-        else
-          # Use the file name as a label.
-          file_name_line = format("```%s```:\n", File.basename(cited_includee_file_path))
-          output_lines.push(file_name_line)
-          # Put into code block.
-          language = treatment == :code_block ? '' : treatment
-          output_lines.push("```#{language}\n")
-          output_lines.push(*include_lines)
-          output_lines.push("```\n")
-      end
-      output_lines.push(comment(" <<<<<< END INCLUDED FILE (#{treatment}): SOURCE #{new_inclusion.absolute_includee_file_path} ")) unless pristine
     end
   end
 
@@ -179,7 +134,7 @@ class MarkdownHelper
         output_lines.push(input_line)
         next
       end
-      output_lines.push(comment(" >>>>>> BEGIN RESOLVED IMAGES: INPUT-LINE '#{input_line}' ")) unless pristine
+      output_lines.push(MarkdownHelper.comment(" >>>>>> BEGIN RESOLVED IMAGES: INPUT-LINE '#{input_line}' ")) unless pristine
       output_line = input_line
       scan_data.each do |alt_text, path_and_attributes|
         original_image_file_path, attributes_s = path_and_attributes.split(/\s?\|\s?/, 2)
@@ -227,23 +182,80 @@ class MarkdownHelper
         output_line = output_line.sub(IMAGE_REGEXP, img_element)
       end
       output_lines.push(output_line)
-      output_lines.push(comment(" <<<<<< END RESOLVED IMAGES: INPUT-LINE '#{input_line}' ")) unless pristine
+      output_lines.push(MarkdownHelper.comment(" <<<<<< END RESOLVED IMAGES: INPUT-LINE '#{input_line}' ")) unless pristine
     end
 
   end
 
   class Inclusions
 
+    attr_accessor :inclusions
+
     def initialize
-      @inclusions = []
+      self.inclusions = []
     end
 
-    def begin_inclusion(inclusion)
-      @inclusions.push(inclusion)
-    end
-
-    def end_inclusion
-      @inclusions.pop
+    def include(
+        includer_file_path,
+        includer_line_number,
+        cited_includee_file_path,
+        treatment,
+        output_lines,
+        markdown_helper
+    )
+      treatment = case treatment
+                    when ':code_block'
+                      :code_block
+                    when ':markdown'
+                      :markdown
+                    when ':verbatim'
+                      message = "Treatment ':verbatim' is deprecated; please use treatment ':markdown'."
+                      warn(message)
+                      :markdown
+                    when ':comment'
+                      :comment
+                    when ':pre'
+                      :pre
+                    else
+                      treatment
+                  end
+      new_inclusion = Inclusion.new(
+          includer_file_path,
+          includer_line_number,
+          cited_includee_file_path
+      )
+      if treatment == :markdown
+        check_circularity(new_inclusion)
+      end
+      output_lines.push(MarkdownHelper.comment(" >>>>>> BEGIN INCLUDED FILE (#{treatment}): SOURCE #{new_inclusion.absolute_includee_file_path} ")) unless markdown_helper.pristine
+      include_lines = File.readlines(new_inclusion.absolute_includee_file_path)
+      unless include_lines.last.match("\n")
+        message = "Warning:  Included file has no trailing newline: #{cited_includee_file_path}"
+        warn(message)
+      end
+      case treatment
+        when :markdown
+          # Pass through unadorned, but honor any nested includes.
+          inclusions.push(new_inclusion)
+          markdown_helper.send(:include_files, new_inclusion.absolute_includee_file_path, include_lines, output_lines, self)
+          inclusions.pop
+        when :comment
+          output_lines.push(MarkdownHelper.comment(include_lines.join('')))
+        when :pre
+          output_lines.push("<pre>\n")
+          output_lines.push(include_lines.join(''))
+          output_lines.push("</pre>\n")
+        else
+          # Use the file name as a label.
+          file_name_line = format("```%s```:\n", File.basename(cited_includee_file_path))
+          output_lines.push(file_name_line)
+          # Put into code block.
+          language = treatment == :code_block ? '' : treatment
+          output_lines.push("```#{language}\n")
+          output_lines.push(*include_lines)
+          output_lines.push("```\n")
+      end
+      output_lines.push(MarkdownHelper.comment(" <<<<<< END INCLUDED FILE (#{treatment}): SOURCE #{new_inclusion.absolute_includee_file_path} ")) unless markdown_helper.pristine
     end
 
     CIRCULAR_EXCEPTION_LABEL = 'Includes are circular:'
@@ -252,11 +264,11 @@ class MarkdownHelper
     BACKTRACE_LABEL = '  Backtrace (innermost include first):'
 
     def check_circularity(new_inclusion)
-      previous_inclusions = @inclusions.collect {|x| x.real_includee_file_path}
+      previous_inclusions = inclusions.collect {|x| x.real_includee_file_path}
       previously_included = previous_inclusions.include?(new_inclusion.real_includee_file_path)
       if previously_included
-        @inclusions.push(new_inclusion)
-        backtrace(CIRCULAR_EXCEPTION_LABEL, @inclusions, CIRCULAR_EXCEPTION_CLASS_NAME)
+        inclusions.push(new_inclusion)
+        backtrace(CIRCULAR_EXCEPTION_LABEL, inclusions, CIRCULAR_EXCEPTION_CLASS_NAME)
       end
     end
 
@@ -270,13 +282,6 @@ class MarkdownHelper
       end
       message = message_lines.join("\n")
       raise Object.const_get(exception_name).new(message)
-    end
-
-    def self.assert_level(test, level_index, level_line)
-      test.assert_match(
-          Regexp.new("^#{LEVEL_LABEL} #{level_index}:$"),
-          level_line
-      )
     end
 
     def self.assert_circular_exception(test, expected_inclusions, e)
@@ -332,11 +337,11 @@ class MarkdownHelper
       text = <<EOT
 #{indentation(indentation_level)}Includer:
 #{indentation(indentation_level+1)}File path: #{includer_file_path}
-#{indentation(indentation_level+1)}Line number: #{includer_line_number}
-#{indentation(indentation_level)}Includee:
+      #{indentation(indentation_level+1)}Line number: #{includer_line_number}
+      #{indentation(indentation_level)}Includee:
 #{indentation(indentation_level+1)}Cited path: #{cited_includee_file_path}
-#{indentation(indentation_level+1)}Absolute path: #{absolute_includee_file_path}
-#{indentation(indentation_level+1)}Real path: #{real_includee_file_path}
+      #{indentation(indentation_level+1)}Absolute path: #{absolute_includee_file_path}
+      #{indentation(indentation_level+1)}Real path: #{real_includee_file_path}
 EOT
       text.split("\n")
     end
