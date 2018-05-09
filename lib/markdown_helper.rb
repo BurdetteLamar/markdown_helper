@@ -1,8 +1,6 @@
 require 'pathname'
 require 'markdown_helper/version'
 
-require_relative '../test/test_helper'
-
 # Helper class for working with GitHub markdown.
 #  Supports file inclusion.
 #
