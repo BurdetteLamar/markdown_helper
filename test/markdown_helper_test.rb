@@ -150,14 +150,53 @@ class MarkdownHelperTest < Minitest::Test
 
     # Test circular includes.
     test_info = IncludeInfo.new(
-        file_stem = 'circular',
+        file_stem = 'circular_0',
         file_type = 'md',
         treatment = :markdown,
     )
     create_template(test_info)
-    assert_raises(RuntimeError) do
+    expected_values = []
+    # The three nested inclusions.
+    [
+        [2, 0],
+        [1, 2],
+        [0, 1],
+    ].each_with_index do |indexes, level_index|
+      includer_index, includee_index = *indexes
+      includer_file_name = "circular_#{includer_index}.md"
+      includee_file_name = "circular_#{includee_index}.md"
+      expected_values.push(
+          {
+              :includer => {
+                  :path => "/include/templates/../includes/#{includer_file_name}",
+                  :line_number => 1,
+              },
+              :includee => {
+                  :cited_path => includee_file_name,
+                  :relative_path => "/include/templates/../includes/#{includee_file_name}",
+                  :real_path => "/include/includes/#{includee_file_name}",
+              },
+          },
+      )
+    end
+    # Now the outer inclusion.
+    expected_values.push(
+        {
+            :includer => {
+                :path => 'include/templates/circular_0_markdown.md',
+                :line_number => 1,
+            },
+            :includee => {
+                :cited_path => '../includes/circular_0.md',
+                :relative_path => 'include/templates/../includes/circular_0.md',
+                :real_path => 'include/includes/circular_0.md',
+            },
+        },
+    )
+    e = assert_raises(RuntimeError) do
       common_test(MarkdownHelper.new, test_info)
     end
+    MarkdownHelper::Inclusions.assert_circular_exception(self, expected_values, e)
 
     # Test option pristine.
     markdown_helper = MarkdownHelper.new
@@ -171,6 +210,15 @@ class MarkdownHelperTest < Minitest::Test
       create_template(test_info)
       common_test(markdown_helper, test_info)
     end
+
+    # Test includee not found.
+    test_info = IncludeInfo.new(
+                               file_stem = 'includer_0',
+                               file_type = 'md',
+                               treatment = :markdown,
+    )
+    create_template(test_info)
+    # common_test(markdown_helper, test_info)
 
   end
 
