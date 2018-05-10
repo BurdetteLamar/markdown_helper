@@ -187,7 +187,7 @@ class MarkdownHelperTest < Minitest::Test
       )
       expected_inclusions.inclusions.push(inclusion)
     end
-    e = assert_raises(RuntimeError) do
+    e = assert_raises(MarkdownHelper::CircularIncludes) do
       common_test(MarkdownHelper.new, test_info)
     end
     MarkdownHelper::Inclusions.assert_circular_exception(self, expected_inclusions, e)

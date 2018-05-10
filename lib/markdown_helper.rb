@@ -7,6 +7,8 @@ require 'markdown_helper/version'
 # @author Burdette Lamar
 class MarkdownHelper
 
+  class CircularIncludes < ArgumentError; end
+
   IMAGE_REGEXP = /!\[([^\[]+)\]\(([^)]+)\)/
   INCLUDE_REGEXP = /^@\[([^\[]+)\]\(([^)]+)\)$/
 
@@ -259,7 +261,7 @@ class MarkdownHelper
     end
 
     CIRCULAR_EXCEPTION_LABEL = 'Includes are circular:'
-    CIRCULAR_EXCEPTION_CLASS_NAME = 'RuntimeError'
+    CIRCULAR_EXCEPTION_CLASS = CircularIncludes
     LEVEL_LABEL = '    Level'
     BACKTRACE_LABEL = '  Backtrace (innermost include first):'
 
@@ -268,7 +270,7 @@ class MarkdownHelper
       previously_included = previous_inclusions.include?(new_inclusion.real_includee_file_path)
       if previously_included
         inclusions.push(new_inclusion)
-        backtrace(CIRCULAR_EXCEPTION_LABEL, inclusions, CIRCULAR_EXCEPTION_CLASS_NAME)
+        backtrace(CIRCULAR_EXCEPTION_LABEL, inclusions, CIRCULAR_EXCEPTION_CLASS.name)
       end
     end
 
@@ -285,7 +287,7 @@ class MarkdownHelper
     end
 
     def self.assert_circular_exception(test, expected_inclusions, e)
-      test.assert_equal(CIRCULAR_EXCEPTION_CLASS_NAME, e.class.name)
+      test.assert_equal(CIRCULAR_EXCEPTION_CLASS.name, e.class.name)
       lines = e.message.split("\n")
       label_line = lines.shift
       test.assert_equal(CIRCULAR_EXCEPTION_LABEL, label_line)
