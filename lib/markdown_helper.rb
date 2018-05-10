@@ -293,11 +293,11 @@ class MarkdownHelper
       raise Object.const_get(exception_name).new(message)
     end
 
-    def self.assert_circular_exception(test, expected_inclusions, e)
-      test.assert_equal(CIRCULAR_EXCEPTION_CLASS.name, e.class.name)
+    def self.assert_exception(test, exception_class, exception_label, expected_inclusions, e)
+      test.assert_equal(exception_class.name, e.class.name)
       lines = e.message.split("\n")
       label_line = lines.shift
-      test.assert_equal(CIRCULAR_EXCEPTION_LABEL, label_line)
+      test.assert_equal(exception_label, label_line)
       backtrace_line = lines.shift
       test.assert_equal(BACKTRACE_LABEL, backtrace_line)
       level_line_count = 1 + Inclusion::LINE_COUNT
@@ -313,24 +313,24 @@ class MarkdownHelper
       end
     end
 
+    def self.assert_circular_exception(test, expected_inclusions, e)
+      self.assert_exception(
+              test,
+              CIRCULAR_EXCEPTION_CLASS,
+              CIRCULAR_EXCEPTION_LABEL,
+              expected_inclusions,
+              e
+      )
+    end
+
     def self.assert_includee_missing_exception(test, expected_inclusions, e)
-      test.assert_equal(MISSING_INCLUDEE_EXCEPTION_CLASS.name, e.class.name)
-      lines = e.message.split("\n")
-      label_line = lines.shift
-      test.assert_equal(MISSING_INCLUDEE_EXCEPTION_LABEL, label_line)
-      backtrace_line = lines.shift
-      test.assert_equal(BACKTRACE_LABEL, backtrace_line)
-      level_line_count = 1 + Inclusion::LINE_COUNT
-      level_count = lines.size / level_line_count
-      # Backtrace levels are innermost first, opposite of inclusions.
-      reversed_inclusions = expected_inclusions.inclusions.reverse
-      (0...level_count).each do |level_index|
-        level_line = lines.shift
-        inclusion_lines = lines.shift(Inclusion::LINE_COUNT)
-        test.assert_equal("#{LEVEL_LABEL} #{level_index}:", level_line)
-        expected_inclusion = reversed_inclusions[level_index]
-        expected_inclusion.assert_lines(test, level_index, inclusion_lines)
-      end
+      self.assert_exception(
+          test,
+          MISSING_INCLUDEE_EXCEPTION_CLASS,
+          MISSING_INCLUDEE_EXCEPTION_LABEL,
+          expected_inclusions,
+          e
+      )
     end
 
   end
