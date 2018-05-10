@@ -10,7 +10,8 @@ class MarkdownHelper
   class CircularIncludeError < ArgumentError; end
   class MissingIncludeeError < ArgumentError; end
   class OptionError < ArgumentError; end
-  class UndefinedError < RuntimeError; end
+  class MissingTemplateError < ArgumentError; end
+  class EnvironmentError < RuntimeError; end
 
   IMAGE_REGEXP = /!\[([^\[]+)\]\(([^)]+)\)/
   INCLUDE_REGEXP = /^@\[([^\[]+)\]\(([^)]+)\)$/
@@ -91,12 +92,16 @@ class MarkdownHelper
     repo_name = ENV['REPO_NAME']
     unless repo_user and repo_name
       message = 'ENV values for both REPO_USER and REPO_NAME must be defined.'
-      raise UndefinedError.new(message)
+      raise EnvironmentError.new(message)
     end
     [repo_user, repo_name]
   end
 
   def generate_file(template_file_path, markdown_file_path, method)
+    unless File.exist?(template_file_path)
+      message = "Template not found for method #{method}: #{template_file_path}"
+      raise MissingTemplateError.new(message)
+    end
     output_lines = []
     File.open(template_file_path, 'r') do |template_file|
       output_lines.push(MarkdownHelper.comment(" >>>>>> BEGIN GENERATED FILE (#{method.to_s}): SOURCE #{template_file_path} ")) unless pristine
