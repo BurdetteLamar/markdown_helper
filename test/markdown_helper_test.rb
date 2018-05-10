@@ -200,7 +200,7 @@ class MarkdownHelperTest < Minitest::Test
       )
       expected_inclusions.inclusions.push(inclusion)
     end
-    e = assert_raises(MarkdownHelper::CircularIncludes) do
+    e = assert_raises(MarkdownHelper::CircularIncludeError) do
       common_test(MarkdownHelper.new, test_info)
     end
     MarkdownHelper::Inclusions.assert_circular_exception(self, expected_inclusions, e)
@@ -244,7 +244,7 @@ class MarkdownHelperTest < Minitest::Test
       )
       expected_inclusions.inclusions.push(inclusion)
     end
-    e = assert_raises(MarkdownHelper::MissingIncludee) do
+    e = assert_raises(MarkdownHelper::MissingIncludeeError) do
       common_test(MarkdownHelper.new, test_info)
     end
     MarkdownHelper::Inclusions.assert_includee_missing_exception(self, expected_inclusions, e)
@@ -331,34 +331,37 @@ class MarkdownHelperTest < Minitest::Test
   end
 
   def common_test(markdown_helper, test_info)
-    markdown_helper.send(
-        test_info.method_under_test,
-        test_info.template_file_path,
-        test_info.actual_file_path,
-    )
-    diffs = MarkdownHelperTest.diff_files(test_info.expected_file_path, test_info.actual_file_path)
-    unless diffs.empty?
-      puts 'EXPECTED'
-      puts File.read(test_info.expected_file_path)
-      puts 'ACTUAL'
-      puts File.read(test_info.actual_file_path)
-      puts 'END'
+
+    def test_interface(test_info)
+      File.write(test_info.actual_file_path, '')
+      yield
+      diffs = MarkdownHelperTest.diff_files(test_info.expected_file_path, test_info.actual_file_path)
+      unless diffs.empty?
+        puts 'EXPECTED'
+        puts File.read(test_info.expected_file_path)
+        puts 'ACTUAL'
+        puts File.read(test_info.actual_file_path)
+        puts 'END'
+      end
+      assert_empty(diffs, test_info.actual_file_path)
     end
-    assert_empty(diffs, test_info.actual_file_path)
+
+    # API
+    test_interface(test_info) do
+      markdown_helper.send(
+          test_info.method_under_test,
+          test_info.template_file_path,
+          test_info.actual_file_path,
+      )
+      end
+
     # CLI
-    options = markdown_helper.pristine ? '--pristine' : ''
-    File.delete(test_info.actual_file_path)
-    command = "markdown_helper #{test_info.method_under_test} #{options} #{test_info.template_file_path} #{test_info.actual_file_path}"
-    system(command)
-    output = File.read(test_info.actual_file_path)
-    diffs = MarkdownHelperTest.diff_files(test_info.expected_file_path, test_info.actual_file_path)
-    unless diffs.empty?
-      puts 'Expected:'
-      puts File.read(test_info.expected_file_path)
-      puts 'Got:'
-      puts output
+    test_interface(test_info) do
+      options = markdown_helper.pristine ? '--pristine' : ''
+      File.write(test_info.actual_file_path, '')
+      command = "markdown_helper #{test_info.method_under_test} #{options} #{test_info.template_file_path} #{test_info.actual_file_path}"
+      system(command)
     end
-    assert_empty(diffs, test_info.actual_file_path)
   end
 
   def self.diff_files(expected_file_path, actual_file_path)
