@@ -148,6 +148,19 @@ class MarkdownHelperTest < Minitest::Test
     create_template(test_info)
     common_test(MarkdownHelper.new, test_info)
 
+    # Test option pristine.
+    markdown_helper = MarkdownHelper.new
+    [ true, false ].each do |pristine|
+      markdown_helper.pristine = pristine
+      test_info = IncludeInfo.new(
+          file_stem = "pristine_#{pristine}",
+          file_type = 'md',
+          treatment = :markdown,
+      )
+      create_template(test_info)
+      common_test(markdown_helper, test_info)
+    end
+
     # Test circular includes.
     test_info = IncludeInfo.new(
         file_stem = 'circular_0',
@@ -191,19 +204,6 @@ class MarkdownHelperTest < Minitest::Test
       common_test(MarkdownHelper.new, test_info)
     end
     MarkdownHelper::Inclusions.assert_circular_exception(self, expected_inclusions, e)
-
-    # Test option pristine.
-    markdown_helper = MarkdownHelper.new
-    [ true, false ].each do |pristine|
-      markdown_helper.pristine = pristine
-      test_info = IncludeInfo.new(
-          file_stem = "pristine_#{pristine}",
-          file_type = 'md',
-          treatment = :markdown,
-      )
-      create_template(test_info)
-      common_test(markdown_helper, test_info)
-    end
 
     # Test includee not found.
     test_info = IncludeInfo.new(
