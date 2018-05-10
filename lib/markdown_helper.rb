@@ -7,8 +7,10 @@ require 'markdown_helper/version'
 # @author Burdette Lamar
 class MarkdownHelper
 
-  class CircularIncludes < ArgumentError; end
-  class MissingIncludee < ArgumentError; end
+  class CircularIncludeError < ArgumentError; end
+  class MissingIncludeeError < ArgumentError; end
+  class OptionError < ArgumentError; end
+  class UndefinedError < RuntimeError; end
 
   IMAGE_REGEXP = /!\[([^\[]+)\]\(([^)]+)\)/
   INCLUDE_REGEXP = /^@\[([^\[]+)\]\(([^)]+)\)$/
@@ -22,7 +24,7 @@ class MarkdownHelper
     merged_options = default_options.merge(options)
     merged_options.each_pair do |method, value|
       unless self.respond_to?(method)
-        raise ArgumentError.new("Unknown option: #{method}")
+        raise OptionError.new("Unknown option: #{method}")
       end
       setter_method = "#{method}="
       send(setter_method, value)
@@ -89,7 +91,7 @@ class MarkdownHelper
     repo_name = ENV['REPO_NAME']
     unless repo_user and repo_name
       message = 'ENV values for both REPO_USER and REPO_NAME must be defined.'
-      raise RuntimeError.new(message)
+      raise UndefinedError.new(message)
     end
     [repo_user, repo_name]
   end
@@ -266,9 +268,9 @@ class MarkdownHelper
     end
 
     CIRCULAR_EXCEPTION_LABEL = 'Includes are circular:'
-    CIRCULAR_EXCEPTION_CLASS = CircularIncludes
+    CIRCULAR_EXCEPTION_CLASS = CircularIncludeError
     MISSING_INCLUDEE_EXCEPTION_LABEL = 'Missing includee:'
-    MISSING_INCLUDEE_EXCEPTION_CLASS = MissingIncludee
+    MISSING_INCLUDEE_EXCEPTION_CLASS = MissingIncludeeError
     LEVEL_LABEL = '    Level'
     BACKTRACE_LABEL = '  Backtrace (innermost include first):'
 
@@ -361,6 +363,7 @@ class MarkdownHelper
     end
 
     def real_includee_file_path
+      # Would raise exception unless exists.
       return nil unless File.exist?(absolute_includee_file_path)
       Pathname.new(absolute_includee_file_path).realpath.to_s
     end
