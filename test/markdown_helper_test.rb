@@ -212,7 +212,42 @@ class MarkdownHelperTest < Minitest::Test
                                treatment = :markdown,
     )
     create_template(test_info)
-    # common_test(markdown_helper, test_info)
+    expected_inclusions = MarkdownHelper::Inclusions.new
+    # The outer inclusion.
+    includer_file_path = File.join(
+        TEST_DIR_PATH,
+        'include/templates/includer_0_markdown.md'
+    )
+    inclusion = MarkdownHelper::Inclusion.new(
+        includer_file_path,
+        includer_line_number = 1,
+        cited_includee_file_path = '../includes/includer_0.md'
+    )
+    expected_inclusions.inclusions.push(inclusion)
+    # The three nested inclusions.
+    [
+        [0, 1],
+        [1, 2],
+        [2, 3],
+    ].each do |indexes|
+      includer_index, includee_index = *indexes
+      includer_file_name = "includer_#{includer_index}.md"
+      includee_file_name = "includer_#{includee_index}.md"
+      includer_file_path = File.join(
+          TEST_DIR_PATH,
+          "include/templates/../includes/#{includer_file_name}"
+      )
+      inclusion = MarkdownHelper::Inclusion.new(
+          includer_file_path,
+          includer_line_number = 1,
+          cited_includee_file_path = includee_file_name
+      )
+      expected_inclusions.inclusions.push(inclusion)
+    end
+    e = assert_raises(MarkdownHelper::MissingIncludee) do
+      common_test(MarkdownHelper.new, test_info)
+    end
+    MarkdownHelper::Inclusions.assert_includee_missing_exception(self, expected_inclusions, e)
 
   end
 
