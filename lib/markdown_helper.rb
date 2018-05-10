@@ -387,38 +387,33 @@ EOT
       actual = actual_lines.shift
       test.assert_match(/^\s*Includer:$/, actual, level_label)
       # Includer file path.
-      expected_includer_file_path = includer_file_path
       actual = actual_lines.shift
       message = "#{level_label} includer file path"
       test.assert_match(/^\s*File path:/, actual, message)
-      test.assert_match(Regexp.new("#{expected_includer_file_path}$"), actual, message)
+      test.assert_match(Regexp.new("#{includer_file_path}$"), actual, message)
       # Includer line number.
-      expected_includer_line_number = includer_line_number
       actual = actual_lines.shift
       message = "#{level_label} includer line number"
       test.assert_match(/^\s*Line number:/, actual, message)
-      test.assert_match(Regexp.new("#{expected_includer_line_number}$"), actual, message)
+      test.assert_match(Regexp.new("#{includer_line_number}$"), actual, message)
       # Includee label.
       actual = actual_lines.shift
       test.assert_match(/^\s*Includee:$/, actual, level_label)
       # Includee cited file path.
       actual = actual_lines.shift
-      message = "#{level_label} includee file path"
-      expected_includee_cited_file_path = cited_includee_file_path
+      message = "#{level_label} includee cited file path"
       test.assert_match(/^\s*Cited path:/, actual, message)
-      test.assert_match(Regexp.new("#{expected_includee_cited_file_path}$"), actual, message)
+      test.assert_match(Regexp.new("#{cited_includee_file_path}$"), actual, message)
       # Includee relative file path.
-      expected_includee_relative_file_path = absolute_includee_file_path
       actual = actual_lines.shift
       message = "#{level_label} includee absolute file path"
       test.assert_match(/^\s*Absolute path:/, actual, message)
-      test.assert_match(Regexp.new("#{expected_includee_relative_file_path}$"), actual, message)
+      test.assert_match(Regexp.new("#{absolute_includee_file_path}$"), actual, message)
       # Includee real file path.
-      expected_includee_real_file_path = real_includee_file_path
       actual = actual_lines.shift
       message = "#{level_label} includee real file path"
       test.assert_match(/^\s*Real path:/, actual, message)
-      test.assert_match(Regexp.new("#{expected_includee_real_file_path}$"), actual, message)
+      test.assert_match(Regexp.new("#{real_includee_file_path}$"), actual, message)
     end
 
   end
