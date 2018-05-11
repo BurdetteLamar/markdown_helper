@@ -148,6 +148,14 @@ class MarkdownHelperTest < Minitest::Test
     create_template(test_info)
     common_test(MarkdownHelper.new, test_info)
 
+    # Test empty file.
+    test_info = IncludeInfo.new(
+        file_stem = 'empty',
+        file_type = 'md',
+        treatment = :markdown,
+    )
+    common_test(MarkdownHelper.new(:pristine => true), test_info)
+
     # Test option pristine.
     markdown_helper = MarkdownHelper.new
     [ true, false ].each do |pristine|
@@ -160,6 +168,17 @@ class MarkdownHelperTest < Minitest::Test
       create_template(test_info)
       common_test(markdown_helper, test_info)
     end
+
+    # Test template not found.
+    test_info = IncludeInfo.new(
+        file_stem = 'no_such',
+        file_type = 'md',
+        treatment = :markdown,
+    )
+    e = assert_raises(MarkdownHelper::MissingTemplateError) do
+      common_test(MarkdownHelper.new, test_info)
+    end
+
 
     # Test circular includes.
     test_info = IncludeInfo.new(
