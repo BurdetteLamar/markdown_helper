@@ -100,7 +100,7 @@ class MarkdownHelper
 
   def generate_file(template_file_path, markdown_file_path, method)
     output_lines = []
-    # No inclusions to backtrace here, so let an open (read or write)exception speak for itself.
+    # No inclusions to backtrace here, so let an open (read or write) exception speak for itself.
     File.open(template_file_path, 'r') do |template_file|
       output_lines.push(MarkdownHelper.comment(" >>>>>> BEGIN GENERATED FILE (#{method.to_s}): SOURCE #{template_file_path} ")) unless pristine
       input_lines = template_file.readlines

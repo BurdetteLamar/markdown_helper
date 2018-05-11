@@ -185,7 +185,7 @@ class MarkdownHelperTest < Minitest::Test
         file_type = 'md',
         treatment = :markdown,
     )
-    create_template(test_info)
+    # create_template(test_info)
     test_info.actual_file_path = File.join(
         File.dirname(test_info.actual_file_path),
         'nonexistent_directory',
