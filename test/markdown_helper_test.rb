@@ -175,10 +175,9 @@ class MarkdownHelperTest < Minitest::Test
         file_type = 'md',
         treatment = :markdown,
     )
-    e = assert_raises(MarkdownHelper::MissingTemplateError) do
+    e = assert_raises(Exception) do
       common_test(MarkdownHelper.new, test_info)
     end
-
 
     # Test circular includes.
     test_info = IncludeInfo.new(

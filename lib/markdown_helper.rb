@@ -7,11 +7,12 @@ require 'markdown_helper/version'
 # @author Burdette Lamar
 class MarkdownHelper
 
-  class CircularIncludeError < ArgumentError; end
-  class MissingIncludeeError < ArgumentError; end
-  class OptionError < ArgumentError; end
-  class MissingTemplateError < ArgumentError; end
-  class EnvironmentError < RuntimeError; end
+  class MarkdownHelperError < RuntimeError; end
+  class CircularIncludeError < MarkdownHelperError; end
+  class MissingIncludeeError < MarkdownHelperError; end
+  class OptionError < MarkdownHelperError; end
+  class MissingTemplateError < MarkdownHelperError; end
+  class EnvironmentError < MarkdownHelperError; end
 
   IMAGE_REGEXP = /!\[([^\[]+)\]\(([^)]+)\)/
   INCLUDE_REGEXP = /^@\[([^\[]+)\]\(([^)]+)\)$/
@@ -98,11 +99,8 @@ class MarkdownHelper
   end
 
   def generate_file(template_file_path, markdown_file_path, method)
-    unless File.exist?(template_file_path)
-      message = "Template not found for method #{method}: #{template_file_path}"
-      raise MissingTemplateError.new(message)
-    end
     output_lines = []
+    # No inclusions to backtrace here, so let an open (read or write)exception speak for itself.
     File.open(template_file_path, 'r') do |template_file|
       output_lines.push(MarkdownHelper.comment(" >>>>>> BEGIN GENERATED FILE (#{method.to_s}): SOURCE #{template_file_path} ")) unless pristine
       input_lines = template_file.readlines
