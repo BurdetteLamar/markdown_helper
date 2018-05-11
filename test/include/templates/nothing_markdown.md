@@ -1,1 +1,1 @@
-This file includes nothing.
+@[:markdown](../includes/nothing.md)
