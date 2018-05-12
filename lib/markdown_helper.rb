@@ -9,9 +9,7 @@ class MarkdownHelper
 
   class MarkdownHelperError < RuntimeError; end
   class CircularIncludeError < MarkdownHelperError; end
-  class MissingIncludeeError < MarkdownHelperError; end
   class OptionError < MarkdownHelperError; end
-  class MissingTemplateError < MarkdownHelperError; end
   class EnvironmentError < MarkdownHelperError; end
 
   IMAGE_REGEXP = /!\[([^\[]+)\]\(([^)]+)\)/
@@ -236,11 +234,18 @@ class MarkdownHelper
         check_circularity(new_inclusion)
       end
       output_lines.push(MarkdownHelper.comment(" >>>>>> BEGIN INCLUDED FILE (#{treatment}): SOURCE #{new_inclusion.absolute_includee_file_path} ")) unless markdown_helper.pristine
-      unless File.exist?(new_inclusion.absolute_includee_file_path)
+      begin
+        include_lines = File.readlines(new_inclusion.absolute_includee_file_path)
+      rescue => e
         inclusions.push(new_inclusion)
-        backtrace(MISSING_INCLUDEE_EXCEPTION_LABEL, inclusions, MISSING_INCLUDEE_EXCEPTION_CLASS.name)
+        message = [
+            MISSING_INCLUDEE_EXCEPTION_LABEL,
+            backtrace_inclusions,
+        ].join("\n")
+        e = e.exception(message)
+        e.set_backtrace(e.backtrace)
+        raise e
       end
-      include_lines = File.readlines(new_inclusion.absolute_includee_file_path)
       unless include_lines.last.match("\n")
         message = "Warning:  Included file has no trailing newline: #{cited_includee_file_path}"
         warn(message)
@@ -271,9 +276,7 @@ class MarkdownHelper
     end
 
     CIRCULAR_EXCEPTION_LABEL = 'Includes are circular:'
-    CIRCULAR_EXCEPTION_CLASS = CircularIncludeError
-    MISSING_INCLUDEE_EXCEPTION_LABEL = 'Missing includee:'
-    MISSING_INCLUDEE_EXCEPTION_CLASS = MissingIncludeeError
+    MISSING_INCLUDEE_EXCEPTION_LABEL = 'Could not read include file,'
     LEVEL_LABEL = '    Level'
     BACKTRACE_LABEL = '  Backtrace (innermost include first):'
 
@@ -282,24 +285,26 @@ class MarkdownHelper
       previously_included = previous_inclusions.include?(new_inclusion.real_includee_file_path)
       if previously_included
         inclusions.push(new_inclusion)
-        backtrace(CIRCULAR_EXCEPTION_LABEL, inclusions, CIRCULAR_EXCEPTION_CLASS.name)
+        message = [
+            CIRCULAR_EXCEPTION_LABEL,
+            backtrace_inclusions,
+            ].join("\n")
+        raise MarkdownHelper::CircularIncludeError.new(message)
       end
     end
 
-    def backtrace(label, markdown_inclusions, exception_name)
-      message_lines = ["#{label}"]
-      message_lines.push(BACKTRACE_LABEL)
-      markdown_inclusions.reverse.each_with_index do |inclusion, i|
-        message_lines.push("#{LEVEL_LABEL} #{i}:")
+    def backtrace_inclusions
+      lines = [BACKTRACE_LABEL]
+      inclusions.reverse.each_with_index do |inclusion, i|
+        lines.push("#{LEVEL_LABEL} #{i}:")
         level_lines = inclusion.to_lines(indentation_level = 3)
-        message_lines.push(*level_lines)
+        lines.push(*level_lines)
       end
-      message = message_lines.join("\n")
-      raise Object.const_get(exception_name).new(message)
+      lines.join("\n")
     end
 
-    def self.assert_exception(test, exception_class, exception_label, expected_inclusions, e)
-      test.assert_equal(exception_class.name, e.class.name)
+    def self.assert_exception(test, expected_exception_class, exception_label, expected_inclusions, e)
+      test.assert_kind_of(expected_exception_class, e)
       lines = e.message.split("\n")
       label_line = lines.shift
       test.assert_equal(exception_label, label_line)
@@ -321,7 +326,7 @@ class MarkdownHelper
     def self.assert_circular_exception(test, expected_inclusions, e)
       self.assert_exception(
               test,
-              CIRCULAR_EXCEPTION_CLASS,
+              CircularIncludeError,
               CIRCULAR_EXCEPTION_LABEL,
               expected_inclusions,
               e
@@ -331,7 +336,7 @@ class MarkdownHelper
     def self.assert_includee_missing_exception(test, expected_inclusions, e)
       self.assert_exception(
           test,
-          MISSING_INCLUDEE_EXCEPTION_CLASS,
+          Exception,
           MISSING_INCLUDEE_EXCEPTION_LABEL,
           expected_inclusions,
           e
