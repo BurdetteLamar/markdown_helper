@@ -169,16 +169,31 @@ class MarkdownHelperTest < Minitest::Test
       common_test(markdown_helper, test_info)
     end
 
-    # Test template not found.
+    # Test template open failure.
     test_info = IncludeInfo.new(
         file_stem = 'no_such',
         file_type = 'md',
         treatment = :markdown,
     )
-    e = assert_raises(MarkdownHelper::MissingTemplateError) do
+    e = assert_raises(Exception) do
       common_test(MarkdownHelper.new, test_info)
     end
 
+    # Test markdown (output) open failure.
+    test_info = IncludeInfo.new(
+        file_stem = 'nothing',
+        file_type = 'md',
+        treatment = :markdown,
+    )
+    # create_template(test_info)
+    test_info.actual_file_path = File.join(
+        File.dirname(test_info.actual_file_path),
+        'nonexistent_directory',
+        'nosuch.md',
+    )
+    e = assert_raises(Exception) do
+      common_test(MarkdownHelper.new, test_info)
+    end
 
     # Test circular includes.
     test_info = IncludeInfo.new(
