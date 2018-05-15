@@ -9,6 +9,7 @@ class MarkdownHelper
 
   class MarkdownHelperError < RuntimeError; end
   class CircularIncludeError < MarkdownHelperError; end
+  class MissingIncludeeError < MarkdownHelperError; end
   class OptionError < MarkdownHelperError; end
   class EnvironmentError < MarkdownHelperError; end
 
@@ -107,21 +108,25 @@ class MarkdownHelper
       end
       output = output_lines.join('')
     rescue => e
-      message = [
-          e.message,
-          Inclusions::UNREADABLE_TEMPLATE_EXCEPTION_LABEL,
-      ].join("\n")
-      e = e.exception(message)
+      unless e.kind_of?(MarkdownHelperError)
+        message = [
+            e.message,
+            Inclusions::UNREADABLE_TEMPLATE_EXCEPTION_LABEL,
+        ].join("\n")
+        e = e.exception(message)
+      end
       raise e
     end
     begin
       File.write(markdown_file_path, output)
     rescue => e
-      message = [
-          e.message,
-          Inclusions::UNWRITABLE_OUTPUT_EXCEPTION_LABEL,
-      ].join("\n")
-      e = e.exception(message)
+      unless e.kind_of?(MarkdownHelperError)
+        message = [
+            e.message,
+            Inclusions::UNWRITABLE_OUTPUT_EXCEPTION_LABEL,
+        ].join("\n")
+        e = e.exception(message)
+      end
       raise e
     end
     output
@@ -257,7 +262,7 @@ class MarkdownHelper
             MISSING_INCLUDEE_EXCEPTION_LABEL,
             backtrace_inclusions,
         ].join("\n")
-        e = e.exception(message)
+        e = MissingIncludeeError.new(message)
         e.set_backtrace(e.backtrace)
         raise e
       end
