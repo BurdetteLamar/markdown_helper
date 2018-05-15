@@ -98,16 +98,31 @@ class MarkdownHelper
 
   def generate_file(template_file_path, markdown_file_path, method)
     output_lines = []
-    # No inclusions to backtrace here, so let an open (read or write) exception speak for itself.
-    File.open(template_file_path, 'r') do |template_file|
-      output_lines.push(MarkdownHelper.comment(" >>>>>> BEGIN GENERATED FILE (#{method.to_s}): SOURCE #{template_file_path} ")) unless pristine
-      input_lines = template_file.readlines
-      yield input_lines, output_lines
-      output_lines.push(MarkdownHelper.comment(" <<<<<< END GENERATED FILE (#{method.to_s}): SOURCE #{template_file_path} ")) unless pristine
+    begin
+      File.open(template_file_path, 'r') do |template_file|
+        output_lines.push(MarkdownHelper.comment(" >>>>>> BEGIN GENERATED FILE (#{method.to_s}): SOURCE #{template_file_path} ")) unless pristine
+        input_lines = template_file.readlines
+        yield input_lines, output_lines
+        output_lines.push(MarkdownHelper.comment(" <<<<<< END GENERATED FILE (#{method.to_s}): SOURCE #{template_file_path} ")) unless pristine
+      end
+      output = output_lines.join('')
+    rescue => e
+      message = [
+          e.message,
+          Inclusions::UNREADABLE_TEMPLATE_EXCEPTION_LABEL,
+      ].join("\n")
+      e = e.exception(message)
+      raise e
     end
-    output = output_lines.join('')
-    File.open(markdown_file_path, 'w') do |md_file|
-      md_file.write(output)
+    begin
+      File.write(markdown_file_path, output)
+    rescue => e
+      message = [
+          e.message,
+          Inclusions::UNWRITABLE_OUTPUT_EXCEPTION_LABEL,
+      ].join("\n")
+      e = e.exception(message)
+      raise e
     end
     output
   end
@@ -276,6 +291,8 @@ class MarkdownHelper
     end
 
     CIRCULAR_EXCEPTION_LABEL = 'Includes are circular:'
+    UNREADABLE_TEMPLATE_EXCEPTION_LABEL = 'Could not read template file.'
+    UNWRITABLE_OUTPUT_EXCEPTION_LABEL = 'Could not write markdown file.'
     MISSING_INCLUDEE_EXCEPTION_LABEL = 'Could not read include file,'
     LEVEL_LABEL = '    Level'
     BACKTRACE_LABEL = '  Backtrace (innermost include first):'
@@ -303,7 +320,15 @@ class MarkdownHelper
       lines.join("\n")
     end
 
-    def self.assert_exception(test, expected_exception_class, exception_label, expected_inclusions, e)
+    def self.assert_io_exception(test, expected_exception_class, exception_label, e)
+      test.assert_kind_of(expected_exception_class, e)
+      lines = e.message.split("\n")
+      _ = lines.shift # Message from original exception.
+      label_line = lines.shift
+      test.assert_equal(exception_label, label_line)
+    end
+
+    def self.assert_inclusion_exception(test, expected_exception_class, exception_label, expected_inclusions, e)
       test.assert_kind_of(expected_exception_class, e)
       lines = e.message.split("\n")
       label_line = lines.shift
@@ -324,7 +349,7 @@ class MarkdownHelper
     end
 
     def self.assert_circular_exception(test, expected_inclusions, e)
-      self.assert_exception(
+      self.assert_inclusion_exception(
               test,
               CircularIncludeError,
               CIRCULAR_EXCEPTION_LABEL,
@@ -334,11 +359,29 @@ class MarkdownHelper
     end
 
     def self.assert_includee_missing_exception(test, expected_inclusions, e)
-      self.assert_exception(
+      self.assert_inclusion_exception(
           test,
           Exception,
           MISSING_INCLUDEE_EXCEPTION_LABEL,
           expected_inclusions,
+          e
+      )
+    end
+
+    def self.assert_template_exception(test, e)
+      self.assert_io_exception(
+          test,
+          Exception,
+          UNREADABLE_TEMPLATE_EXCEPTION_LABEL,
+          e
+      )
+    end
+
+    def self.assert_output_exception(test, e)
+      self.assert_io_exception(
+          test,
+          Exception,
+          UNWRITABLE_OUTPUT_EXCEPTION_LABEL,
           e
       )
     end

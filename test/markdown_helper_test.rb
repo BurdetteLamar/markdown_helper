@@ -178,6 +178,7 @@ class MarkdownHelperTest < Minitest::Test
     e = assert_raises(Exception) do
       common_test(MarkdownHelper.new, test_info)
     end
+    MarkdownHelper::Inclusions.assert_template_exception(self, e)
 
     # Test markdown (output) open failure.
     test_info = IncludeInfo.new(
@@ -194,6 +195,7 @@ class MarkdownHelperTest < Minitest::Test
     e = assert_raises(Exception) do
       common_test(MarkdownHelper.new, test_info)
     end
+    MarkdownHelper::Inclusions.assert_output_exception(self, e)
 
     # Test circular includes.
     test_info = IncludeInfo.new(
@@ -367,7 +369,7 @@ class MarkdownHelperTest < Minitest::Test
   def common_test(markdown_helper, test_info)
 
     def test_interface(test_info)
-      File.write(test_info.actual_file_path, '')
+      File.write(test_info.actual_file_path, '') if File.exist?(test_info.actual_file_path)
       yield
       diffs = MarkdownHelperTest.diff_files(test_info.expected_file_path, test_info.actual_file_path)
       unless diffs.empty?
