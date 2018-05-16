@@ -10,5 +10,4 @@
 * [Include Highlighted Code](include/include_highlighted_code/use_case.md#include-highlighted-code)
 * [Include Generated Text](include/include_generated_text/use_case.md#include-generated-text)
 * [Include Via API](include/include_via_api/use_case.md#include-via-api)
-## Resolve
-
+* [Diagnose Missing Includee](include/diagnose_missing_includee/use_case.md#diagnose-missing-includee)
