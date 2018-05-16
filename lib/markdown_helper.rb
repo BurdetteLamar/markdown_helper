@@ -153,6 +153,17 @@ class MarkdownHelper
     end
   end
 
+  def git_clone_dir_path
+    git_dir = `git rev-parse --git-dir`.chomp
+    if git_dir == '.git'
+      git_clone_dir_path = `pwd`.chomp
+    else
+      git_clone_dir_path = File.dirname(git_dir).chomp
+    end
+    git_clone_dir_pathname = Pathname.new(git_clone_dir_path.sub(%r|/c/|, 'C:/')).realpath
+    git_clone_dir_pathname.to_s
+  end
+
   def resolve_images(template_file_path, input_lines, output_lines)
     input_lines.each do |input_line|
       scan_data = input_line.scan(IMAGE_REGEXP)
@@ -177,14 +188,6 @@ class MarkdownHelper
         if original_image_file_path.start_with?('http')
           image_path = original_image_file_path
         else
-          git_dir = `git rev-parse --git-dir`.chomp
-          if git_dir == '.git'
-            git_clone_dir_path = `pwd`.chomp
-          else
-            git_clone_dir_path = File.dirname(git_dir).chomp
-          end
-          git_clone_dir_pathname = Pathname.new(git_clone_dir_path.sub(%r|/c/|, 'C:/')).realpath
-          git_clone_dir_path = git_clone_dir_pathname.to_s
           absolute_template_file_path = File.absolute_path(template_file_path)
           template_dir_path = File.dirname(absolute_template_file_path)
           absolute_file_path = File.join(
