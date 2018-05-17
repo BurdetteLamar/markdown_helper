@@ -210,10 +210,12 @@ class MarkdownHelperTest < Minitest::Test
         TEST_DIR_PATH,
         'include/templates/circular_0_markdown.md'
     )
+    cited_includee_file_path  = '../includes/circular_0.md'
     inclusion = MarkdownHelper::Inclusion.new(
+        include_description = "@[:markdown](#{cited_includee_file_path})",
         includer_file_path,
         includer_line_number = 1,
-        cited_includee_file_path = '../includes/circular_0.md'
+        cited_includee_file_path
     )
     expected_inclusions.inclusions.push(inclusion)
     # The three nested inclusions.
@@ -230,6 +232,7 @@ class MarkdownHelperTest < Minitest::Test
           "include/templates/../includes/#{includer_file_name}"
       )
       inclusion = MarkdownHelper::Inclusion.new(
+          include_description = "@[:markdown](#{includee_file_name})",
           includer_file_path,
           includer_line_number = 1,
           cited_includee_file_path = includee_file_name
@@ -254,10 +257,12 @@ class MarkdownHelperTest < Minitest::Test
         TEST_DIR_PATH,
         'include/templates/includer_0_markdown.md'
     )
+    cited_includee_file_path = '../includes/includer_0.md'
     inclusion = MarkdownHelper::Inclusion.new(
+        include_description = "@[:markdown](#{cited_includee_file_path})",
         includer_file_path,
         includer_line_number = 1,
-        cited_includee_file_path = '../includes/includer_0.md'
+        cited_includee_file_path
     )
     expected_inclusions.inclusions.push(inclusion)
     # The three nested inclusions.
@@ -274,6 +279,7 @@ class MarkdownHelperTest < Minitest::Test
           "include/templates/../includes/#{includer_file_name}"
       )
       inclusion = MarkdownHelper::Inclusion.new(
+          include_description = "@[:markdown](#{includee_file_name})",
           includer_file_path,
           includer_line_number = 1,
           cited_includee_file_path = includee_file_name
