@@ -1,5 +1,5 @@
 <!-- >>>>>> BEGIN GENERATED FILE (include): SOURCE C:/Users/Burdette/Documents/GitHub/markdown_helper/test/include/templates/ruby_comment.md -->
-<!-- >>>>>> BEGIN INCLUDED FILE (comment): SOURCE C:/Users/Burdette/Documents/GitHub/markdown_helper/test/include/templates/../includes/ruby.rb -->
+<!-- >>>>>> BEGIN INCLUDED FILE (comment): SOURCE C:/Users/Burdette/Documents/GitHub/markdown_helper/test/include/includes/ruby.rb -->
 <!--class RubyCode
 
   def initialize
@@ -8,5 +8,5 @@
 
 end
 -->
-<!-- <<<<<< END INCLUDED FILE (comment): SOURCE C:/Users/Burdette/Documents/GitHub/markdown_helper/test/include/templates/../includes/ruby.rb -->
+<!-- <<<<<< END INCLUDED FILE (comment): SOURCE C:/Users/Burdette/Documents/GitHub/markdown_helper/test/include/includes/ruby.rb -->
 <!-- <<<<<< END GENERATED FILE (include): SOURCE C:/Users/Burdette/Documents/GitHub/markdown_helper/test/include/templates/ruby_comment.md -->
