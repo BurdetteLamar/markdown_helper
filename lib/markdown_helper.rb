@@ -411,10 +411,10 @@ class MarkdownHelper
         includer_line_number,
         cited_includee_file_path
     )
-      absolute_includee_file_path = File.join(
+      absolute_includee_file_path = File.absolute_path(File.join(
           File.dirname(includer_file_path),
           cited_includee_file_path,
-      )
+      ))
       self.includer_file_path = includer_file_path
       self.includer_line_number = includer_line_number
       self.cited_includee_file_path = cited_includee_file_path
@@ -452,7 +452,8 @@ EOT
       actual = actual_lines.shift
       message = "#{level_label} includer file path"
       test.assert_match(/^\s*File path:/, actual, message)
-      test.assert_match(Regexp.new("#{includer_file_path}$"), actual, message)
+      includer_realpath =  Pathname.new(includer_file_path).realpath.to_s
+      test.assert_match(Regexp.new("#{includer_realpath}$"), actual, message)
       # Includer line number.
       actual = actual_lines.shift
       message = "#{level_label} includer line number"
