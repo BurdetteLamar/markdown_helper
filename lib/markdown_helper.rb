@@ -273,7 +273,7 @@ class MarkdownHelper
             backtrace_inclusions,
         ].join("\n")
         e = MissingIncludeeError.new(message)
-        e.set_backtrace(e.backtrace)
+        e.set_backtrace([])
         raise e
       end
       unless include_lines.last.match("\n")
@@ -321,7 +321,9 @@ class MarkdownHelper
             CIRCULAR_EXCEPTION_LABEL,
             backtrace_inclusions,
             ].join("\n")
-        raise MarkdownHelper::CircularIncludeError.new(message)
+        e = MarkdownHelper::CircularIncludeError.new(message)
+        e.set_backtrace([])
+        raise e
       end
     end
 
