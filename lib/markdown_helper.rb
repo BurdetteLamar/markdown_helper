@@ -154,15 +154,19 @@ class MarkdownHelper
     end
   end
 
-  def git_clone_dir_path
+  def self.git_clone_dir_path
     git_dir = `git rev-parse --git-dir`.chomp
     if git_dir == '.git'
-      git_clone_dir_path = `pwd`.chomp
+      path = `pwd`.chomp
     else
-      git_clone_dir_path = File.dirname(git_dir).chomp
+      path = File.dirname(git_dir).chomp
     end
-    git_clone_dir_pathname = Pathname.new(git_clone_dir_path.sub(%r|/c/|, 'C:/')).realpath
-    git_clone_dir_pathname.to_s
+    realpath = Pathname.new(path.sub(%r|/c/|, 'C:/')).realpath
+    realpath.to_s
+  end
+
+  def self.path_in_project(path)
+    path.sub(MarkdownHelper.git_clone_dir_path + '/', '')
   end
 
   def resolve_images(template_file_path, input_lines, output_lines)
@@ -196,7 +200,7 @@ class MarkdownHelper
               original_image_file_path,
           )
           absolute_file_path = Pathname.new(absolute_file_path).cleanpath.to_s
-          relative_image_file_path = absolute_file_path.sub(git_clone_dir_path + '/', '')
+          relative_image_file_path = MarkdownHelper.path_in_project(absolute_file_path)
           repo_user, repo_name = repo_user_and_name
           image_path = File.join(
               "https://raw.githubusercontent.com/#{repo_user}/#{repo_name}/master",
@@ -438,7 +442,7 @@ class MarkdownHelper
       def indentation(level)
         '  ' * level
       end
-      text = <<EOT
+       text = <<EOT
 #{indentation(indentation_level)}Includer:
 #{indentation(indentation_level+1)}Location: #{includer_file_path}:#{includer_line_number}
 #{indentation(indentation_level+1)}Include description: #{include_description}
@@ -449,6 +453,8 @@ EOT
     end
 
     def assert_lines(test, level_index, actual_lines)
+      puts actual_lines
+
       level_label = "Level #{level_index}:"
       # Includer label.
       includee_label = actual_lines.shift
