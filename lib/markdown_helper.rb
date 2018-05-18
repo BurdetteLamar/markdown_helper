@@ -143,6 +143,7 @@ class MarkdownHelper
       treatment = match_data[1]
       cited_includee_file_path = match_data[2]
       inclusions.include(
+          input_line.chomp,
           includer_file_path,
           line_index + 1,
           cited_includee_file_path,
@@ -225,6 +226,7 @@ class MarkdownHelper
     end
 
     def include(
+        include_description,
         includer_file_path,
         includer_line_number,
         cited_includee_file_path,
@@ -249,6 +251,7 @@ class MarkdownHelper
                       treatment
                   end
       new_inclusion = Inclusion.new(
+          include_description,
           includer_file_path,
           includer_line_number,
           cited_includee_file_path
@@ -398,27 +401,31 @@ class MarkdownHelper
 
   class Inclusion
 
-    LINE_COUNT = 7
+    LINE_COUNT = 5
 
     attr_accessor \
       :includer_file_path,
       :includer_line_number,
+      :include_description,
+      :absolute_includee_file_path,
       :cited_includee_file_path,
-      :absolute_includee_file_path
+      :include_description
 
     def initialize(
+        include_description,
         includer_file_path,
         includer_line_number,
         cited_includee_file_path
     )
-      absolute_includee_file_path = File.absolute_path(File.join(
-          File.dirname(includer_file_path),
-          cited_includee_file_path,
-      ))
+      self.include_description = include_description
       self.includer_file_path = includer_file_path
       self.includer_line_number = includer_line_number
       self.cited_includee_file_path = cited_includee_file_path
       self.absolute_includee_file_path = absolute_includee_file_path
+      self.absolute_includee_file_path = File.absolute_path(File.join(
+          File.dirname(includer_file_path),
+          cited_includee_file_path,
+      ))
     end
 
     def real_includee_file_path
@@ -433,12 +440,10 @@ class MarkdownHelper
       end
       text = <<EOT
 #{indentation(indentation_level)}Includer:
-#{indentation(indentation_level+1)}File path: #{includer_file_path}
-#{indentation(indentation_level+1)}Line number: #{includer_line_number}
+#{indentation(indentation_level+1)}Location: #{includer_file_path}:#{includer_line_number}
+#{indentation(indentation_level+1)}Include description: #{include_description}
 #{indentation(indentation_level)}Includee:
-#{indentation(indentation_level+1)}Cited path: #{cited_includee_file_path}
-#{indentation(indentation_level+1)}Absolute path: #{absolute_includee_file_path}
-#{indentation(indentation_level+1)}Real path: #{real_includee_file_path}
+#{indentation(indentation_level+1)}File path: #{absolute_includee_file_path}
 EOT
       text.split("\n")
     end
@@ -446,37 +451,30 @@ EOT
     def assert_lines(test, level_index, actual_lines)
       level_label = "Level #{level_index}:"
       # Includer label.
-      actual = actual_lines.shift
-      test.assert_match(/^\s*Includer:$/, actual, level_label)
-      # Includer file path.
-      actual = actual_lines.shift
-      message = "#{level_label} includer file path"
-      test.assert_match(/^\s*File path:/, actual, message)
+      includee_label = actual_lines.shift
+      test.assert_match(/^\s*Includer:$/, includee_label, level_label)
+      # Includer locatioin.
+      location = actual_lines.shift
+      message = "#{level_label} includer location"
+      test.assert_match(/^\s*Location:/, location, message)
       includer_realpath =  Pathname.new(includer_file_path).realpath.to_s
-      test.assert_match(Regexp.new("#{includer_realpath}$"), actual, message)
-      # Includer line number.
-      actual = actual_lines.shift
-      message = "#{level_label} includer line number"
-      test.assert_match(/^\s*Line number:/, actual, message)
-      test.assert_match(Regexp.new("#{includer_line_number}$"), actual, message)
+      r = Regexp.new(Regexp.escape("#{includer_realpath}:#{includer_line_number}") + '$')
+      test.assert_match(r, location, message)
+      # Include description.
+      description = actual_lines.shift
+      message = "#{level_label} include description"
+      test.assert_match(/^\s*Include description:/, description, message)
+      r = Regexp.new(Regexp.escape("#{include_description}") + '$')
+      test.assert_match(r, description, message)
       # Includee label.
-      actual = actual_lines.shift
-      test.assert_match(/^\s*Includee:$/, actual, level_label)
-      # Includee cited file path.
-      actual = actual_lines.shift
+      includee_label = actual_lines.shift
+      test.assert_match(/^\s*Includee:$/, includee_label, level_label)
+      # Includee file path.
+      includee_file_path = actual_lines.shift
       message = "#{level_label} includee cited file path"
-      test.assert_match(/^\s*Cited path:/, actual, message)
-      test.assert_match(Regexp.new("#{cited_includee_file_path}$"), actual, message)
-      # Includee relative file path.
-      actual = actual_lines.shift
-      message = "#{level_label} includee absolute file path"
-      test.assert_match(/^\s*Absolute path:/, actual, message)
-      test.assert_match(Regexp.new("#{absolute_includee_file_path}$"), actual, message)
-      # Includee real file path.
-      actual = actual_lines.shift
-      message = "#{level_label} includee real file path"
-      test.assert_match(/^\s*Real path:/, actual, message)
-      test.assert_match(Regexp.new("#{real_includee_file_path}$"), actual, message)
+      test.assert_match(/^\s*File path:/, includee_file_path, message)
+      r = Regexp.new(Regexp.escape("#{absolute_includee_file_path}") + '$')
+      test.assert_match(r, includee_file_path, message)
     end
 
   end
