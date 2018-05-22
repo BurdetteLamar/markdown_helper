@@ -19,7 +19,6 @@ class IncludeUseCase < UseCase
     self.use_case_dir_name = use_case_dir_name
 
     commands_to_execute.push(
-        INCLUDE_COMMAND,
         RUBY_COMMAND,
         BUILD_COMMAND,
     )
