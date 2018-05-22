@@ -44,4 +44,4 @@ ruby include.rb
 
 #### Error and Backtrace
 
-@[:code_block](error_and_backtrace.txt)
+@[:code_block](diagnose_missing_includee.err)

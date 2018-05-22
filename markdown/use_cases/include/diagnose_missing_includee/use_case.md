@@ -63,7 +63,32 @@ ruby include.rb
 
 #### Error and Backtrace
 
-```error_and_backtrace.txt```:
+```diagnose_missing_includee.err```:
 ```
-
+include.rb: Could not read include file, (MarkdownHelper::MissingIncludeeError)
+  Backtrace (innermost include first):
+    Level 0:
+      Includer:
+        Location: markdown/use_cases/include/diagnose_missing_includee/includer_2.md:1
+        Include description: @[:markdown](includer_3.md)
+      Includee:
+        File path: markdown/use_cases/include/diagnose_missing_includee/includer_3.md
+    Level 1:
+      Includer:
+        Location: markdown/use_cases/include/diagnose_missing_includee/includer_1.md:1
+        Include description: @[:markdown](includer_2.md)
+      Includee:
+        File path: markdown/use_cases/include/diagnose_missing_includee/includer_2.md
+    Level 2:
+      Includer:
+        Location: markdown/use_cases/include/diagnose_missing_includee/includer_0.md:1
+        Include description: @[:markdown](includer_1.md)
+      Includee:
+        File path: markdown/use_cases/include/diagnose_missing_includee/includer_1.md
+    Level 3:
+      Includer:
+        Location: includer.md:1
+        Include description: @[:markdown](includer_0.md)
+      Includee:
+        File path: markdown/use_cases/include/diagnose_missing_includee/includer_0.md
 ```

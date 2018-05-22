@@ -72,7 +72,7 @@ You can use the API to perform the inclusion.
 
 #### Error and Backtrace
 
-@[:code_block](error_and_backtrace.txt)
+@[:code_block](diagnose_missing_includee.err)
 EOT
     )
 
