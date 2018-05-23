@@ -1,12 +1,10 @@
-### Diagnose Missing Includee
+### Diagnose Circular Includes
 
-Use the backtrace of inclusions to diagnose and correct a missing or otherwise unreadable includee file.
-
-The backtrace is especially useful for errors in nested includes.
+Use the backtrace of inclusions to diagnose and correct circular inclusions:  that is inclusions that directly or indirectly cause a file to include itself.
 
 #### Files To Be Included
 
-These files demonstrate nested inclusion, with a missing includee file.
+These files demonstrate nested inclusion, with circular inclusions.
 
 ```includer_0.md```:
 ```markdown
@@ -20,7 +18,7 @@ These files demonstrate nested inclusion, with a missing includee file.
 
 ```includer_2.md```:
 ```markdown
-@[:markdown](includer_3.md)
+@[:markdown](includer_0.md)
 ```
 
 #### Includer File
@@ -69,32 +67,32 @@ ruby include.rb
 
 Here's the resulting backtrace of inclusions.
 
-```diagnose_missing_includee.err```:
+```diagnose_circular_includes.err```:
 ```
-include.rb: Could not read include file, (MarkdownHelper::MissingIncludeeError)
+include.rb: Includes are circular: (MarkdownHelper::CircularIncludeError)
   Backtrace (innermost include first):
     Level 0:
       Includer:
-        Location: markdown/use_cases/include/diagnose_missing_includee/includer_2.md:1
-        Include description: @[:markdown](includer_3.md)
+        Location: markdown/use_cases/include/diagnose_circular_includes/includer_2.md:1
+        Include description: @[:markdown](includer_0.md)
       Includee:
-        File path: markdown/use_cases/include/diagnose_missing_includee/includer_3.md
+        File path: markdown/use_cases/include/diagnose_circular_includes/includer_0.md
     Level 1:
       Includer:
-        Location: markdown/use_cases/include/diagnose_missing_includee/includer_1.md:1
+        Location: markdown/use_cases/include/diagnose_circular_includes/includer_1.md:1
         Include description: @[:markdown](includer_2.md)
       Includee:
-        File path: markdown/use_cases/include/diagnose_missing_includee/includer_2.md
+        File path: markdown/use_cases/include/diagnose_circular_includes/includer_2.md
     Level 2:
       Includer:
-        Location: markdown/use_cases/include/diagnose_missing_includee/includer_0.md:1
+        Location: markdown/use_cases/include/diagnose_circular_includes/includer_0.md:1
         Include description: @[:markdown](includer_1.md)
       Includee:
-        File path: markdown/use_cases/include/diagnose_missing_includee/includer_1.md
+        File path: markdown/use_cases/include/diagnose_circular_includes/includer_1.md
     Level 3:
       Includer:
         Location: includer.md:1
         Include description: @[:markdown](includer_0.md)
       Includee:
-        File path: markdown/use_cases/include/diagnose_missing_includee/includer_0.md
+        File path: markdown/use_cases/include/diagnose_circular_includes/includer_0.md
 ```

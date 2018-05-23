@@ -1,4 +1,3 @@
-
 namespace :build do
 
   def camelize(snake_case_string)
@@ -27,6 +26,7 @@ EOT
                 include_generated_text
                 include_via_api
                 diagnose_missing_includee
+                diagnose_circular_includes
             /,
             # :resolve => %w/
                 # resize_images
@@ -43,6 +43,11 @@ EOT
 
 EOT
 ) unless dir_names.empty?
+
+          backtrace_cases = %w/
+              diagnose_missing_includee
+              diagnose_circular_includes
+          /
           dir_names.each do |dir_name|
             Dir.chdir("#{section}/#{dir_name}") do
               # If the dir has a Ruby file, run it.
@@ -50,7 +55,17 @@ EOT
               if File.exist?(ruby_file_path)
                 class_name = camelize(dir_name)
                 command = "ruby -I . -r #{dir_name} -e #{class_name}.build"
-                system(command)
+                if backtrace_cases.include?(dir_name)
+                  command += " 2> #{dir_name}.err"
+                  begin
+                    system(command)
+                  rescue
+                    #
+                  ensure
+                  end
+                else
+                  system(command)
+                end
               end
 
               # If the dir has a use case file, link to it.

@@ -1,12 +1,10 @@
-### Diagnose Missing Includee
+### Diagnose Circular Includes
 
-Use the backtrace of inclusions to diagnose and correct a missing or otherwise unreadable includee file.
-
-The backtrace is especially useful for errors in nested includes.
+Use the backtrace of inclusions to diagnose and correct circular inclusions:  that is inclusions that directly or indirectly cause a file to include itself.
 
 #### Files To Be Included
 
-These files demonstrate nested inclusion, with a missing includee file.
+These files demonstrate nested inclusion, with circular inclusions.
 
 @[markdown](includer_0.md)
 
@@ -50,4 +48,4 @@ ruby include.rb
 
 Here's the resulting backtrace of inclusions.
 
-@[:code_block](diagnose_missing_includee.err)
+@[:code_block](diagnose_circular_includes.err)

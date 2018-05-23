@@ -1,16 +1,16 @@
 require_relative '../include_use_case'
 
-class DiagnoseMissingIncludee < IncludeUseCase
+class DiagnoseCircularIncludes < IncludeUseCase
 
   def self.build
 
-    use_case = self.new('diagnose_missing_includee')
+    use_case = self.new('diagnose_circular_includes')
     use_case.write_ruby_file(pristine = true)
 
     [
         [0, 1],
         [1, 2],
-        [2, 3],
+        [2, 0],
     ].each do |indexes|
       includer_index, includee_index = *indexes
       includer_file_name = "includer_#{includer_index}.md"
@@ -26,15 +26,13 @@ class DiagnoseMissingIncludee < IncludeUseCase
     File.write(
         TEMPLATE_FILE_NAME,
         <<EOT
-### Diagnose Missing Includee
+### Diagnose Circular Includes
 
-Use the backtrace of inclusions to diagnose and correct a missing or otherwise unreadable includee file.
-
-The backtrace is especially useful for errors in nested includes.
+Use the backtrace of inclusions to diagnose and correct circular inclusions:  that is inclusions that directly or indirectly cause a file to include itself.
 
 #### Files To Be Included
 
-These files demonstrate nested inclusion, with a missing includee file.
+These files demonstrate nested inclusion, with circular inclusions.
 
 @[markdown](includer_0.md)
 
@@ -78,7 +76,7 @@ You can use the API to perform the inclusion.
 
 Here's the resulting backtrace of inclusions.
 
-@[:code_block](diagnose_missing_includee.err)
+@[:code_block](diagnose_circular_includes.err)
 EOT
     )
 
