@@ -34,6 +34,8 @@ The backtrace is especially useful for errors in nested includes.
 
 #### Files To Be Included
 
+These files demonstrate nested inclusion, with a missing includee file.
+
 @[markdown](includer_0.md)
 
 @[markdown](includer_1.md)
@@ -41,6 +43,8 @@ The backtrace is especially useful for errors in nested includes.
 @[markdown](includer_2.md)
 
 #### Includer File
+
+This file initiates the nested inclusions.
 
 @[markdown](#{INCLUDER_FILE_NAME})
 
@@ -71,6 +75,8 @@ You can use the API to perform the inclusion.
 ```
 
 #### Error and Backtrace
+
+Here's the resulting backtrace of inclusions.
 
 @[:code_block](diagnose_missing_includee.err)
 EOT
