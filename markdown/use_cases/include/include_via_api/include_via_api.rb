@@ -7,6 +7,8 @@ class IncludeViaApi < IncludeUseCase
     use_case_name = File.basename(__FILE__, '.rb')
     use_case = self.new(use_case_name)
 
+    use_case.write_ruby_file(pristine = true)
+
     use_case.files_to_write.store(
         INCLUDEE_FILE_NAME,
         <<EOT
