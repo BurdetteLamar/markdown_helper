@@ -7,8 +7,6 @@ class IncludeCodeBlock < IncludeUseCase
     use_case_name = File.basename(__FILE__, '.rb')
     use_case = self.new(use_case_name)
 
-    use_case.write_includer_file
-
     includee_file_name = 'hello.rb'
 
     use_case.files_to_write.store(

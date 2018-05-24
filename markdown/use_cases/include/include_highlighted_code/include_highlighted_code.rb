@@ -1,24 +1,15 @@
-require_relative '../../use_case'
+require_relative '../include_use_case'
 
-class IncludeHighlightedCode < UseCase
+class IncludeHighlightedCode < IncludeUseCase
 
   def self.build
 
-    use_case_dir_path = File.absolute_path(File.dirname(__FILE__))
+    use_case_name = File.basename(__FILE__, '.rb')
+    use_case = self.new(use_case_name)
 
-    use_case = self.new(use_case_dir_path)
+    use_case.write_includer_file
 
     includee_file_name = 'hello.rb'
-    includer_file_name = 'includer.md'
-    included_file_name = 'included.md'
-
-    include_command = use_case.construct_include_command(includer_file_name, included_file_name, pristine = true)
-    build_command = use_case.construct_include_command(TEMPLATE_FILE_NAME, USE_CASE_FILE_NAME, pristine = true)
-
-    use_case.commands_to_execute.push(
-        include_command,
-        build_command,
-    )
 
     use_case.files_to_write.store(
         includee_file_name,
@@ -35,7 +26,7 @@ EOT
     )
 
     use_case.files_to_write.store(
-        includer_file_name,
+        INCLUDER_FILE_NAME,
         <<EOT
 This file includes the code as highlighted code.
 
@@ -61,7 +52,7 @@ Here's a file containing Ruby code to be included:
 
 Here's a template file that includes it:
 
-@[markdown](#{includer_file_name})
+@[markdown](#{INCLUDER_FILE_NAME})
 
 The treatment token ```ruby``` specifies that the included text is to be highlighted as Ruby code.
 
@@ -72,7 +63,7 @@ The treatment token can be any Ace mode mentioned in [GitHub Languages](https://
 Here's the command to perform the inclusion:
 
 ```sh
-#{include_command}
+#{INCLUDE_COMMAND}
 ```
 
 @[:markdown](../../pristine.md)
@@ -81,13 +72,13 @@ Here's the command to perform the inclusion:
 
 Here's the finished file with the included highlighted code:
 
-@[:pre](#{included_file_name})
+@[:pre](#{INCLUDED_FILE_NAME})
 
 And here's the finished markdown, as rendered on this page:
 
 ---
 
-@[:markdown](#{included_file_name})
+@[:markdown](#{INCLUDED_FILE_NAME})
 
 ---
 EOT
