@@ -1,38 +1,13 @@
-require_relative '../../use_case'
+require_relative '../include_use_case'
 
-class IncludeWithAddedComments < UseCase
+class IncludeWithAddedComments < IncludeUseCase
 
   def self.build
 
-    use_case_dir_path = File.absolute_path(File.dirname(__FILE__))
+    use_case_name = File.basename(__FILE__, '.rb')
+    use_case = self.new(use_case_name)
 
-    use_case = self.new(use_case_dir_path)
-
-    includee_file_name = 'includee.md'
-    includer_file_name = 'includer.md'
-    included_file_name = 'included.md'
-
-    include_command = use_case.construct_include_command(includer_file_name, included_file_name)
-    build_command = use_case.construct_include_command(TEMPLATE_FILE_NAME, USE_CASE_FILE_NAME, pristine = true)
-
-    use_case.commands_to_execute.push(
-        include_command,
-        build_command,
-    )
-
-    use_case.files_to_write.store(
-        includee_file_name,
-        <<EOT
-Text to be included.
-EOT
-    )
-
-    use_case.files_to_write.store(
-        includer_file_name,
-        <<EOT
-@[:markdown](#{includee_file_name})
-EOT
-    )
+    include_command = IncludeUseCase.construct_include_command(INCLUDER_FILE_NAME, INCLUDED_FILE_NAME, pristine = false)
 
     use_case.files_to_write.store(
         TEMPLATE_FILE_NAME,
@@ -46,11 +21,11 @@ By default (that is, without option ```--pristine```) file inclusion adds commen
 
 #### Includee File
 
-@[markdown](#{includee_file_name})
+@[markdown](#{INCLUDEE_FILE_NAME})
 
 #### Includer File
 
-@[markdown](#{includer_file_name})
+@[markdown](#{INCLUDER_FILE_NAME})
 
 #### Inclusion Command
 
@@ -60,7 +35,7 @@ By default (that is, without option ```--pristine```) file inclusion adds commen
 
 #### File with Inclusion and Added Comments
 
-@[markdown](#{included_file_name})
+@[markdown](#{INCLUDED_FILE_NAME})
 EOT
 
     )
