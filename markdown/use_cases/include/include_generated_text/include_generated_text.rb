@@ -1,23 +1,11 @@
-require_relative '../../use_case'
+require_relative '../include_use_case'
 
-class IncludeGeneratedText < UseCase
+class IncludeGeneratedText < IncludeUseCase
 
   def self.build
 
-    use_case_dir_path = File.absolute_path(File.dirname(__FILE__))
-
-    use_case = self.new(use_case_dir_path)
-
-    includee_file_name = 'includee.md'
-    nested_includee_file_name = 'nested_includee.md'
-    includer_file_name = 'includer.md'
-    included_file_name = 'included.md'
-
-    build_command = use_case.construct_include_command(TEMPLATE_FILE_NAME, USE_CASE_FILE_NAME, pristine = true)
-
-    use_case.commands_to_execute.push(
-        build_command,
-    )
+    use_case_name = File.basename(__FILE__, '.rb')
+    use_case = self.new(use_case_name)
 
     use_case.files_to_write.store(
         TEMPLATE_FILE_NAME,

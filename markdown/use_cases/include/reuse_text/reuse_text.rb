@@ -4,7 +4,9 @@ class ReuseText < IncludeUseCase
 
   def self.build
 
-    use_case = self.new('reuse_text')
+    use_case_name = File.basename(__FILE__, '.rb')
+    use_case = self.new(use_case_name)
+
     use_case.write_includee_file
     use_case.write_includer_file
     use_case.write_ruby_file(pristine = true)

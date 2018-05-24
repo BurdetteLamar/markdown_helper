@@ -1,34 +1,13 @@
-require_relative '../../use_case'
+require_relative '../include_use_case'
 
-class NestInclusions < UseCase
+class NestInclusions < IncludeUseCase
 
   def self.build
 
-    use_case_dir_path = File.absolute_path(File.dirname(__FILE__))
+    use_case_name = File.basename(__FILE__, 'rb')
+    use_case = self.new(use_case_name)
 
-    use_case = self.new(use_case_dir_path)
-
-    includee_file_name = 'includee.md'
     nested_includee_file_name = 'nested_includee.md'
-    includer_file_name = 'includer.md'
-    included_file_name = 'included.md'
-
-    include_command = use_case.construct_include_command(includer_file_name, included_file_name, pristine = true)
-    build_command = use_case.construct_include_command(TEMPLATE_FILE_NAME, USE_CASE_FILE_NAME, pristine = true)
-
-    use_case.commands_to_execute.push(
-        include_command,
-        build_command,
-    )
-
-    use_case.files_to_write.store(
-        includee_file_name,
-        <<EOT
-Text for inclusion, and a nested inclusion.
-
-@[:markdown](#{nested_includee_file_name})
-EOT
-    )
 
     use_case.files_to_write.store(
         nested_includee_file_name,
@@ -38,11 +17,11 @@ EOT
     )
 
     use_case.files_to_write.store(
-        includer_file_name,
+        INCLUDER_FILE_NAME,
         <<EOT
 File to do nested inclusion.
 
-@[:markdown](#{includee_file_name})
+@[:markdown](#{INCLUDEE_FILE_NAME})
 EOT
     )
 
@@ -55,7 +34,7 @@ An included markdown file can itself include more files.
 
 #### File To Be Included
 
-@[markdown](#{includee_file_name})
+@[markdown](#{INCLUDEE_FILE_NAME})
 
 #### File For Nested Inclusion
 
@@ -63,12 +42,12 @@ An included markdown file can itself include more files.
 
 #### Includer File
 
-@[markdown](#{includer_file_name})
+@[markdown](#{INCLUDER_FILE_NAME})
 
 #### Command
 
 ```sh
-#{include_command}
+#{INCLUDE_COMMAND}
 ```
 
 @[:markdown](../../pristine.md)
@@ -77,7 +56,7 @@ An included markdown file can itself include more files.
 
 Here's the finished file with the inclusion and nested inclusion:
 
-@[markdown](#{included_file_name})
+@[markdown](#{INCLUDED_FILE_NAME})
 EOT
     )
 

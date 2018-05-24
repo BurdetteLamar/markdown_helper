@@ -7,21 +7,23 @@ class IncludeUseCase < UseCase
   INCLUDEE_FILE_NAME = 'includee.md'
   INCLUDER_FILE_NAME = 'includer.md'
   INCLUDED_FILE_NAME = 'included.md'
+
   RUBY_FILE_NAME = 'include.rb'
   RUBY_COMMAND = "ruby #{RUBY_FILE_NAME}"
+
   INCLUDE_COMMAND = IncludeUseCase.construct_include_command(INCLUDER_FILE_NAME, INCLUDED_FILE_NAME, pristine = true)
+
   BUILD_COMMAND = IncludeUseCase.construct_include_command(TEMPLATE_FILE_NAME, USE_CASE_FILE_NAME, pristine = true)
 
   def initialize(use_case_dir_name)
 
     super
 
+    commands_to_execute.push(RUBY_COMMAND) if File.exist?(RUBY_FILE_NAME)
+    commands_to_execute.push(BUILD_COMMAND) if File.exist?(TEMPLATE_FILE_NAME)
+
     self.use_case_dir_name = use_case_dir_name
 
-    commands_to_execute.push(
-        RUBY_COMMAND,
-        BUILD_COMMAND,
-    )
 
   end
 
