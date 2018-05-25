@@ -13,10 +13,27 @@ By default (that is, without option ```--pristine```) file inclusion adds commen
 
 @[markdown](includer.md)
 
-#### Inclusion Command
+#### CLI
+
+You can use the command-line interface to perform the inclusion.
+
+##### Command
 
 ```sh
 markdown_helper include includer.md included.md
+```
+
+#### API
+
+You can use the API to perform the inclusion.
+
+##### Ruby Code
+
+```ruby
+require 'markdown_helper'
+
+markdown_helper = MarkdownHelper.new
+markdown_helper.include(includer.md, included.md)
 ```
 
 #### File with Inclusion and Added Comments

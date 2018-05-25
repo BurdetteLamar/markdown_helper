@@ -1,3 +1,5 @@
+require_relative 'include/include_use_case'
+
 namespace :build do
 
   def camelize(snake_case_string)
@@ -15,6 +17,7 @@ EOT
       )
       dir_path = File.dirname(__FILE__)
       Dir.chdir(dir_path) do
+        IncludeUseCase.write_interface_file
         use_case_dirs = {
             :include => %w/
                 reuse_text
@@ -24,7 +27,6 @@ EOT
                 include_code_block
                 include_highlighted_code
                 include_generated_text
-                include_via_api
                 diagnose_missing_includee
                 diagnose_circular_includes
             /,
@@ -32,7 +34,6 @@ EOT
                 # resize_images
                 # resolve_with_added_comments
                 # gemify_images
-                # resolve_via_api
             # /
         }
         use_case_dirs.each_pair do |section, dir_names|

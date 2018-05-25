@@ -14,13 +14,7 @@ An included markdown file can itself include more files.
 
 @[markdown](includer.md)
 
-#### Command
-
-```sh
-markdown_helper include --pristine includer.md included.md
-```
-
-@[:markdown](../../pristine.md)
+@[:markdown](../interface.md)
 
 #### File with Inclusion
 

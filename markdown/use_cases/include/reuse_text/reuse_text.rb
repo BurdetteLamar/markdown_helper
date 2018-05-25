@@ -30,31 +30,7 @@ Maintain reusable text in a separate file, then include it wherever it's needed.
 
 The treatment token ```:markdown``` specifies that the included text is to be treated as more markdown.
 
-#### CLI
-
-You can use the command-line interface to perform the inclusion.
-
-##### Command
-
-```sh
-#{INCLUDE_COMMAND}
-```
-
-@[:markdown](../../pristine.md)
-
-#### API
-
-You can use the API to perform the inclusion.
-
-##### Ruby Code
-
-@[ruby](#{RUBY_FILE_NAME})
-
-##### Command
-
-```sh
-#{RUBY_COMMAND}
-```
+@[:markdown](../interface.md)
 
 #### File with Inclusion
 

@@ -16,15 +16,7 @@ Here's a template file that includes it:
 
 The treatment token ```:code_block``` specifies that the included text is to be treated as a code block.
 
-#### Command
-
-Here's the command to perform the inclusion:
-
-```sh
-markdown_helper include --pristine includer.md included.md
-```
-
-@[:markdown](../../pristine.md)
+@[:markdown](../interface.md)
 
 #### File with Inclusion
 
