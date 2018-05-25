@@ -32,15 +32,38 @@ This file includes the code as a code block.
 
 The treatment token ```:code_block``` specifies that the included text is to be treated as a code block.
 
-#### Command
+#### CLI
 
-Here's the command to perform the inclusion:
+You can use the command-line interface to perform the inclusion.
+
+##### Command
 
 ```sh
 markdown_helper include --pristine includer.md included.md
 ```
 
 (Option ```--pristine``` suppresses comment insertion.)
+
+#### API
+
+You can use the API to perform the inclusion.
+
+##### Ruby Code
+
+```include.rb```:
+```ruby
+require 'markdown_helper'
+
+# Option :pristine suppresses comment insertion.
+markdown_helper = MarkdownHelper.new(:pristine => true)
+markdown_helper.include('includer.md', 'included.md')
+```
+
+##### Command
+
+```sh
+ruby include.rb
+```
 
 #### File with Inclusion
 

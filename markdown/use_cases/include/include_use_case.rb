@@ -4,6 +4,8 @@ class IncludeUseCase < UseCase
 
   attr_accessor :use_case_dir_name
 
+  INCLUDE_DIR_PATH = File.dirname(__FILE__)
+
   INCLUDEE_FILE_NAME = 'includee.md'
   INCLUDER_FILE_NAME = 'includer.md'
   INCLUDED_FILE_NAME = 'included.md'
@@ -64,6 +66,44 @@ markdown_helper = MarkdownHelper.new#{args}
 markdown_helper.include('#{INCLUDER_FILE_NAME}', '#{INCLUDED_FILE_NAME}')
 EOT
     )
+  end
+
+  def self.write_interface_file
+    interface_file_path = File.join(
+        INCLUDE_DIR_PATH,
+        'interface.md',
+    )
+    File.open(interface_file_path, 'w') do |interface_file|
+      interface_file.puts(<<EOT
+#### CLI
+
+You can use the command-line interface to perform the inclusion.
+
+##### Command
+
+```sh
+#{INCLUDE_COMMAND}
+```
+
+@[:markdown](../pristine.md)
+
+#### API
+
+You can use the API to perform the inclusion.
+
+##### Ruby Code
+
+@[ruby](#{RUBY_FILE_NAME})
+
+##### Command
+
+```sh
+#{RUBY_COMMAND}
+```
+EOT
+      )
+    end
+
   end
 
 end
