@@ -101,10 +101,11 @@ class MarkdownHelper
     output_lines = []
     begin
       File.open(template_file_path, 'r') do |template_file|
-        output_lines.push(MarkdownHelper.comment(" >>>>>> BEGIN GENERATED FILE (#{method.to_s}): SOURCE #{template_file_path} ")) unless pristine
+        template_path_in_project = MarkdownHelper.path_in_project(template_file_path)
+        output_lines.push(MarkdownHelper.comment(" >>>>>> BEGIN GENERATED FILE (#{method.to_s}): SOURCE #{template_path_in_project} ")) unless pristine
         input_lines = template_file.readlines
         yield input_lines, output_lines
-        output_lines.push(MarkdownHelper.comment(" <<<<<< END GENERATED FILE (#{method.to_s}): SOURCE #{template_file_path} ")) unless pristine
+        output_lines.push(MarkdownHelper.comment(" <<<<<< END GENERATED FILE (#{method.to_s}): SOURCE #{template_path_in_project} ")) unless pristine
       end
       output = output_lines.join('')
     rescue => e
@@ -263,7 +264,8 @@ class MarkdownHelper
       if treatment == :markdown
         check_circularity(new_inclusion)
       end
-      output_lines.push(MarkdownHelper.comment(" >>>>>> BEGIN INCLUDED FILE (#{treatment}): SOURCE #{new_inclusion.absolute_includee_file_path} ")) unless markdown_helper.pristine
+      includee_path_in_project = MarkdownHelper.path_in_project(new_inclusion.absolute_includee_file_path)
+      output_lines.push(MarkdownHelper.comment(" >>>>>> BEGIN INCLUDED FILE (#{treatment}): SOURCE #{includee_path_in_project} ")) unless markdown_helper.pristine
       begin
         include_lines = File.readlines(new_inclusion.absolute_includee_file_path)
       rescue => e
@@ -302,7 +304,7 @@ class MarkdownHelper
           output_lines.push(*include_lines)
           output_lines.push("```\n")
       end
-      output_lines.push(MarkdownHelper.comment(" <<<<<< END INCLUDED FILE (#{treatment}): SOURCE #{new_inclusion.absolute_includee_file_path} ")) unless markdown_helper.pristine
+      output_lines.push(MarkdownHelper.comment(" <<<<<< END INCLUDED FILE (#{treatment}): SOURCE #{includee_path_in_project} ")) unless markdown_helper.pristine
     end
 
     CIRCULAR_EXCEPTION_LABEL = 'Includes are circular:'
