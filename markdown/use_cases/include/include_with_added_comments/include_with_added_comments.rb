@@ -8,6 +8,7 @@ class IncludeWithAddedComments < IncludeUseCase
     use_case = self.new(use_case_name)
 
     include_command = IncludeUseCase.construct_include_command(INCLUDER_FILE_NAME, INCLUDED_FILE_NAME, pristine = false)
+    use_case.commands_to_execute.push(include_command)
 
     use_case.files_to_write.store(
         TEMPLATE_FILE_NAME,
