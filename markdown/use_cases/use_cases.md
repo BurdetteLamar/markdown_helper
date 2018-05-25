@@ -9,6 +9,5 @@
 * [Include a Code Block](include/include_code_block/use_case.md#include-code-block)
 * [Include Highlighted Code](include/include_highlighted_code/use_case.md#include-highlighted-code)
 * [Include Generated Text](include/include_generated_text/use_case.md#include-generated-text)
-* [Include Via API](include/include_via_api/use_case.md#include-via-api)
 * [Diagnose Missing Includee](include/diagnose_missing_includee/use_case.md#diagnose-missing-includee)
 * [Diagnose Circular Includes](include/diagnose_circular_includes/use_case.md#diagnose-circular-includes)
