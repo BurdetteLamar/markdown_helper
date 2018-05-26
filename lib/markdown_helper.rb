@@ -159,6 +159,14 @@ class MarkdownHelper
 
   def self.git_clone_dir_path
     git_dir = `git rev-parse --git-dir`.chomp
+    unless $?.success?
+      message = <<EOT
+
+Markdown helper must run inside a .git project.
+That is, the working directory one of its parents must be a .git directory.
+EOT
+      raise RuntimeError.new(message)
+    end
     if git_dir == '.git'
       path = `pwd`.chomp
     else
