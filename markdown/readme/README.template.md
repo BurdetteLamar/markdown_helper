@@ -4,9 +4,21 @@
 
 ## What's New?
 
-Use cases for ```include``` are now [available](markdown/use_cases/use_cases.md#use-cases).
+* The helper now checks whether the working directory is in a ```git``` project, and raises an exception if not.
 
-## What's This?
+* There is now a backtrace of inclusions when:
+  * An includee file cannot be read.
+  * A circular inclusion (direct or indirect) is found.
+* The backtrace shows:
+  * Each includer file path.
+  * Its include description.
+  * The includee file path.
+* File paths are relative to the git directory.
+* Use cases are added:
+  * [Diagnose Missing Includee](markdown/use_cases/include/diagnose_missing_includee/use_case.md#diagnose-missing-includee).
+  * [Diagnose Circular Includes](markdown/use_cases/include/diagnose_circular_includes/use_case.md#diagnose-circular-includes).
+
+## What's a Markdown Helper?
 
 Class <code>MarkdownHelper</code> supports:
 
@@ -19,6 +31,10 @@ Class <code>MarkdownHelper</code> supports:
 The markdown helper is a preprocessor that reads a markdown document (template) and writes another markdown document.
 
 The template can contain certain instructions that call for file inclusions and image resolutions.
+
+### Restriction:  ```git``` Only
+
+The helper works only in a ```git``` project:  the working directory or one of ita parents must be a git directory -- one in which command ```git rev-parse --git-dir``` succeeds.
 
 ### Commented or Pristine?
 
