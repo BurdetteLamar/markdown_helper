@@ -10,9 +10,21 @@
 
 ## What's New?
 
-Use cases for ```include``` are now [available](markdown/use_cases/use_cases.md#use-cases).
+* The helper now checks whether the working directory is in a ```git``` project, and raises an exception if not.
 
-## What's This?
+* There is now a backtrace of inclusions when:
+  * An includee file cannot be read.
+  * A circular inclusion (direct or indirect) is found.
+* The backtrace shows:
+  * Each includer file path.
+  * Its include description.
+  * The includee file path.
+* File paths are relative to the git directory.
+* Use cases are added:
+  * [Diagnose Missing Includee](markdown/use_cases/include/diagnose_missing_includee/use_case.md#diagnose-missing-includee).
+  * [Diagnose Circular Includes](markdown/use_cases/include/diagnose_circular_includes/use_case.md#diagnose-circular-includes).
+
+## What's a Markdown Helper?
 
 Class <code>MarkdownHelper</code> supports:
 
@@ -25,6 +37,10 @@ Class <code>MarkdownHelper</code> supports:
 The markdown helper is a preprocessor that reads a markdown document (template) and writes another markdown document.
 
 The template can contain certain instructions that call for file inclusions and image resolutions.
+
+### Restriction:  ```git``` Only
+
+The helper works only in a ```git``` project:  the working directory or one of ita parents must be a git directory -- one in which command ```git rev-parse --git-dir``` succeeds.
 
 ### Commented or Pristine?
 
@@ -54,7 +70,7 @@ Use the markdown helper to merge external files into a markdown (</code>.md</cod
 
 #### Highlighted Code Block
 
-<!-- >>>>>> BEGIN INCLUDED FILE (ruby): SOURCE ./include.rb -->
+<!-- >>>>>> BEGIN INCLUDED FILE (ruby): SOURCE markdown/readme/include.rb -->
 ```include.rb```:
 ```ruby
 class RubyCode
@@ -63,11 +79,11 @@ class RubyCode
   end
 end
 ```
-<!-- <<<<<< END INCLUDED FILE (ruby): SOURCE ./include.rb -->
+<!-- <<<<<< END INCLUDED FILE (ruby): SOURCE markdown/readme/include.rb -->
 
 #### Plain Code Block
 
-<!-- >>>>>> BEGIN INCLUDED FILE (code_block): SOURCE ./include.rb -->
+<!-- >>>>>> BEGIN INCLUDED FILE (code_block): SOURCE markdown/readme/include.rb -->
 ```include.rb```:
 ```
 class RubyCode
@@ -76,7 +92,7 @@ class RubyCode
   end
 end
 ```
-<!-- <<<<<< END INCLUDED FILE (code_block): SOURCE ./include.rb -->
+<!-- <<<<<< END INCLUDED FILE (code_block): SOURCE markdown/readme/include.rb -->
 
 [Note:  In the gem documentation, RubyDoc.info chooses to highlight this code block regardless.  Go figure.]
 
@@ -94,7 +110,7 @@ The markdown text is itself scanned for nested includes.
 
 #### CLI
 
-<!-- >>>>>> BEGIN INCLUDED FILE (code_block): SOURCE ./../../bin/usage/include.txt -->
+<!-- >>>>>> BEGIN INCLUDED FILE (code_block): SOURCE bin/usage/include.txt -->
 ```include.txt```:
 ```
 
@@ -112,11 +128,11 @@ Usage: markdown_helper include [options] template_file_path markdown_file_path
     * Both file types are .md.
     * The template file contains file inclusion descriptions.
 ```
-<!-- <<<<<< END INCLUDED FILE (code_block): SOURCE ./../../bin/usage/include.txt -->
+<!-- <<<<<< END INCLUDED FILE (code_block): SOURCE bin/usage/include.txt -->
 
 #### API
 
-<!-- >>>>>> BEGIN INCLUDED FILE (ruby): SOURCE ./include_usage.rb -->
+<!-- >>>>>> BEGIN INCLUDED FILE (ruby): SOURCE markdown/readme/include_usage.rb -->
 ```include_usage.rb```:
 ```ruby
 require 'markdown_helper'
@@ -132,7 +148,7 @@ markdown_helper.include(template_file_path, markdown_file_path)
 markdown_helper = MarkdownHelper.new(:pristine => true)
 markdown_helper.include(template_file_path, markdown_file_path)
 ```
-<!-- <<<<<< END INCLUDED FILE (ruby): SOURCE ./include_usage.rb -->
+<!-- <<<<<< END INCLUDED FILE (ruby): SOURCE markdown/readme/include_usage.rb -->
 
 #### Include Descriptions
 
@@ -150,7 +166,7 @@ where:
 
 ##### Example Include Descriptions
 
-<!-- >>>>>> BEGIN INCLUDED FILE (code_block): SOURCE ./include.md -->
+<!-- >>>>>> BEGIN INCLUDED FILE (code_block): SOURCE markdown/readme/include.md -->
 ```include.md```:
 ```code_block
 @[ruby](my_ruby.rb)
@@ -159,7 +175,7 @@ where:
 
 @[:markdown](my_markdown.md)
 ```
-<!-- <<<<<< END INCLUDED FILE (code_block): SOURCE ./include.md -->
+<!-- <<<<<< END INCLUDED FILE (code_block): SOURCE markdown/readme/include.md -->
 
 ## Image Path Resolution 
 
@@ -181,7 +197,7 @@ This matters because when markdown becomes part of a Ruby gem, its images will h
 
 #### CLI
 
-<!-- >>>>>> BEGIN INCLUDED FILE (code_block): SOURCE ./../../bin/usage/resolve.txt -->
+<!-- >>>>>> BEGIN INCLUDED FILE (code_block): SOURCE bin/usage/resolve.txt -->
 ```resolve.txt```:
 ```
 
@@ -199,11 +215,11 @@ Usage: markdown_helper resolve [options] template_file_path markdown_file_path
     * Both file types are .md.
     * The template file contains image descriptions.
 ```
-<!-- <<<<<< END INCLUDED FILE (code_block): SOURCE ./../../bin/usage/resolve.txt -->
+<!-- <<<<<< END INCLUDED FILE (code_block): SOURCE bin/usage/resolve.txt -->
 
 #### API
 
-<!-- >>>>>> BEGIN INCLUDED FILE (ruby): SOURCE ./resolve_usage.rb -->
+<!-- >>>>>> BEGIN INCLUDED FILE (ruby): SOURCE markdown/readme/resolve_usage.rb -->
 ```resolve_usage.rb```:
 ```ruby
 require 'markdown_helper'
@@ -219,7 +235,7 @@ markdown_helper.resolve(template_file_path, markdown_file_path)
 markdown_helper = MarkdownHelper.new(:pristine => true)
 markdown_helper.resolve(template_file_path, markdown_file_path)
 ```
-<!-- <<<<<< END INCLUDED FILE (ruby): SOURCE ./resolve_usage.rb -->
+<!-- <<<<<< END INCLUDED FILE (ruby): SOURCE markdown/readme/resolve_usage.rb -->
 
 #### Image Descriptions
 
@@ -235,7 +251,7 @@ where:
 
 ##### Example Image Descriptions
 
-<!-- >>>>>> BEGIN INCLUDED FILE (code_block): SOURCE ./resolve.md -->
+<!-- >>>>>> BEGIN INCLUDED FILE (code_block): SOURCE markdown/readme/resolve.md -->
 ```resolve.md```:
 ```code_block
 ![my_alt](image/image.png)
@@ -244,7 +260,7 @@ where:
 
 ![my_alt](image/image.png| width=50 height=50)
 ```
-<!-- <<<<<< END INCLUDED FILE (code_block): SOURCE ./resolve.md -->
+<!-- <<<<<< END INCLUDED FILE (code_block): SOURCE markdown/readme/resolve.md -->
 
 ## Image Attributes
 
@@ -264,7 +280,7 @@ Use the markdown helper to add image attributes in a markdown (</code>.md</code>
 
 #### CLI
 
-<!-- >>>>>> BEGIN INCLUDED FILE (code_block): SOURCE ./../../bin/usage/resolve.txt -->
+<!-- >>>>>> BEGIN INCLUDED FILE (code_block): SOURCE bin/usage/resolve.txt -->
 ```resolve.txt```:
 ```
 
@@ -282,11 +298,11 @@ Usage: markdown_helper resolve [options] template_file_path markdown_file_path
     * Both file types are .md.
     * The template file contains image descriptions.
 ```
-<!-- <<<<<< END INCLUDED FILE (code_block): SOURCE ./../../bin/usage/resolve.txt -->
+<!-- <<<<<< END INCLUDED FILE (code_block): SOURCE bin/usage/resolve.txt -->
 
 #### API
 
-<!-- >>>>>> BEGIN INCLUDED FILE (ruby): SOURCE ./resolve_usage.rb -->
+<!-- >>>>>> BEGIN INCLUDED FILE (ruby): SOURCE markdown/readme/resolve_usage.rb -->
 ```resolve_usage.rb```:
 ```ruby
 require 'markdown_helper'
@@ -302,7 +318,7 @@ markdown_helper.resolve(template_file_path, markdown_file_path)
 markdown_helper = MarkdownHelper.new(:pristine => true)
 markdown_helper.resolve(template_file_path, markdown_file_path)
 ```
-<!-- <<<<<< END INCLUDED FILE (ruby): SOURCE ./resolve_usage.rb -->
+<!-- <<<<<< END INCLUDED FILE (ruby): SOURCE markdown/readme/resolve_usage.rb -->
 
 #### Image Descriptions
 
@@ -318,7 +334,7 @@ where:
 
 ##### Example Image Descriptions
 
-<!-- >>>>>> BEGIN INCLUDED FILE (code_block): SOURCE ./resolve.md -->
+<!-- >>>>>> BEGIN INCLUDED FILE (code_block): SOURCE markdown/readme/resolve.md -->
 ```resolve.md```:
 ```code_block
 ![my_alt](image/image.png)
@@ -327,7 +343,7 @@ where:
 
 ![my_alt](image/image.png| width=50 height=50)
 ```
-<!-- <<<<<< END INCLUDED FILE (code_block): SOURCE ./resolve.md -->
+<!-- <<<<<< END INCLUDED FILE (code_block): SOURCE markdown/readme/resolve.md -->
 
 ## What Should Be Next?
 
