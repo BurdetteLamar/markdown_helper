@@ -52,3 +52,5 @@ Text to be included.
 <!-- <<<<<< END INCLUDED FILE (markdown): SOURCE markdown/use_cases/include/include_with_added_comments/includee.md -->
 <!-- <<<<<< END GENERATED FILE (include): SOURCE includer.md -->
 ```
+
+The file path for the included file is relative to the .git directory.
