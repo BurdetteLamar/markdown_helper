@@ -2,6 +2,9 @@
 
 require 'markdown_helper'
 
+# Confirm that we're in a git project.
+MarkdownHelper.git_clone_dir_path
+
 # Each command foo has a corresponding Ruby executable _foo.
 def command_keywords
   dir_path = File.dirname(__FILE__)
