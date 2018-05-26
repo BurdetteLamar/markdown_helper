@@ -54,6 +54,8 @@ markdown_helper.include(#{INCLUDER_FILE_NAME}, #{INCLUDED_FILE_NAME})
 #### File with Inclusion and Added Comments
 
 @[markdown](#{INCLUDED_FILE_NAME})
+
+The file path for the included file is relative to the .git directory.
 EOT
 
     )

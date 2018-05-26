@@ -39,3 +39,5 @@ markdown_helper.include(includer.md, included.md)
 #### File with Inclusion and Added Comments
 
 @[markdown](included.md)
+
+The file path for the included file is relative to the .git directory.
