@@ -19,6 +19,8 @@ class MarkdownHelper
   attr_accessor :pristine
 
   def initialize(options = {})
+    # Confirm that we're in a git project.
+    MarkdownHelper.git_clone_dir_path
     default_options = {
         :pristine => false,
     }
