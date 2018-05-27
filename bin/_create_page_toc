@@ -4,11 +4,16 @@ require 'optparse'
 
 require 'markdown_helper'
 
+options = {:pristine => false}
+
 # Save opts for use below.
 opts = nil
 parser = OptionParser.new do |_opts|
   opts = _opts
-  _opts.banner = "Usage: markdown_helper create_page_toc markdown_file_path toc_file_path"
+  _opts.banner = "Usage: markdown_helper create_page_toc [options] markdown_file_path toc_file_path"
+  _opts.on('--pristine', 'No comments added') do |_|
+    options[:pristine] = true
+  end
   _opts.on('--help', 'Display help') do
     usage(_opts)
   end
@@ -22,12 +27,12 @@ def usage(opts)
   where
 
     * markdown_file_path is the path to an existing markdown file.
-    * toc_file_path is the path to the contents file to be created.
+    * toc_file_path is the path to the table-of-contents file to be created.
 
   Typically:
 
     * Both file types are .md.
-    * The markdown file contains various markdown headings.
+    * The markdown file contains various headings.
 EOT
   exit
 end
@@ -38,4 +43,4 @@ _, markdown_file_path, toc_file_path = ARGV
 
 usage(opts) unless ARGV.size == 3
 
-MarkdownHelper.new.create_page_toc(markdown_file_path, toc_file_path)
+MarkdownHelper.new(options).create_page_toc(markdown_file_path, toc_file_path)

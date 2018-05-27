@@ -102,13 +102,15 @@ class MarkdownHelperTest < Minitest::Test
 
     # Test no headers.
     test_info = CreatePageTocInfo.new('no_headers')
-    common_test(MarkdownHelper.new(:pristine => true), test_info)
+    common_test(MarkdownHelper.new, test_info)
 
     # Test many levels.
 
     # Test no level 1.
 
     # Test gappy levels.
+
+    # Test pristine.
 
   end
 
