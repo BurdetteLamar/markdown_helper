@@ -10,7 +10,7 @@ class MarkdownHelperTest < Minitest::Test
   EXPECTED_DIR_NAME = 'expected'
   ACTUAL_DIR_NAME = 'actual'
 
-  def test_version
+  def zzz_test_version
     refute_nil MarkdownHelper::VERSION
   end
 
@@ -86,9 +86,33 @@ class MarkdownHelperTest < Minitest::Test
       self.md_file_basename = md_file_basename
       super(:resolve)
     end
+
   end
 
-  def test_include
+  class CreatePageTocInfo < TestInfo
+
+    def initialize(md_file_basename)
+      self.md_file_basename = md_file_basename
+      super(:create_page_toc)
+    end
+
+  end
+
+  def test_create_page_toc
+
+    # Test no headers.
+    test_info = CreatePageTocInfo.new('no_headers')
+    common_test(MarkdownHelper.new(:pristine => true), test_info)
+
+    # Test many levels.
+
+    # Test no level 1.
+
+    # Test gappy levels.
+
+  end
+
+  def zzz_test_include
 
     # Create the template for this test.
     def create_template(test_info)
@@ -293,7 +317,7 @@ class MarkdownHelperTest < Minitest::Test
 
   end
 
-  def test_resolve
+  def zzz_test_resolve
 
     # Condition file with repo user and repo name.
     def condition_file(markdown_helper, dir_path, file_name, type)

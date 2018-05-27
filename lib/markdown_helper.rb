@@ -54,6 +54,12 @@ class MarkdownHelper
     end
   end
 
+  def create_page_toc(markdown_file_path, toc_file_path)
+    send(:generate_file, markdown_file_path, toc_file_path, __method__) do |input_lines, output_lines|
+
+    end
+  end
+
   # Resolves relative image paths to absolute urls in markdown text.
   # @param template_file_path [String] the path to the input template markdown file, usually containing image pragmas.
   # @param markdown_file_path [String] the path to the output resolved markdown file.
@@ -114,7 +120,7 @@ class MarkdownHelper
       unless e.kind_of?(MarkdownHelperError)
         message = [
             e.message,
-            Inclusions::UNREADABLE_TEMPLATE_EXCEPTION_LABEL,
+            Inclusions::UNREADABLE_INPUT_EXCEPTION_LABEL,
         ].join("\n")
         e = e.exception(message)
       end
@@ -318,8 +324,8 @@ EOT
     end
 
     CIRCULAR_EXCEPTION_LABEL = 'Includes are circular:'
-    UNREADABLE_TEMPLATE_EXCEPTION_LABEL = 'Could not read template file.'
-    UNWRITABLE_OUTPUT_EXCEPTION_LABEL = 'Could not write markdown file.'
+    UNREADABLE_INPUT_EXCEPTION_LABEL = 'Could not read input file.'
+    UNWRITABLE_OUTPUT_EXCEPTION_LABEL = 'Could not write output file.'
     MISSING_INCLUDEE_EXCEPTION_LABEL = 'Could not read include file,'
     LEVEL_LABEL = '    Level'
     BACKTRACE_LABEL = '  Backtrace (innermost include first):'
@@ -401,7 +407,7 @@ EOT
       self.assert_io_exception(
           test,
           Exception,
-          UNREADABLE_TEMPLATE_EXCEPTION_LABEL,
+          UNREADABLE_INPUT_EXCEPTION_LABEL,
           e
       )
     end
