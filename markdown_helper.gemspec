@@ -7,7 +7,7 @@ Gem::Specification.new do |spec|
   spec.name          = 'markdown_helper'
   spec.version       = MarkdownHelper::VERSION
   spec.authors       = ['burdettelamar']
-  spec.email         = ['BurdetteLamar@Yahoo.com']
+  spec.email         = ['burdettelamar@yahoo.com']
   spec.summary       = 'Class to help with GitHub markdown.'
   spec.description   = <<-EOT
 Class to help with GitHub markdown:
