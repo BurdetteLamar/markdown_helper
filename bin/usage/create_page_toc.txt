@@ -1,0 +1,13 @@
+
+Usage: markdown_helper create_page_toc markdown_file_path toc_file_path
+        --help                       Display help
+    
+  where
+
+    * markdown_file_path is the path to an existing markdown file.
+    * toc_file_path is the path to the contents file to be created.
+
+  Typically:
+
+    * Both file types are .md.
+    * The markdown file contains various markdown headings.
