@@ -24,8 +24,7 @@ class MarkdownHelperTest < Minitest::Test
       :test_dir_path,
       :template_file_path,
       :expected_file_path,
-      :actual_file_path,
-      :include_file_path
+      :actual_file_path
 
     def initialize(method_under_test)
       self.method_under_test = method_under_test
@@ -67,7 +66,8 @@ class MarkdownHelperTest < Minitest::Test
     attr_accessor \
       :file_stem,
       :file_type,
-      :treatment
+      :treatment,
+      :include_file_path
 
     def initialize(file_stem, file_type, treatment)
       self.file_stem = file_stem
