@@ -9,7 +9,8 @@ class MarkdownHelper
 
   class MarkdownHelperError < RuntimeError; end
   class CircularIncludeError < MarkdownHelperError; end
-  class MissingIncludeeError < MarkdownHelperError; end
+  class UnreadableInputError < MarkdownHelperError; end
+  class UnwritableOutputError < MarkdownHelperError; end
   class OptionError < MarkdownHelperError; end
   class EnvironmentError < MarkdownHelperError; end
 
@@ -106,38 +107,30 @@ class MarkdownHelper
   end
 
   def generate_file(template_file_path, markdown_file_path, method)
+    unless File.readable?(template_file_path)
+      message = [
+          Inclusions::UNREADABLE_INPUT_EXCEPTION_LABEL,
+          template_file_path.inspect,
+      ].join("\n")
+      raise UnreadableInputError.new(message)
+    end
     output_lines = []
-    begin
-      File.open(template_file_path, 'r') do |template_file|
-        template_path_in_project = MarkdownHelper.path_in_project(template_file_path)
-        output_lines.push(MarkdownHelper.comment(" >>>>>> BEGIN GENERATED FILE (#{method.to_s}): SOURCE #{template_path_in_project} ")) unless pristine
-        input_lines = template_file.readlines
-        yield input_lines, output_lines
-        output_lines.push(MarkdownHelper.comment(" <<<<<< END GENERATED FILE (#{method.to_s}): SOURCE #{template_path_in_project} ")) unless pristine
-      end
-      output = output_lines.join('')
-    rescue => e
-      unless e.kind_of?(MarkdownHelperError)
-        message = [
-            e.message,
-            Inclusions::UNREADABLE_INPUT_EXCEPTION_LABEL,
-        ].join("\n")
-        e = e.exception(message)
-      end
-      raise e
+    File.open(template_file_path, 'r') do |template_file|
+      template_path_in_project = MarkdownHelper.path_in_project(template_file_path)
+      output_lines.push(MarkdownHelper.comment(" >>>>>> BEGIN GENERATED FILE (#{method.to_s}): SOURCE #{template_path_in_project} ")) unless pristine
+      input_lines = template_file.readlines
+      yield input_lines, output_lines
+      output_lines.push(MarkdownHelper.comment(" <<<<<< END GENERATED FILE (#{method.to_s}): SOURCE #{template_path_in_project} ")) unless pristine
     end
-    begin
-      File.write(markdown_file_path, output)
-    rescue => e
-      unless e.kind_of?(MarkdownHelperError)
-        message = [
-            e.message,
-            Inclusions::UNWRITABLE_OUTPUT_EXCEPTION_LABEL,
-        ].join("\n")
-        e = e.exception(message)
-      end
-      raise e
+    output = output_lines.join('')
+    unless File.writable?(markdown_file_path)
+      message = [
+          Inclusions::UNWRITABLE_OUTPUT_EXCEPTION_LABEL,
+          markdown_file_path.inspect,
+      ].join("\n")
+      raise UnwritableOutputError.new(message)
     end
+    File.write(markdown_file_path, output)
     output
   end
 
@@ -290,7 +283,7 @@ EOT
             MISSING_INCLUDEE_EXCEPTION_LABEL,
             backtrace_inclusions,
         ].join("\n")
-        e = MissingIncludeeError.new(message)
+        e = UnreadableInputError.new(message)
         e.set_backtrace([])
         raise e
       end
@@ -355,12 +348,13 @@ EOT
       lines.join("\n")
     end
 
-    def self.assert_io_exception(test, expected_exception_class, exception_label, e)
+    def self.assert_io_exception(test, expected_exception_class, expected_label, expected_file_path, e)
       test.assert_kind_of(expected_exception_class, e)
       lines = e.message.split("\n")
-      _ = lines.shift # Message from original exception.
-      label_line = lines.shift
-      test.assert_equal(exception_label, label_line)
+      actual_label = lines.shift
+      test.assert_equal(expected_label, actual_label)
+      actual_file_path = lines.shift
+      test.assert_equal(expected_file_path.inspect, actual_file_path)
     end
 
     def self.assert_inclusion_exception(test, expected_exception_class, exception_label, expected_inclusions, e)
@@ -403,20 +397,22 @@ EOT
       )
     end
 
-    def self.assert_template_exception(test, e)
+    def self.assert_template_exception(test, expected_file_path, e)
       self.assert_io_exception(
           test,
           Exception,
           UNREADABLE_INPUT_EXCEPTION_LABEL,
+          expected_file_path,
           e
       )
     end
 
-    def self.assert_output_exception(test, e)
+    def self.assert_output_exception(test, expected_file_path, e)
       self.assert_io_exception(
           test,
           Exception,
           UNWRITABLE_OUTPUT_EXCEPTION_LABEL,
+          expected_file_path,
           e
       )
     end

@@ -10,7 +10,7 @@ class MarkdownHelperTest < Minitest::Test
   EXPECTED_DIR_NAME = 'expected'
   ACTUAL_DIR_NAME = 'actual'
 
-  def zzz_test_version
+  def test_version
     refute_nil MarkdownHelper::VERSION
   end
 
@@ -114,7 +114,7 @@ class MarkdownHelperTest < Minitest::Test
 
   end
 
-  def zzz_test_include
+  def test_include
 
     # Create the template for this test.
     def create_template(test_info)
@@ -204,7 +204,7 @@ class MarkdownHelperTest < Minitest::Test
     e = assert_raises(Exception) do
       common_test(MarkdownHelper.new, test_info)
     end
-    MarkdownHelper::Inclusions.assert_template_exception(self, e)
+    MarkdownHelper::Inclusions.assert_template_exception(self, test_info.template_file_path, e)
 
     # Test markdown (output) open failure.
     test_info = IncludeInfo.new(
@@ -221,7 +221,7 @@ class MarkdownHelperTest < Minitest::Test
     e = assert_raises(Exception) do
       common_test(MarkdownHelper.new, test_info)
     end
-    MarkdownHelper::Inclusions.assert_output_exception(self, e)
+    MarkdownHelper::Inclusions.assert_output_exception(self, test_info.actual_file_path, e)
 
     # Test circular includes.
     test_info = IncludeInfo.new(
@@ -319,7 +319,7 @@ class MarkdownHelperTest < Minitest::Test
 
   end
 
-  def zzz_test_resolve
+  def test_resolve
 
     # Condition file with repo user and repo name.
     def condition_file(markdown_helper, dir_path, file_name, type)
