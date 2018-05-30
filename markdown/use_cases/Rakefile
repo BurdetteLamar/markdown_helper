@@ -30,11 +30,14 @@ EOT
                 diagnose_missing_includee
                 diagnose_circular_includes
             /,
+            :create_page_toc => %w/
+                create_and_include_toc
+            /,
             # :resolve => %w/
                 # resize_images
                 # resolve_with_added_comments
                 # gemify_images
-            # /
+            # /,
         }
         use_case_dirs.each_pair do |section, dir_names|
 
@@ -65,6 +68,7 @@ EOT
                   ensure
                   end
                 else
+                  p command
                   system(command)
                 end
               end

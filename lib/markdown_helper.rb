@@ -287,7 +287,8 @@ EOT
         e.set_backtrace([])
         raise e
       end
-      unless include_lines.last.match("\n")
+      last_line = include_lines.last
+      unless last_line && last_line.match("\n")
         message = "Warning:  Included file has no trailing newline: #{cited_includee_file_path}"
         warn(message)
       end
