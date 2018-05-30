@@ -71,7 +71,7 @@ Here's the resulting backtrace of inclusions.
 
 ```diagnose_missing_includee.err```:
 ```
-include.rb: Could not read include file, (MarkdownHelper::MissingIncludeeError)
+include.rb: Could not read include file, (MarkdownHelper::UnreadableInputError)
   Backtrace (innermost include first):
     Level 0:
       Includer:
