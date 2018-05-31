@@ -10,31 +10,31 @@ class MarkdownHelperTest < Minitest::Test
   EXPECTED_DIR_NAME = 'expected'
   ACTUAL_DIR_NAME = 'actual'
 
-  def zzz_test_version
+  def test_version
     refute_nil MarkdownHelper::VERSION
   end
 
-  def test_link_to_heading
+  def test_link
     markdown_helper = MarkdownHelper.new
     [
-        ['# Foo', '[Foo](#foo)'],
-        ['# Foo Bar', '[Foo Bar](#foo-bar)'],
-        ['## Foo Bar', '[Foo Bar](#foo-bar)'],
-        ['### Foo Bar', '[Foo Bar](#foo-bar)'],
-        ['#### Foo Bar', '[Foo Bar](#foo-bar)'],
-        ['##### Foo Bar', '[Foo Bar](#foo-bar)'],
-        ['###### Foo Bar', '[Foo Bar](#foo-bar)'],
-        [' # Foo Bar', '[Foo Bar](#foo-bar)'],
-        ['  # Foo Bar', '[Foo Bar](#foo-bar)'],
-        ['   # Foo Bar', '[Foo Bar](#foo-bar)'],
-        ['#  Foo', '[Foo](#foo)'],
-        ["#\tFoo", '[Foo](#foo)'],
-        ["#\t\tFoo", '[Foo](#foo)'],
-        ['# Foo#', '[Foo#](#foo-)'],
+        ['# Foo', [1, '[Foo](#foo)']],
+        ['# Foo Bar', [1, '[Foo Bar](#foo-bar)']],
+        ['## Foo Bar', [2, '[Foo Bar](#foo-bar)']],
+        ['### Foo Bar', [3, '[Foo Bar](#foo-bar)']],
+        ['#### Foo Bar', [4, '[Foo Bar](#foo-bar)']],
+        ['##### Foo Bar', [5, '[Foo Bar](#foo-bar)']],
+        ['###### Foo Bar', [6, '[Foo Bar](#foo-bar)']],
+        [' # Foo Bar', [1, '[Foo Bar](#foo-bar)']],
+        ['  # Foo Bar', [1, '[Foo Bar](#foo-bar)']],
+        ['   # Foo Bar', [1, '[Foo Bar](#foo-bar)']],
+        ['#  Foo', [1, '[Foo](#foo)']],
+        ['# Foo#', [1, '[Foo#](#foo-)']],
     ].each do |pair|
-      heading, expected_link = *pair
-      actual_link = markdown_helper.link_to_heading(heading)
-      assert_equal(expected_link, actual_link)
+      text, expected = *pair
+      expected_level, expected_link = *expected
+      heading = MarkdownHelper::Heading.parse(text)
+      assert_equal(expected_level, heading.level)
+      assert_equal(expected_link, heading.link)
     end
     [
         '',
@@ -42,10 +42,8 @@ class MarkdownHelperTest < Minitest::Test
         '#Foo',
         '####### Foo Bar',
         '    # Foo Bar',
-    ].each do |heading|
-      assert_raises(ArgumentError, heading.inspect) do
-        markdown_helper.link_to_heading(heading)
-      end
+    ].each do |text|
+      refute(MarkdownHelper::Heading.parse(text))
     end
   end
 
@@ -149,7 +147,7 @@ class MarkdownHelperTest < Minitest::Test
 
   end
 
-  def zzz_test_include
+  def test_include
 
     # Create the template for this test.
     def create_template(test_info)
@@ -354,7 +352,7 @@ class MarkdownHelperTest < Minitest::Test
 
   end
 
-  def zzz_test_resolve
+  def test_resolve
 
     # Condition file with repo user and repo name.
     def condition_file(markdown_helper, dir_path, file_name, type)

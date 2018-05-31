@@ -90,24 +90,53 @@ class MarkdownHelper
   end
   alias resolve_image_urls resolve
 
-  def link_to_heading(heading)
-    def argument_error(heading)
-      message = "''#{heading}'' is not a markdown heading"
-      raise ArgumentError.new(message)
-    end
-    # Four leading spaces not allowed (but three are allowed).
-    argument_error(heading) if heading.start_with?(' ' * 4)
-    alt_text = heading.sub(/^ */, '')
-    # Seventh level heading not allowed.
-    argument_error(heading) if alt_text.start_with?('#' * 7)
-    alt_text = alt_text.sub(/^[#]+\s+/, '')
-    # At least one pound-sign is required.
-    argument_error(heading) if alt_text == heading
-    anchor = alt_text.gsub(/\W+/, '-')
-    "[#{alt_text}](##{anchor.downcase})"
-  end
+  # def link_to_heading(heading)
+  #   def argument_error(heading)
+  #     message = "''#{heading}'' is not a markdown heading"
+  #     raise ArgumentError.new(message)
+  #   end
+  #   # Four leading spaces not allowed (but three are allowed).
+  #   argument_error(heading) if heading.start_with?(' ' * 4)
+  #   alt_text = heading.sub(/^ */, '')
+  #   # Seventh level heading not allowed.
+  #   argument_error(heading) if alt_text.start_with?('#' * 7)
+  #   alt_text = alt_text.sub(/^[#]+\s+/, '')
+  #   # At least one pound-sign is required.
+  #   argument_error(heading) if alt_text == heading
+  #   anchor = alt_text.gsub(/\W+/, '-')
+  #   "[#{alt_text}](##{anchor.downcase})"
+  # end
 
   private
+
+  class Heading
+
+    attr_accessor :level, :title
+
+    def initialize(level, title)
+      self.level = level
+      self.title = title
+    end
+
+    def self.parse(line)
+      # Four leading spaces not allowed (but three are allowed).
+      return nil if line.start_with?(' ' * 4)
+      stripped_line = line.sub(/^ */, '')
+      # Now must begin with hash marks and space.
+      return nil unless stripped_line.match(/^#+ /)
+      hash_marks, title = stripped_line.split(' ', 2)
+      level = hash_marks.size
+      # Seventh level heading not allowed.
+      return nil if level > 6
+      self.new(level, title)
+    end
+
+    def link
+      anchor = title.gsub(/\W+/, '-').downcase
+      "[#{title}](##{anchor})"
+    end
+
+  end
 
   def self.comment(text)
     "<!--#{text}-->\n"
@@ -154,11 +183,10 @@ class MarkdownHelper
   def _create_page_toc(input_lines, output_lines)
     input_lines.each do |input_line|
       input_line.chomp!
-      next unless input_line.start_with?('#')
-      hashes, title =input_line.split(/\s+/, 2)
-      level = hashes.size - 1
-      indentation = '  ' * level
-      output_line = "#{indentation}- #{title}"
+      heading = Heading.parse(input_line)
+      next unless heading
+      indentation = '  ' * heading.level
+      output_line = "#{indentation}- #{heading.link}"
       output_lines.push("#{output_line}\n")
     end
   end
