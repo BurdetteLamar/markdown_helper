@@ -57,7 +57,7 @@ class MarkdownHelper
 
   def create_page_toc(markdown_file_path, toc_file_path)
     send(:generate_file, markdown_file_path, toc_file_path, __method__) do |input_lines, output_lines|
-
+      send(:_create_page_toc, input_lines, output_lines)
     end
   end
 
@@ -89,6 +89,23 @@ class MarkdownHelper
     end
   end
   alias resolve_image_urls resolve
+
+  def link_to_heading(heading)
+    def argument_error(heading)
+      message = "''#{heading}'' is not a markdown heading"
+      raise ArgumentError.new(message)
+    end
+    # Four leading spaces not allowed (but three are allowed).
+    argument_error(heading) if heading.start_with?(' ' * 4)
+    alt_text = heading.sub(/^ */, '')
+    # Seventh level heading not allowed.
+    argument_error(heading) if alt_text.start_with?('#' * 7)
+    alt_text = alt_text.sub(/^[#]+\s+/, '')
+    # At least one pound-sign is required.
+    argument_error(heading) if alt_text == heading
+    anchor = alt_text.gsub(/\W+/, '-')
+    "[#{alt_text}](##{anchor.downcase})"
+  end
 
   private
 
@@ -132,6 +149,18 @@ class MarkdownHelper
     end
     File.write(markdown_file_path, output)
     output
+  end
+
+  def _create_page_toc(input_lines, output_lines)
+    input_lines.each do |input_line|
+      input_line.chomp!
+      next unless input_line.start_with?('#')
+      hashes, title =input_line.split(/\s+/, 2)
+      level = hashes.size - 1
+      indentation = '  ' * level
+      output_line = "#{indentation}- #{title}"
+      output_lines.push("#{output_line}\n")
+    end
   end
 
   def include_files(includer_file_path, input_lines, output_lines, inclusions)
