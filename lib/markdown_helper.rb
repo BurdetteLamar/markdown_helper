@@ -90,23 +90,6 @@ class MarkdownHelper
   end
   alias resolve_image_urls resolve
 
-  # def link_to_heading(heading)
-  #   def argument_error(heading)
-  #     message = "''#{heading}'' is not a markdown heading"
-  #     raise ArgumentError.new(message)
-  #   end
-  #   # Four leading spaces not allowed (but three are allowed).
-  #   argument_error(heading) if heading.start_with?(' ' * 4)
-  #   alt_text = heading.sub(/^ */, '')
-  #   # Seventh level heading not allowed.
-  #   argument_error(heading) if alt_text.start_with?('#' * 7)
-  #   alt_text = alt_text.sub(/^[#]+\s+/, '')
-  #   # At least one pound-sign is required.
-  #   argument_error(heading) if alt_text == heading
-  #   anchor = alt_text.gsub(/\W+/, '-')
-  #   "[#{alt_text}](##{anchor.downcase})"
-  # end
-
   private
 
   class Heading

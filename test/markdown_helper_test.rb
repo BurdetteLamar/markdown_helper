@@ -131,11 +131,20 @@ class MarkdownHelperTest < Minitest::Test
 
   end
 
-  def zzz_test_create_page_toc
+  def test_create_page_toc
 
-    # Test no headers.
-    test_info = CreatePageTocInfo.new('no_headers')
-    common_test(MarkdownHelper.new, test_info)
+    %w/
+      no_headers
+      one_header
+      all_levels
+      mixed_levels
+      no_level_one
+      gappy_levels
+
+    /.each do |name|
+      test_info = CreatePageTocInfo.new(name)
+      common_test(MarkdownHelper.new, test_info)
+    end
 
     # Test many levels.
 
