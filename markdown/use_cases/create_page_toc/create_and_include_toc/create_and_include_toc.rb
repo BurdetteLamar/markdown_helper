@@ -50,7 +50,7 @@ EOT
 
 #### Text File
 
-It's big, so linking instead of including:  [text file](#{TEXT_FILE_NAME})
+It's big, so linking instead of including:  [text file](#{TEXT_FILE_NAME}).
 
 #### Includer File
 
@@ -82,7 +82,7 @@ You can use the API to perform the creation and inclusion.
 
 ### Finished Page
             
-It's big, so linking instead of including:  [page file](#{PAGE_FILE_NAME})
+It's big, so linking instead of including:  [page file](#{PAGE_FILE_NAME}).
 
 EOT
 

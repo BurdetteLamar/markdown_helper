@@ -6,7 +6,7 @@
 
 #### Text File
 
-It's big, so linking instead of including:  [text file](text.md)
+It's big, so linking instead of including:  [text file](text.md).
 
 #### Includer File
 
@@ -38,5 +38,5 @@ ruby create_and_include.rb
 
 ### Finished Page
             
-It's big, so linking instead of including:  [page file](page.md)
+It's big, so linking instead of including:  [page file](page.md).
 
