@@ -11,6 +11,6 @@
 * [Include Generated Text](include/include_generated_text/use_case.md#include-generated-text)
 * [Diagnose Missing Includee](include/diagnose_missing_includee/use_case.md#diagnose-missing-includee)
 * [Diagnose Circular Includes](include/diagnose_circular_includes/use_case.md#diagnose-circular-includes)
-## Create_page_toc
+## Create Page TOC
 
 * [Create a Table of Contents for a Markdown Page.](create_page_toc/create_and_include_toc/use_case.md#create-and-include-toc)

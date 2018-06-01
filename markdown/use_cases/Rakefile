@@ -1,4 +1,5 @@
 require_relative 'include/include_use_case'
+require_relative '../../lib/string_helper'
 
 namespace :build do
 
@@ -42,8 +43,9 @@ EOT
         use_case_dirs.each_pair do |section, dir_names|
 
           # Header for section, if any dirs therein.
+          title = StringHelper.to_title(section.to_s).sub(/toc/i, 'TOC')
           use_case_file.puts(<<EOT
-## #{section.to_s.capitalize}
+## #{title}
 
 EOT
 ) unless dir_names.empty?
