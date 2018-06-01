@@ -12,7 +12,7 @@ It's big, so linking instead of including:
 
 #### Includer File
 
-@[:markdown](includer.md)
+@[markdown](includer.md)
 
 #### CLI
 
