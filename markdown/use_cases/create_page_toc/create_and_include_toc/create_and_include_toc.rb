@@ -56,7 +56,7 @@ It's big, so linking instead of including:
 
 #### Includer File
 
-@[:markdown](#{INCLUDER_FILE_NAME}
+@[:markdown](#{INCLUDER_FILE_NAME})
 
 #### CLI
 
