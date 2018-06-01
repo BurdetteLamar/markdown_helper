@@ -138,21 +138,21 @@ class MarkdownHelperTest < Minitest::Test
       one_header
       all_levels
       mixed_levels
-      no_level_one
       gappy_levels
-
     /.each do |name|
       test_info = CreatePageTocInfo.new(name)
       common_test(MarkdownHelper.new, test_info)
     end
 
-    # Test many levels.
+    # Test pristine.
+    test_info = CreatePageTocInfo.new('pristine')
+    common_test(MarkdownHelper.new(:pristine => true), test_info)
 
     # Test no level 1.
-
-    # Test gappy levels.
-
-    # Test pristine.
+    test_info = CreatePageTocInfo.new('no_level_one')
+    e = assert_raises(MarkdownHelper::TocHeadingsError) do
+      common_test(MarkdownHelper.new, test_info)
+    end
 
   end
 
@@ -263,7 +263,6 @@ class MarkdownHelperTest < Minitest::Test
     e = assert_raises(Exception) do
       common_test(MarkdownHelper.new, test_info)
     end
-    MarkdownHelper::Inclusions.assert_output_exception(self, test_info.actual_file_path, e)
 
     # Test circular includes.
     test_info = IncludeInfo.new(

@@ -10,7 +10,7 @@ class MarkdownHelper
   class MarkdownHelperError < RuntimeError; end
   class CircularIncludeError < MarkdownHelperError; end
   class UnreadableInputError < MarkdownHelperError; end
-  class UnwritableOutputError < MarkdownHelperError; end
+  class TocHeadingsError < MarkdownHelperError; end
   class OptionError < MarkdownHelperError; end
   class EnvironmentError < MarkdownHelperError; end
 
@@ -157,10 +157,16 @@ class MarkdownHelper
   end
 
   def _create_page_toc(input_lines, output_lines)
+    level_one_seen = false
     input_lines.each do |input_line|
       input_line.chomp!
       heading = Heading.parse(input_line)
       next unless heading
+      unless level_one_seen || heading.level == 1
+        message = "First heading must be level 1, not '#{input_line}'"
+        raise TocHeadingsError.new(message)
+      end
+      level_one_seen = true
       indentation = '  ' * heading.level
       output_line = "#{indentation}- #{heading.link}"
       output_lines.push("#{output_line}\n")
@@ -436,16 +442,6 @@ EOT
           test,
           Exception,
           UNREADABLE_INPUT_EXCEPTION_LABEL,
-          expected_file_path,
-          e
-      )
-    end
-
-    def self.assert_output_exception(test, expected_file_path, e)
-      self.assert_io_exception(
-          test,
-          Exception,
-          UNWRITABLE_OUTPUT_EXCEPTION_LABEL,
           expected_file_path,
           e
       )
