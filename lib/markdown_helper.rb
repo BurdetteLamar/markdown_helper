@@ -152,13 +152,6 @@ class MarkdownHelper
       output_lines.push(MarkdownHelper.comment(" <<<<<< END GENERATED FILE (#{method.to_s}): SOURCE #{template_path_in_project} ")) unless pristine
     end
     output = output_lines.join('')
-    unless File.writable?(markdown_file_path)
-      message = [
-          Inclusions::UNWRITABLE_OUTPUT_EXCEPTION_LABEL,
-          markdown_file_path.inspect,
-      ].join("\n")
-      raise UnwritableOutputError.new(message)
-    end
     File.write(markdown_file_path, output)
     output
   end
