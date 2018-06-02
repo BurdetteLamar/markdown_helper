@@ -14,6 +14,39 @@ class MarkdownHelperTest < Minitest::Test
     refute_nil MarkdownHelper::VERSION
   end
 
+  def test_link
+    markdown_helper = MarkdownHelper.new
+    [
+        ['# Foo', [1, '[Foo](#foo)']],
+        ['# Foo Bar', [1, '[Foo Bar](#foo-bar)']],
+        ['## Foo Bar', [2, '[Foo Bar](#foo-bar)']],
+        ['### Foo Bar', [3, '[Foo Bar](#foo-bar)']],
+        ['#### Foo Bar', [4, '[Foo Bar](#foo-bar)']],
+        ['##### Foo Bar', [5, '[Foo Bar](#foo-bar)']],
+        ['###### Foo Bar', [6, '[Foo Bar](#foo-bar)']],
+        [' # Foo Bar', [1, '[Foo Bar](#foo-bar)']],
+        ['  # Foo Bar', [1, '[Foo Bar](#foo-bar)']],
+        ['   # Foo Bar', [1, '[Foo Bar](#foo-bar)']],
+        ['#  Foo', [1, '[Foo](#foo)']],
+        ['# Foo#', [1, '[Foo#](#foo-)']],
+    ].each do |pair|
+      text, expected = *pair
+      expected_level, expected_link = *expected
+      heading = MarkdownHelper::Heading.parse(text)
+      assert_equal(expected_level, heading.level)
+      assert_equal(expected_link, heading.link)
+    end
+    [
+        '',
+        '#',
+        '#Foo',
+        '####### Foo Bar',
+        '    # Foo Bar',
+    ].each do |text|
+      refute(MarkdownHelper::Heading.parse(text))
+    end
+  end
+
   class TestInfo
 
     attr_accessor \
@@ -24,8 +57,7 @@ class MarkdownHelperTest < Minitest::Test
       :test_dir_path,
       :template_file_path,
       :expected_file_path,
-      :actual_file_path,
-      :include_file_path
+      :actual_file_path
 
     def initialize(method_under_test)
       self.method_under_test = method_under_test
@@ -67,7 +99,8 @@ class MarkdownHelperTest < Minitest::Test
     attr_accessor \
       :file_stem,
       :file_type,
-      :treatment
+      :treatment,
+      :include_file_path
 
     def initialize(file_stem, file_type, treatment)
       self.file_stem = file_stem
@@ -86,6 +119,41 @@ class MarkdownHelperTest < Minitest::Test
       self.md_file_basename = md_file_basename
       super(:resolve)
     end
+
+  end
+
+  class CreatePageTocInfo < TestInfo
+
+    def initialize(md_file_basename)
+      self.md_file_basename = md_file_basename
+      super(:create_page_toc)
+    end
+
+  end
+
+  def test_create_page_toc
+
+    %w/
+      no_headers
+      one_header
+      all_levels
+      mixed_levels
+      gappy_levels
+    /.each do |name|
+      test_info = CreatePageTocInfo.new(name)
+      common_test(MarkdownHelper.new, test_info)
+    end
+
+    # Test pristine.
+    test_info = CreatePageTocInfo.new('pristine')
+    common_test(MarkdownHelper.new(:pristine => true), test_info)
+
+    # Test no level 1.
+    test_info = CreatePageTocInfo.new('no_level_one')
+    e = assert_raises(MarkdownHelper::TocHeadingsError) do
+      common_test(MarkdownHelper.new, test_info)
+    end
+
   end
 
   def test_include
@@ -178,7 +246,7 @@ class MarkdownHelperTest < Minitest::Test
     e = assert_raises(Exception) do
       common_test(MarkdownHelper.new, test_info)
     end
-    MarkdownHelper::Inclusions.assert_template_exception(self, e)
+    MarkdownHelper::Inclusions.assert_template_exception(self, test_info.template_file_path, e)
 
     # Test markdown (output) open failure.
     test_info = IncludeInfo.new(
@@ -195,7 +263,6 @@ class MarkdownHelperTest < Minitest::Test
     e = assert_raises(Exception) do
       common_test(MarkdownHelper.new, test_info)
     end
-    MarkdownHelper::Inclusions.assert_output_exception(self, e)
 
     # Test circular includes.
     test_info = IncludeInfo.new(

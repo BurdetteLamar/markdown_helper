@@ -9,7 +9,8 @@ class MarkdownHelper
 
   class MarkdownHelperError < RuntimeError; end
   class CircularIncludeError < MarkdownHelperError; end
-  class MissingIncludeeError < MarkdownHelperError; end
+  class UnreadableInputError < MarkdownHelperError; end
+  class TocHeadingsError < MarkdownHelperError; end
   class OptionError < MarkdownHelperError; end
   class EnvironmentError < MarkdownHelperError; end
 
@@ -54,6 +55,12 @@ class MarkdownHelper
     end
   end
 
+  def create_page_toc(markdown_file_path, toc_file_path)
+    send(:generate_file, markdown_file_path, toc_file_path, __method__) do |input_lines, output_lines|
+      send(:_create_page_toc, input_lines, output_lines)
+    end
+  end
+
   # Resolves relative image paths to absolute urls in markdown text.
   # @param template_file_path [String] the path to the input template markdown file, usually containing image pragmas.
   # @param markdown_file_path [String] the path to the output resolved markdown file.
@@ -85,6 +92,35 @@ class MarkdownHelper
 
   private
 
+  class Heading
+
+    attr_accessor :level, :title
+
+    def initialize(level, title)
+      self.level = level
+      self.title = title
+    end
+
+    def self.parse(line)
+      # Four leading spaces not allowed (but three are allowed).
+      return nil if line.start_with?(' ' * 4)
+      stripped_line = line.sub(/^ */, '')
+      # Now must begin with hash marks and space.
+      return nil unless stripped_line.match(/^#+ /)
+      hash_marks, title = stripped_line.split(' ', 2)
+      level = hash_marks.size
+      # Seventh level heading not allowed.
+      return nil if level > 6
+      self.new(level, title)
+    end
+
+    def link
+      anchor = title.gsub(/\W+/, '-').downcase
+      "[#{title}](##{anchor})"
+    end
+
+  end
+
   def self.comment(text)
     "<!--#{text}-->\n"
   end
@@ -100,39 +136,41 @@ class MarkdownHelper
   end
 
   def generate_file(template_file_path, markdown_file_path, method)
+    unless File.readable?(template_file_path)
+      message = [
+          Inclusions::UNREADABLE_INPUT_EXCEPTION_LABEL,
+          template_file_path.inspect,
+      ].join("\n")
+      raise UnreadableInputError.new(message)
+    end
     output_lines = []
-    begin
-      File.open(template_file_path, 'r') do |template_file|
-        template_path_in_project = MarkdownHelper.path_in_project(template_file_path)
-        output_lines.push(MarkdownHelper.comment(" >>>>>> BEGIN GENERATED FILE (#{method.to_s}): SOURCE #{template_path_in_project} ")) unless pristine
-        input_lines = template_file.readlines
-        yield input_lines, output_lines
-        output_lines.push(MarkdownHelper.comment(" <<<<<< END GENERATED FILE (#{method.to_s}): SOURCE #{template_path_in_project} ")) unless pristine
-      end
-      output = output_lines.join('')
-    rescue => e
-      unless e.kind_of?(MarkdownHelperError)
-        message = [
-            e.message,
-            Inclusions::UNREADABLE_TEMPLATE_EXCEPTION_LABEL,
-        ].join("\n")
-        e = e.exception(message)
-      end
-      raise e
+    File.open(template_file_path, 'r') do |template_file|
+      template_path_in_project = MarkdownHelper.path_in_project(template_file_path)
+      output_lines.push(MarkdownHelper.comment(" >>>>>> BEGIN GENERATED FILE (#{method.to_s}): SOURCE #{template_path_in_project} ")) unless pristine
+      input_lines = template_file.readlines
+      yield input_lines, output_lines
+      output_lines.push(MarkdownHelper.comment(" <<<<<< END GENERATED FILE (#{method.to_s}): SOURCE #{template_path_in_project} ")) unless pristine
     end
-    begin
-      File.write(markdown_file_path, output)
-    rescue => e
-      unless e.kind_of?(MarkdownHelperError)
-        message = [
-            e.message,
-            Inclusions::UNWRITABLE_OUTPUT_EXCEPTION_LABEL,
-        ].join("\n")
-        e = e.exception(message)
-      end
-      raise e
-    end
+    output = output_lines.join('')
+    File.write(markdown_file_path, output)
     output
+  end
+
+  def _create_page_toc(input_lines, output_lines)
+    level_one_seen = false
+    input_lines.each do |input_line|
+      input_line.chomp!
+      heading = Heading.parse(input_line)
+      next unless heading
+      unless level_one_seen || heading.level == 1
+        message = "First heading must be level 1, not '#{input_line}'"
+        raise TocHeadingsError.new(message)
+      end
+      level_one_seen = true
+      indentation = '  ' * heading.level
+      output_line = "#{indentation}- #{heading.link}"
+      output_lines.push("#{output_line}\n")
+    end
   end
 
   def include_files(includer_file_path, input_lines, output_lines, inclusions)
@@ -284,11 +322,12 @@ EOT
             MISSING_INCLUDEE_EXCEPTION_LABEL,
             backtrace_inclusions,
         ].join("\n")
-        e = MissingIncludeeError.new(message)
+        e = UnreadableInputError.new(message)
         e.set_backtrace([])
         raise e
       end
-      unless include_lines.last.match("\n")
+      last_line = include_lines.last
+      unless last_line && last_line.match("\n")
         message = "Warning:  Included file has no trailing newline: #{cited_includee_file_path}"
         warn(message)
       end
@@ -318,8 +357,8 @@ EOT
     end
 
     CIRCULAR_EXCEPTION_LABEL = 'Includes are circular:'
-    UNREADABLE_TEMPLATE_EXCEPTION_LABEL = 'Could not read template file.'
-    UNWRITABLE_OUTPUT_EXCEPTION_LABEL = 'Could not write markdown file.'
+    UNREADABLE_INPUT_EXCEPTION_LABEL = 'Could not read input file.'
+    UNWRITABLE_OUTPUT_EXCEPTION_LABEL = 'Could not write output file.'
     MISSING_INCLUDEE_EXCEPTION_LABEL = 'Could not read include file,'
     LEVEL_LABEL = '    Level'
     BACKTRACE_LABEL = '  Backtrace (innermost include first):'
@@ -349,12 +388,13 @@ EOT
       lines.join("\n")
     end
 
-    def self.assert_io_exception(test, expected_exception_class, exception_label, e)
+    def self.assert_io_exception(test, expected_exception_class, expected_label, expected_file_path, e)
       test.assert_kind_of(expected_exception_class, e)
       lines = e.message.split("\n")
-      _ = lines.shift # Message from original exception.
-      label_line = lines.shift
-      test.assert_equal(exception_label, label_line)
+      actual_label = lines.shift
+      test.assert_equal(expected_label, actual_label)
+      actual_file_path = lines.shift
+      test.assert_equal(expected_file_path.inspect, actual_file_path)
     end
 
     def self.assert_inclusion_exception(test, expected_exception_class, exception_label, expected_inclusions, e)
@@ -397,20 +437,12 @@ EOT
       )
     end
 
-    def self.assert_template_exception(test, e)
+    def self.assert_template_exception(test, expected_file_path, e)
       self.assert_io_exception(
           test,
           Exception,
-          UNREADABLE_TEMPLATE_EXCEPTION_LABEL,
-          e
-      )
-    end
-
-    def self.assert_output_exception(test, e)
-      self.assert_io_exception(
-          test,
-          Exception,
-          UNWRITABLE_OUTPUT_EXCEPTION_LABEL,
+          UNREADABLE_INPUT_EXCEPTION_LABEL,
+          expected_file_path,
           e
       )
     end

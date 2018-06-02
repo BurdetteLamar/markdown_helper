@@ -10,25 +10,18 @@
 
 ## What's New?
 
-* The helper now checks whether the working directory is in a ```git``` project, and raises an exception if not.
+Page TOC:
 
-* There is now a backtrace of inclusions when:
-  * An includee file cannot be read.
-  * A circular inclusion (direct or indirect) is found.
-* The backtrace shows:
-  * Each includer file path.
-  * Its include description.
-  * The includee file path.
-* File paths are relative to the git directory.
-* Use cases are added:
-  * [Diagnose Missing Includee](markdown/use_cases/include/diagnose_missing_includee/use_case.md#diagnose-missing-includee).
-  * [Diagnose Circular Includes](markdown/use_cases/include/diagnose_circular_includes/use_case.md#diagnose-circular-includes).
+- Support is added for creating the table of contents for a markdown page.
+- The TOC is a tree of links to the headers on the page, suitable for inclusion with the page itself.
+- See the [use case](markdown/use_cases/tables_of_contents/create_and_include_page_toc/use_case.md#create-and-include-page-toc).
 
 ## What's a Markdown Helper?
 
 Class <code>MarkdownHelper</code> supports:
 
 * [File inclusion](#file-inclusion): to include text from other files, as code-block or markdown.
+* [Page TOC](#page-toc): to create the table of contents for a markdown page.
 * [Image path resolution](#image-path-resolution): to resolve relative image paths to absolute URL paths (so they work even in gem documentation).
 * [Image attributes](#image-attributes): image attributes are passed through to an HTML <code>img</code> tag.
 
@@ -65,6 +58,8 @@ This markdown helper enables file inclusion in GitHub markdown.
 (Actually, this README file itself is built using file inclusion.)
 
 Use the markdown helper to merge external files into a markdown (</code>.md</code>) file.
+
+See the [use cases](markdown/use_cases/use_cases.md#use-cases).
 
 ### Merged Text Formats
 
@@ -176,6 +171,14 @@ where:
 @[:markdown](my_markdown.md)
 ```
 <!-- <<<<<< END INCLUDED FILE (code_block): SOURCE markdown/readme/include.md -->
+
+## Page TOC
+
+The markdown helper can create the table of contents for a markdown page.
+- The TOC is a tree of links to the headers on the page, suitable for inclusion with the page itself.
+- See the [use case](markdown/use_cases/tables_of_contents/create_and_include_page_toc/use_case.md#create-and-include-page-toc).
+
+
 
 ## Image Path Resolution 
 
@@ -349,7 +352,6 @@ where:
 
 I have opened some enhancement Issues in the GitHub [markdown_helper](https://github.com/BurdetteLamar/markdown_helper) project:
 
-* [File TOC](https://github.com/BurdetteLamar/markdown_helper/issues/36):  table of contents of all headers in a markdown page.
 * [Project TOC](https://github.com/BurdetteLamar/markdown_helper/issues/37):  table of contents of all markdown pages in project.
 * [Partial file inclusion](https://github.com/BurdetteLamar/markdown_helper/issues/38):  including only specified lines from a file (instead of the whole file).
 * [Ruby-entity inclusion](https://github.com/BurdetteLamar/markdown_helper/issues/39):  like file inclusion, but including a Ruby class, module, or method.

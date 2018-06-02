@@ -1,4 +1,5 @@
-require_relative 'include/include_use_case'
+require_relative 'include_files/include_use_case'
+require_relative '../../lib/string_helper'
 
 namespace :build do
 
@@ -19,7 +20,7 @@ EOT
       Dir.chdir(dir_path) do
         IncludeUseCase.write_interface_file
         use_case_dirs = {
-            :include => %w/
+            :include_files => %w/
                 reuse_text
                 include_with_added_comments
                 nest_inclusions
@@ -30,17 +31,21 @@ EOT
                 diagnose_missing_includee
                 diagnose_circular_includes
             /,
+            :tables_of_contents => %w/
+                create_and_include_page_toc
+            /,
             # :resolve => %w/
                 # resize_images
                 # resolve_with_added_comments
                 # gemify_images
-            # /
+            # /,
         }
         use_case_dirs.each_pair do |section, dir_names|
 
           # Header for section, if any dirs therein.
+          title = StringHelper.to_title(section.to_s).sub(/ toc$/i, ' TOC')
           use_case_file.puts(<<EOT
-## #{section.to_s.capitalize}
+## #{title}
 
 EOT
 ) unless dir_names.empty?
@@ -65,6 +70,7 @@ EOT
                   ensure
                   end
                 else
+                  p command
                   system(command)
                 end
               end
