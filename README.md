@@ -14,7 +14,7 @@ Page TOC:
 
 - Support is added for creating the table of contents for a markdown page.
 - The TOC is a tree of links to the headers on the page, suitable for inclusion with the page itself.
-- See the [use case](../use_cases/tables_of_contents/create_and_include_page_toc/use_case.md#create-and-include-page-toc).
+- See the [use case](markdown/use_cases/tables_of_contents/create_and_include_page_toc/use_case.md#create-and-include-page-toc).
 
 ## What's a Markdown Helper?
 
@@ -59,7 +59,7 @@ This markdown helper enables file inclusion in GitHub markdown.
 
 Use the markdown helper to merge external files into a markdown (</code>.md</code>) file.
 
-See the [use cases](../use_cases/use_cases.md#use-cases).
+See the [use cases](markdown/use_cases/use_cases.md#use-cases).
 
 ### Merged Text Formats
 
@@ -176,7 +176,9 @@ where:
 
 The markdown helper can create the table of contents for a markdown page.
 - The TOC is a tree of links to the headers on the page, suitable for inclusion with the page itself.
-- See the [use case](../use_cases/tables_of_contents/create_and_include_page_toc/use_case.md#create-and-include-page-toc).
+- See the [use case](markdown/use_cases/tables_of_contents/create_and_include_page_toc/use_case.md#create-and-include-page-toc).
+
+
 
 ## Image Path Resolution 
 
