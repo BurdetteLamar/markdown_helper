@@ -13,6 +13,7 @@ Gem::Specification.new do |spec|
 Class to help with GitHub markdown:
 
 * File inclusion
+* Page TOC
 * Image path resolution
 * Image attributes
 EOT
