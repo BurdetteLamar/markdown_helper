@@ -10,9 +10,9 @@
 
 ## What's New?
 
-#### Page TOC
+Page TOC:
 
-- Support added for creating the table of contents for a markdown page.
+- Support is added for creating the table of contents for a markdown page.
 - The TOC is a tree of links to the headers on the page, suitable for inclusion with the page itself.
 - See the [use case](../use_cases/tables_of_contents/create_and_include_page_toc/use_case.md#create-and-include-page-toc).
 
