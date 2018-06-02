@@ -1,6 +1,6 @@
 require_relative '../create_page_toc_use_case'
 
-class CreateAndIncludeToc < CreatePageTocUseCase
+class CreateAndIncludePageToc < CreatePageTocUseCase
 
   RUBY_FILE_NAME = 'create_and_include.rb'
   API_COMMAND = "ruby #{RUBY_FILE_NAME}"
@@ -42,7 +42,7 @@ EOT
     File.write(
         TEMPLATE_FILE_NAME,
         <<EOT
-### Create a Table of Contents for a Markdown Page.
+### Create Page TOC
 
 1.  Maintain markdown text in a separate file.
 2.  Create a table of contents for the text.

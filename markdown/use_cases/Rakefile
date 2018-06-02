@@ -31,8 +31,8 @@ EOT
                 diagnose_missing_includee
                 diagnose_circular_includes
             /,
-            :create_page_toc => %w/
-                create_and_include_toc
+            :tables_of_contents => %w/
+                create_and_include_page_toc
             /,
             # :resolve => %w/
                 # resize_images
