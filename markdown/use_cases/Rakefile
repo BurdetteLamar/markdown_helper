@@ -1,4 +1,4 @@
-require_relative 'include/include_use_case'
+require_relative 'include_files/include_use_case'
 require_relative '../../lib/string_helper'
 
 namespace :build do
@@ -20,7 +20,7 @@ EOT
       Dir.chdir(dir_path) do
         IncludeUseCase.write_interface_file
         use_case_dirs = {
-            :include => %w/
+            :include_files => %w/
                 reuse_text
                 include_with_added_comments
                 nest_inclusions
