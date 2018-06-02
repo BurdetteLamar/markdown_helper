@@ -13,4 +13,4 @@
 * [Diagnose Circular Includes](include_files/diagnose_circular_includes/use_case.md#diagnose-circular-includes)
 ## Tables of Contents
 
-* [Create Page TOC](tables_of_contents/create_and_include_page_toc/use_case.md#create-and-include-page-toc)
+* [Create and Include Page TOC](tables_of_contents/create_and_include_page_toc/use_case.md#create-and-include-page-toc)

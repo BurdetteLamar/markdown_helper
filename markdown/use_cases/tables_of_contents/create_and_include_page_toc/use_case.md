@@ -1,4 +1,4 @@
-### Create Page TOC
+### Create and Include Page TOC
 
 1.  Maintain markdown text in a separate file.
 2.  Create a table of contents for the text.
