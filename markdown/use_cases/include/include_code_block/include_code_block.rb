@@ -36,7 +36,7 @@ EOT
     use_case.files_to_write.store(
         TEMPLATE_FILE_NAME,
         <<EOT
-### Include a Code Block
+### Include Code Block
 
 Use file inclusion to include text as a code block.
 

@@ -43,7 +43,7 @@ EOT
         use_case_dirs.each_pair do |section, dir_names|
 
           # Header for section, if any dirs therein.
-          title = StringHelper.to_title(section.to_s).sub(/toc/i, 'TOC')
+          title = StringHelper.to_title(section.to_s).sub(/ toc$/i, ' TOC')
           use_case_file.puts(<<EOT
 ## #{title}
 

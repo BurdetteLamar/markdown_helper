@@ -1,4 +1,4 @@
-### Include a Code Block
+### Include Code Block
 
 Use file inclusion to include text as a code block.
 
