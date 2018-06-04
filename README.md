@@ -1,12 +1,7 @@
-<!-- >>>>>> BEGIN GENERATED FILE (include): SOURCE temp_resolved.md -->
-<!-- >>>>>> BEGIN GENERATED FILE (resolve): SOURCE README.template.md -->
+<!-- >>>>>> BEGIN GENERATED FILE (include): SOURCE README.template.md -->
 # Markdown Helper
 
-<!-- >>>>>> BEGIN RESOLVED IMAGES: INPUT-LINE '![Gem Version](https://badge.fury.io/rb/markdown_helper.svg) [Visit gem markdown_helper](https://rubygems.org/gems/markdown_helper)
-' -->
-<img src="https://badge.fury.io/rb/markdown_helper.svg" alt="Gem Version"> [Visit gem markdown_helper](https://rubygems.org/gems/markdown_helper)
-<!-- <<<<<< END RESOLVED IMAGES: INPUT-LINE '![Gem Version](https://badge.fury.io/rb/markdown_helper.svg) [Visit gem markdown_helper](https://rubygems.org/gems/markdown_helper)
-' -->
+![Gem Version](https://badge.fury.io/rb/markdown_helper.svg) [Visit gem markdown_helper](https://rubygems.org/gems/markdown_helper)
 
 ## What's New?
 
@@ -22,8 +17,8 @@ Class <code>MarkdownHelper</code> supports:
 
 * [File inclusion](#file-inclusion): to include text from other files, as code-block or markdown.
 * [Page TOC](#page-toc): to create the table of contents for a markdown page.
-* [Image path resolution](#image-path-resolution): to resolve relative image paths to absolute URL paths (so they work even in gem documentation).
-* [Image attributes](#image-attributes): image attributes are passed through to an HTML <code>img</code> tag.
+* [Image path resolution](#image-path-resolution): to resolve relative image paths to absolute URL paths (so they work even in gem documentation). [Deprecated]**
+* [Image attributes](#image-attributes): image attributes are passed through to an HTML <code>img</code> tag.  [Deprecated]**
 
 ## How It Works
 
@@ -41,17 +36,13 @@ By default, the output markdown has added comments that show:
 
 * The path to the template file.
 * The path to each included file.
-* The image description (original) for each resolved image file path.
+* The image description (original) for each resolved image file path.  [Deprecated]**
 
 You can suppress those comments using the <code>pristine</code> option.
 
 ## File Inclusion 
 
-<!-- >>>>>> BEGIN RESOLVED IMAGES: INPUT-LINE '![include_icon](../../images/include.png | width=50)
-' -->
-<img src="https://raw.githubusercontent.com/BurdetteLamar/markdown_helper/master/images/include.png" alt="include_icon" width="50">
-<!-- <<<<<< END RESOLVED IMAGES: INPUT-LINE '![include_icon](../../images/include.png | width=50)
-' -->
+<img src="../../images/include.png" alt="include_icon" width="50">
 
 This markdown helper enables file inclusion in GitHub markdown.
 
@@ -180,13 +171,9 @@ The markdown helper can create the table of contents for a markdown page.
 
 
 
-## Image Path Resolution 
+## Image Path Resolution **[Deprecated]**
 
-<!-- >>>>>> BEGIN RESOLVED IMAGES: INPUT-LINE '![image_icon](../../images/image.png | width=50)
-' -->
-<img src="https://raw.githubusercontent.com/BurdetteLamar/markdown_helper/master/images/image.png" alt="image_icon" width="50">
-<!-- <<<<<< END RESOLVED IMAGES: INPUT-LINE '![image_icon](../../images/image.png | width=50)
-' -->
+<img src="../../images/image.png" alt="image_icon" width="50">
 
 This markdown helper enables image path resolution in GitHub markdown.
 
@@ -267,11 +254,7 @@ where:
 
 ## Image Attributes
 
-<!-- >>>>>> BEGIN RESOLVED IMAGES: INPUT-LINE '![html_icon](../../images/html.png | width=50)
-' -->
-<img src="https://raw.githubusercontent.com/BurdetteLamar/markdown_helper/master/images/html.png" alt="html_icon" width="50">
-<!-- <<<<<< END RESOLVED IMAGES: INPUT-LINE '![html_icon](../../images/html.png | width=50)
-' -->
+<img src="../../images/html.png" alt="html_icon" width="50">
 
 This markdown helper enables HTML image attributes in GitHub markdown [image descriptions](https://github.github.com/gfm/#image-description).
 
@@ -358,5 +341,4 @@ I have opened some enhancement Issues in the GitHub [markdown_helper](https://gi
 * [Pagination](https://github.com/BurdetteLamar/markdown_helper/issues/40):  series of markdown pages connected by prev/next navigation links.
 
 Feel free to comment on any of these, or to add more Issues (enhancement or otherwise).
-<!-- <<<<<< END GENERATED FILE (resolve): SOURCE README.template.md -->
-<!-- <<<<<< END GENERATED FILE (include): SOURCE temp_resolved.md -->
+<!-- <<<<<< END GENERATED FILE (include): SOURCE README.template.md -->

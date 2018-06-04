@@ -84,6 +84,7 @@ class MarkdownHelper
   #   )
   def resolve(template_file_path, markdown_file_path)
     # Method :generate_file does the first things, yields the block, does the last things.
+    warn("Method :resolve is deprecated")
     send(:generate_file, template_file_path, markdown_file_path, __method__) do |input_lines, output_lines|
       send(:resolve_images, template_file_path, input_lines, output_lines)
     end
