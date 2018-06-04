@@ -42,8 +42,6 @@ You can suppress those comments using the <code>pristine</code> option.
 
 ## File Inclusion 
 
-<img src="../../images/include.png" alt="include_icon" width="50">
-
 This markdown helper enables file inclusion in GitHub markdown.
 
 (Actually, this README file itself is built using file inclusion.)
@@ -173,8 +171,6 @@ The markdown helper can create the table of contents for a markdown page.
 
 ## Image Path Resolution **[Deprecated]**
 
-<img src="../../images/image.png" alt="image_icon" width="50">
-
 This markdown helper enables image path resolution in GitHub markdown.
 
 (Actually, this README file itself is built using image path resolution.)
@@ -253,8 +249,6 @@ where:
 <!-- <<<<<< END INCLUDED FILE (code_block): SOURCE markdown/readme/resolve.md -->
 
 ## Image Attributes
-
-<img src="../../images/html.png" alt="html_icon" width="50">
 
 This markdown helper enables HTML image attributes in GitHub markdown [image descriptions](https://github.github.com/gfm/#image-description).
 
