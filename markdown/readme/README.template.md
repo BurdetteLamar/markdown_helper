@@ -2,6 +2,11 @@
 
 ![Gem Version](https://badge.fury.io/rb/markdown_helper.svg) [Visit gem markdown_helper](https://rubygems.org/gems/markdown_helper)
 
+## Deprecated
+
+- Method ```:resolve```.
+- Command ```markdown_helper resolve```.
+
 ## What's New?
 
 Page TOC:
@@ -16,8 +21,8 @@ Class <code>MarkdownHelper</code> supports:
 
 * [File inclusion](#file-inclusion): to include text from other files, as code-block or markdown.
 * [Page TOC](#page-toc): to create the table of contents for a markdown page.
-* [Image path resolution](#image-path-resolution): to resolve relative image paths to absolute URL paths (so they work even in gem documentation).
-* [Image attributes](#image-attributes): image attributes are passed through to an HTML <code>img</code> tag.
+* [Image path resolution](#image-path-resolution): to resolve relative image paths to absolute URL paths (so they work even in gem documentation). [Deprecated]**
+* [Image attributes](#image-attributes): image attributes are passed through to an HTML <code>img</code> tag.  [Deprecated]**
 
 ## How It Works
 
@@ -35,13 +40,13 @@ By default, the output markdown has added comments that show:
 
 * The path to the template file.
 * The path to each included file.
-* The image description (original) for each resolved image file path.
+* The image description (original) for each resolved image file path.  [Deprecated]**
 
 You can suppress those comments using the <code>pristine</code> option.
 
 ## File Inclusion 
 
-![include_icon](../../images/include.png | width=50)
+<img src="images/include.png" alt="include_icon" width="50">
 
 This markdown helper enables file inclusion in GitHub markdown.
 
@@ -109,9 +114,9 @@ The markdown helper can create the table of contents for a markdown page.
 
 
 
-## Image Path Resolution 
+## Image Path Resolution **[Deprecated]**
 
-![image_icon](../../images/image.png | width=50)
+<img src="images/image.png" alt="image_icon" width="50">
 
 This markdown helper enables image path resolution in GitHub markdown.
 
@@ -149,7 +154,7 @@ where:
 
 ## Image Attributes
 
-![html_icon](../../images/html.png | width=50)
+<img src="images/html.png" alt="html_icon" width="50">
 
 This markdown helper enables HTML image attributes in GitHub markdown [image descriptions](https://github.github.com/gfm/#image-description).
 

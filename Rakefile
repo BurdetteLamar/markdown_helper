@@ -19,14 +19,7 @@ namespace :build do
       template_file_path = 'highlight_ruby_template.md'
       markdown_file_path = 'highlighted_ruby.md'
       markdown_helper.include(template_file_path, markdown_file_path)
-      # Do the resolve before the include, so that the included text is not also resolved.
-      # This protects example code from being also resolved, thus damaging the example code.
-      # Temp file must be in the same directory as its source (it becomes the source).
-      temp_file_path = 'temp_resolved.md'
-      markdown_helper.resolve('README.template.md', temp_file_path)
-      readme_file_path = '../../README.md'
-      markdown_helper.include(temp_file_path, readme_file_path)
-      File.delete(temp_file_path)
+      markdown_helper.include('README.template.md', '../../README.md')
     end
   end
 
