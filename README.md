@@ -3,6 +3,11 @@
 
 ![Gem Version](https://badge.fury.io/rb/markdown_helper.svg) [Visit gem markdown_helper](https://rubygems.org/gems/markdown_helper)
 
+## Deprecated
+
+- Method ```:resolve```.
+- Command ```markdown_helper resolve```.
+
 ## What's New?
 
 Page TOC:
