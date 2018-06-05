@@ -22,6 +22,7 @@ class IncludeUseCase < UseCase
     super
 
     commands_to_execute.push(RUBY_COMMAND) if File.exist?(RUBY_FILE_NAME)
+    commands_to_execute.push(INCLUDE_COMMAND) if File.exist?(INCLUDER_FILE_NAME)
     commands_to_execute.push(BUILD_COMMAND) if File.exist?(TEMPLATE_FILE_NAME)
 
     self.use_case_dir_name = use_case_dir_name
