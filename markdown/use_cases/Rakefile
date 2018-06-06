@@ -28,6 +28,7 @@ EOT
                 include_code_block
                 include_highlighted_code
                 include_text_as_comment
+                include_text_as_pre
                 include_generated_text
                 diagnose_missing_includee
                 diagnose_circular_includes
@@ -71,7 +72,6 @@ EOT
                   ensure
                   end
                 else
-                  p command
                   system(command)
                 end
               end
