@@ -27,6 +27,7 @@ EOT
                 include_markdown
                 include_code_block
                 include_highlighted_code
+                include_text_as_comment
                 include_generated_text
                 diagnose_missing_includee
                 diagnose_circular_includes
