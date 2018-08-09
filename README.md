@@ -1,7 +1,7 @@
 <!-- >>>>>> BEGIN GENERATED FILE (include): SOURCE README.template.md -->
 # Markdown Helper
 
-![Gem Version](https://badge.fury.io/rb/markdown_helper.svg) [Visit gem markdown_helper](https://rubygems.org/gems/markdown_helper)
+[![Gem](https://img.shields.io/gem/v/markdown_helper.svg?style=flat)](http://rubygems.org/gems/markdown_helper "View this project in Rubygems")
 
 ## What's New?
 
