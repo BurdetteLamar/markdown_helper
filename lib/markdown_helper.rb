@@ -459,8 +459,7 @@ EOT
       :includer_line_number,
       :include_description,
       :absolute_includee_file_path,
-      :cited_includee_file_path,
-      :include_description
+      :cited_includee_file_path
 
     def initialize(
         include_description,
@@ -485,10 +484,11 @@ EOT
       Pathname.new(absolute_includee_file_path).realpath.to_s
     end
 
+    def indentation(level)
+      '  ' * level
+    end
+
     def to_lines(indentation_level)
-      def indentation(level)
-        '  ' * level
-      end
       relative_inluder_file_path = MarkdownHelper.path_in_project(includer_file_path)
       relative_inludee_file_path = MarkdownHelper.path_in_project(absolute_includee_file_path)
        text = <<EOT
