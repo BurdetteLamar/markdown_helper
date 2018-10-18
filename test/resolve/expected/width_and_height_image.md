@@ -1,4 +1,4 @@
-<!-- >>>>>> BEGIN GENERATED FILE (resolve): SOURCE test/resolve/tmp/template_width_and_height_image.md -->
+<!-- >>>>>> BEGIN GENERATED FILE (resolve): SOURCE test/resolve/templates/width_and_height_image.md -->
 This file has an image with a width.
 
 <!-- >>>>>> BEGIN RESOLVED IMAGES: INPUT-LINE '![width_image](../../../images/image.png | width=50 height=50)
@@ -6,4 +6,4 @@ This file has an image with a width.
 <img src="https://raw.githubusercontent.com/BurdetteLamar/markdown_helper/master/images/image.png" alt="width_image" width="50" height="50">
 <!-- <<<<<< END RESOLVED IMAGES: INPUT-LINE '![width_image](../../../images/image.png | width=50 height=50)
 ' -->
-<!-- <<<<<< END GENERATED FILE (resolve): SOURCE test/resolve/tmp/template_width_and_height_image.md -->
+<!-- <<<<<< END GENERATED FILE (resolve): SOURCE test/resolve/templates/width_and_height_image.md -->

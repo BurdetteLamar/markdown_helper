@@ -15,7 +15,6 @@ class MarkdownHelperTest < Minitest::Test
   end
 
   def test_link
-    markdown_helper = MarkdownHelper.new
     [
         ['# Foo', [1, '[Foo](#foo)']],
         ['# Foo Bar', [1, '[Foo Bar](#foo-bar)']],
@@ -150,7 +149,7 @@ class MarkdownHelperTest < Minitest::Test
 
     # Test no level 1.
     test_info = CreatePageTocInfo.new('no_level_one')
-    e = assert_raises(MarkdownHelper::TocHeadingsError) do
+    assert_raises(MarkdownHelper::TocHeadingsError) do
       common_test(MarkdownHelper.new, test_info)
     end
 
@@ -363,31 +362,6 @@ class MarkdownHelperTest < Minitest::Test
 
   def test_resolve
 
-    # Condition file with repo user and repo name.
-    def condition_file(markdown_helper, dir_path, file_name, type)
-      file_path = File.join(
-          dir_path,
-          file_name
-      )
-      input_text = File.read(file_path)
-      repo_user, repo_name = markdown_helper.send(:repo_user_and_name)
-      conditioned_text = format(input_text, repo_user, repo_name)
-      tmp_dir_name = 'resolve/tmp'
-      tmp_dir_path = File.join(
-          TEST_DIR_PATH,
-          tmp_dir_name,
-      )
-      Dir.mkdir(tmp_dir_path) unless File.directory?(tmp_dir_path)
-      conditioned_file_path = File.join(
-          tmp_dir_path,
-          "#{type}_#{file_name}",
-      )
-      conditioned_file = File.new(conditioned_file_path, 'w')
-      conditioned_file.write(conditioned_text)
-      conditioned_file.close
-      conditioned_file
-    end
-
     # Test results of various templates.
     [
         :no_image,
@@ -397,20 +371,16 @@ class MarkdownHelperTest < Minitest::Test
     ].each do |md_file_basename|
       markdown_helper = MarkdownHelper.new
       test_info = ResolveInfo.new(md_file_basename)
-      template_file = condition_file(
-          markdown_helper,
+      template_file_path = File.join(
           test_info.templates_dir_path,
           test_info.md_file_name,
-          'template'
       )
-      test_info.template_file_path = template_file.path
-      expected_markdown_file = condition_file(
-          markdown_helper,
+      test_info.template_file_path = template_file_path
+      expected_markdown_file_path = File.join(
           test_info.expected_dir_path,
           test_info.md_file_name,
-          'expected'
       )
-      test_info.expected_file_path = expected_markdown_file.path
+      test_info.expected_file_path = expected_markdown_file_path
       common_test(markdown_helper, test_info)
     end
 
@@ -440,38 +410,41 @@ class MarkdownHelperTest < Minitest::Test
 
   end
 
+  # Don't call this 'test_interface' (without the leading underscroe),
+  # because that would make it an actual executable test method.
+  def _test_interface(test_info)
+    File.write(test_info.actual_file_path, '') if File.exist?(test_info.actual_file_path)
+    yield
+    diffs = MarkdownHelperTest.diff_files(test_info.expected_file_path, test_info.actual_file_path)
+    unless diffs.empty?
+      puts 'EXPECTED'
+      puts File.read(test_info.expected_file_path)
+      puts 'ACTUAL'
+      puts File.read(test_info.actual_file_path)
+      puts 'END'
+    end
+    assert_empty(diffs, test_info.actual_file_path)
+  end
+
   def common_test(markdown_helper, test_info)
 
-    def test_interface(test_info)
-      File.write(test_info.actual_file_path, '') if File.exist?(test_info.actual_file_path)
-      yield
-      diffs = MarkdownHelperTest.diff_files(test_info.expected_file_path, test_info.actual_file_path)
-      unless diffs.empty?
-        puts 'EXPECTED'
-        puts File.read(test_info.expected_file_path)
-        puts 'ACTUAL'
-        puts File.read(test_info.actual_file_path)
-        puts 'END'
-      end
-      assert_empty(diffs, test_info.actual_file_path)
-    end
-
     # API
-    test_interface(test_info) do
+    _test_interface(test_info) do
       markdown_helper.send(
           test_info.method_under_test,
           test_info.template_file_path,
           test_info.actual_file_path,
-      )
-      end
+          )
+    end
 
     # CLI
-    test_interface(test_info) do
+    _test_interface(test_info) do
       options = markdown_helper.pristine ? '--pristine' : ''
       File.write(test_info.actual_file_path, '')
       command = "markdown_helper #{test_info.method_under_test} #{options} #{test_info.template_file_path} #{test_info.actual_file_path}"
       system(command)
     end
+
   end
 
   def self.diff_files(expected_file_path, actual_file_path)
