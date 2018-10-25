@@ -14,8 +14,6 @@ Class to help with GitHub markdown:
 
 * File inclusion
 * Page TOC
-* Image path resolution
-* Image attributes
 EOT
   spec.homepage      = 'https://github.com/BurdetteLamar/markdown_helper'
   spec.license       = 'MIT'
