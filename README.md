@@ -18,14 +18,12 @@ Class <code>MarkdownHelper</code> supports:
 
 * [File inclusion](#file-inclusion): to include text from other files, as code-block or markdown.
 * [Page TOC](#page-toc): to create the table of contents for a markdown page.
-* [Image path resolution](#image-path-resolution): to resolve relative image paths to absolute URL paths (so they work even in gem documentation). [Deprecated]**
-* [Image attributes](#image-attributes): image attributes are passed through to an HTML <code>img</code> tag.  [Deprecated]**
 
 ## How It Works
 
 The markdown helper is a preprocessor that reads a markdown document (template) and writes another markdown document.
 
-The template can contain certain instructions that call for file inclusions and image resolutions.
+The template can contain certain instructions that call for file inclusions.
 
 ### Restriction:  ```git``` Only
 
@@ -37,7 +35,6 @@ By default, the output markdown has added comments that show:
 
 * The path to the template file.
 * The path to each included file.
-* The image description (original) for each resolved image file path.  [Deprecated]**
 
 You can suppress those comments using the <code>pristine</code> option.
 
@@ -169,168 +166,6 @@ where:
 The markdown helper can create the table of contents for a markdown page.
 - The TOC is a tree of links to the headers on the page, suitable for inclusion with the page itself.
 - See the [use case](markdown/use_cases/tables_of_contents/create_and_include_page_toc/use_case.md#create-and-include-page-toc).
-
-
-
-## Image Path Resolution **[Deprecated]**
-
-<img src="images/image.png" alt="image_icon" width="50">
-
-This markdown helper enables image path resolution in GitHub markdown.
-
-(Actually, this README file itself is built using image path resolution.)
-
-Use the markdown helper to resolve image relative paths in a markdown (</code>.md</code>) file.
-
-This matters because when markdown becomes part of a Ruby gem, its images will have been relocated in the documentation at RubyDoc.info, breaking the relative paths. The resolved (absolute) urls, however, will still be valid.
-
-### Usage
-
-#### CLI
-
-<!-- >>>>>> BEGIN INCLUDED FILE (code_block): SOURCE bin/usage/resolve.txt -->
-```resolve.txt```:
-```
-
-Usage: markdown_helper resolve [options] template_file_path markdown_file_path
-        --pristine                   No comments added
-        --help                       Display help
-    
-  where
-
-    * template_file_path is the path to an existing file.
-    * markdown_file_path is the path to a file to be created.
-
-  Typically:
-
-    * Both file types are .md.
-    * The template file contains image descriptions.
-```
-<!-- <<<<<< END INCLUDED FILE (code_block): SOURCE bin/usage/resolve.txt -->
-
-#### API
-
-<!-- >>>>>> BEGIN INCLUDED FILE (ruby): SOURCE markdown/readme/resolve_usage.rb -->
-```resolve_usage.rb```:
-```ruby
-require 'markdown_helper'
-
-template_file_path = 'template.md'
-markdown_file_path = 'markdown.md'
-markdown_helper = MarkdownHelper.new
-markdown_helper.resolve(template_file_path, markdown_file_path)
-# Pristine.
-markdown_helper.pristine = true
-markdown_helper.resolve(template_file_path, markdown_file_path)
-# Also pristine.
-markdown_helper = MarkdownHelper.new(:pristine => true)
-markdown_helper.resolve(template_file_path, markdown_file_path)
-```
-<!-- <<<<<< END INCLUDED FILE (ruby): SOURCE markdown/readme/resolve_usage.rb -->
-
-#### Image Descriptions
-
-Specify each image  at the beginning of a line via an *image description*, which has the form:
-
-<code>![*alt_text*]\(</code>*relative_file_path* <code>|</code> *attributes*<code>)</code>
-
-where:
-
-* *alt_text* is the usual alt text for an HTML image.
-* *relative_file_path* points to the file to be included.
-* *attributes* specify image attributes.  See [Image Attributes](#image-attributes) below.
-
-##### Example Image Descriptions
-
-<!-- >>>>>> BEGIN INCLUDED FILE (code_block): SOURCE markdown/readme/resolve.md -->
-```resolve.md```:
-```code_block
-![my_alt](image/image.png)
-
-![my_alt](image/image.png | width=50)
-
-![my_alt](image/image.png| width=50 height=50)
-```
-<!-- <<<<<< END INCLUDED FILE (code_block): SOURCE markdown/readme/resolve.md -->
-
-## Image Attributes
-
-<img src="images/html.png" alt="html_icon" width="50">
-
-This markdown helper enables HTML image attributes in GitHub markdown [image descriptions](https://github.github.com/gfm/#image-description).
-
-(Actually, this README file itself is built using image attributes.)
-
-Use the markdown helper to add image attributes in a markdown (</code>.md</code>) file.
-
-### Usage
-
-#### CLI
-
-<!-- >>>>>> BEGIN INCLUDED FILE (code_block): SOURCE bin/usage/resolve.txt -->
-```resolve.txt```:
-```
-
-Usage: markdown_helper resolve [options] template_file_path markdown_file_path
-        --pristine                   No comments added
-        --help                       Display help
-    
-  where
-
-    * template_file_path is the path to an existing file.
-    * markdown_file_path is the path to a file to be created.
-
-  Typically:
-
-    * Both file types are .md.
-    * The template file contains image descriptions.
-```
-<!-- <<<<<< END INCLUDED FILE (code_block): SOURCE bin/usage/resolve.txt -->
-
-#### API
-
-<!-- >>>>>> BEGIN INCLUDED FILE (ruby): SOURCE markdown/readme/resolve_usage.rb -->
-```resolve_usage.rb```:
-```ruby
-require 'markdown_helper'
-
-template_file_path = 'template.md'
-markdown_file_path = 'markdown.md'
-markdown_helper = MarkdownHelper.new
-markdown_helper.resolve(template_file_path, markdown_file_path)
-# Pristine.
-markdown_helper.pristine = true
-markdown_helper.resolve(template_file_path, markdown_file_path)
-# Also pristine.
-markdown_helper = MarkdownHelper.new(:pristine => true)
-markdown_helper.resolve(template_file_path, markdown_file_path)
-```
-<!-- <<<<<< END INCLUDED FILE (ruby): SOURCE markdown/readme/resolve_usage.rb -->
-
-#### Image Descriptions
-
-Specify each image at the beginning of a line  via an *image description*, which has the form:
-
-<code>![*alt_text*]\(</code>*relative_file_path* <code>|</code> *attributes*<code>)</code>
-
-where:
-
-* *alt_text* is the usual alt text for an HTML image.
-* *relative_file_path* points to the file to be included.
-* *attributes* are whitespace-separated name-value pairs in the form *name*<code>=</code>*value*.  These are passed through to the generated <code>img</code> HTML element.
-
-##### Example Image Descriptions
-
-<!-- >>>>>> BEGIN INCLUDED FILE (code_block): SOURCE markdown/readme/resolve.md -->
-```resolve.md```:
-```code_block
-![my_alt](image/image.png)
-
-![my_alt](image/image.png | width=50)
-
-![my_alt](image/image.png| width=50 height=50)
-```
-<!-- <<<<<< END INCLUDED FILE (code_block): SOURCE markdown/readme/resolve.md -->
 
 ## What Should Be Next?
 

@@ -28,7 +28,6 @@ namespace :build do
     %w/
         create_page_toc
         include
-        resolve
     /.each do |executable_name|
       usage_text = `ruby bin/_#{executable_name} --help`
       usage_file_path = "bin/usage/#{executable_name}.txt"

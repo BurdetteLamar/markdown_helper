@@ -36,11 +36,6 @@ EOT
             :tables_of_contents => %w/
                 create_and_include_page_toc
             /,
-            # :resolve => %w/
-                # resize_images
-                # resolve_with_added_comments
-                # gemify_images
-            # /,
         }
         use_case_dirs.each_pair do |section, dir_names|
 

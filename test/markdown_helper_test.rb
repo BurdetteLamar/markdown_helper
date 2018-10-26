@@ -112,15 +112,6 @@ class MarkdownHelperTest < Minitest::Test
 
   end
 
-  class ResolveInfo < TestInfo
-
-    def initialize(md_file_basename)
-      self.md_file_basename = md_file_basename
-      super(:resolve)
-    end
-
-  end
-
   class CreatePageTocInfo < TestInfo
 
     def initialize(md_file_basename)
@@ -357,56 +348,6 @@ class MarkdownHelperTest < Minitest::Test
       common_test(MarkdownHelper.new, test_info)
     end
     MarkdownHelper::Inclusions.assert_includee_missing_exception(self, expected_inclusions, e)
-
-  end
-
-  def test_resolve
-
-    # Test results of various templates.
-    [
-        :no_image,
-        :simple_image,
-        :width_image,
-        :width_and_height_image,
-    ].each do |md_file_basename|
-      markdown_helper = MarkdownHelper.new
-      test_info = ResolveInfo.new(md_file_basename)
-      template_file_path = File.join(
-          test_info.templates_dir_path,
-          test_info.md_file_name,
-      )
-      test_info.template_file_path = template_file_path
-      expected_markdown_file_path = File.join(
-          test_info.expected_dir_path,
-          test_info.md_file_name,
-      )
-      test_info.expected_file_path = expected_markdown_file_path
-      common_test(markdown_helper, test_info)
-    end
-
-    # Test some special cases.
-    [
-        :not_relative,
-        :multiple_images,
-        :absolute_and_relative,
-    ].each do |md_file_basename|
-      test_info = ResolveInfo.new(md_file_basename)
-      common_test(MarkdownHelper.new, test_info)
-    end
-
-    # Test option pristine.
-    md_file_basename = 'pristine'
-    test_info = ResolveInfo.new(md_file_basename)
-    common_test(
-        MarkdownHelper.new(:pristine => true),
-        test_info
-    )
-    markdown_helper = MarkdownHelper.new
-    markdown_helper.pristine = true
-    common_test(
-        markdown_helper,
-        test_info
-    )
 
   end
 
