@@ -14,10 +14,9 @@ class MarkdownHelper
   class OptionError < MarkdownHelperError; end
   class EnvironmentError < MarkdownHelperError; end
 
-  IMAGE_REGEXP = /!\[([^\[]+)\]\(([^)]+)\)/
   INCLUDE_REGEXP = /^@\[([^\[]+)\]\(([^)]+)\)$/
 
-  attr_accessor :pristine
+  attr_accessor :pristine, :page_toc_title, :page_toc_line
 
   def initialize(options = {})
     # Confirm that we're in a git project.
@@ -122,9 +121,12 @@ class MarkdownHelper
       yield input_lines, output_lines
       output_lines.push(MarkdownHelper.comment(" <<<<<< END GENERATED FILE (#{method.to_s}): SOURCE #{template_path_in_project} ")) unless pristine
     end
-    output = output_lines.join('')
-    File.write(markdown_file_path, output)
-    output
+    File.open(markdown_file_path, 'w') do |file|
+      output_lines.each do |line|
+        file.write(line)
+        p line
+      end
+    end
   end
 
   def _create_page_toc(input_lines, output_lines)
@@ -153,6 +155,12 @@ class MarkdownHelper
         next
       end
       treatment = match_data[1]
+      if treatment == ':page_toc'
+        self.page_toc_title = match_data[2]
+        self.page_toc_line = input_line
+        output_lines.push(input_line)
+        next
+      end
       cited_includee_file_path = match_data[2]
       inclusions.include(
           input_line.chomp,
@@ -164,6 +172,15 @@ class MarkdownHelper
           self
       )
     end
+    return if self.page_toc_title.nil?
+    toc_lines = [
+        self.page_toc_title + "\n",
+        '',
+    ]
+    _create_page_toc(input_lines, toc_lines)
+    page_toc_index =  output_lines.index(self.page_toc_line)
+    output_lines.delete_at(page_toc_index)
+    output_lines.insert(page_toc_index, *toc_lines)
   end
 
   def self.git_clone_dir_path

@@ -151,7 +151,8 @@ class MarkdownHelperTest < Minitest::Test
     # Create the template for this test.
     def create_template(test_info)
       File.open(test_info.template_file_path, 'w') do |file|
-        if test_info.file_stem == :nothing
+        case
+        when test_info.file_stem == :nothing
           file.puts 'This file includes nothing.'
         else
           # Inspect, in case it's a symbol, and remove double quotes after inspection.
@@ -183,10 +184,22 @@ class MarkdownHelperTest < Minitest::Test
             file_stem,
             file_type,
             treatment,
-        )
+            )
         create_template(test_info)
         common_test(MarkdownHelper.new, test_info)
       end
+    end
+
+    # Test automatic page TOC.
+    [
+        :all_levels,
+    ].each do |file_stem|
+      test_info = IncludeInfo.new(
+          file_stem,
+          :md,
+          :page_toc,
+          )
+      common_test(MarkdownHelper.new, test_info)
     end
 
     # Test treatment as comment.
