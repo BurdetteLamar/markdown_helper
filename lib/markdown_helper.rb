@@ -124,7 +124,6 @@ class MarkdownHelper
     File.open(markdown_file_path, 'w') do |file|
       output_lines.each do |line|
         file.write(line)
-        p line
       end
     end
   end
@@ -132,11 +131,11 @@ class MarkdownHelper
   def _create_page_toc(input_lines, output_lines)
     level_one_seen = false
     input_lines.each do |input_line|
-      input_line.chomp!
-      heading = Heading.parse(input_line)
+      line = input_line.chomp
+      heading = Heading.parse(line)
       next unless heading
       unless level_one_seen || heading.level == 1
-        message = "First heading must be level 1, not '#{input_line}'"
+        message = "First heading must be level 1, not '#{line}'"
         raise TocHeadingsError.new(message)
       end
       level_one_seen = true

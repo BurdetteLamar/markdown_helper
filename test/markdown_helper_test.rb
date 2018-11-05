@@ -199,7 +199,7 @@ class MarkdownHelperTest < Minitest::Test
           :md,
           :page_toc,
           )
-      common_test(MarkdownHelper.new, test_info)
+      common_test(MarkdownHelper.new({:pristine => true}), test_info)
     end
 
     # Test treatment as comment.
