@@ -129,16 +129,10 @@ class MarkdownHelper
   end
 
   def _create_page_toc(input_lines, output_lines)
-    level_one_seen = false
     input_lines.each do |input_line|
       line = input_line.chomp
       heading = Heading.parse(line)
       next unless heading
-      unless level_one_seen || heading.level == 1
-        message = "First heading must be level 1, not '#{line}'"
-        raise TocHeadingsError.new(message)
-      end
-      level_one_seen = true
       indentation = '  ' * heading.level
       output_line = "#{indentation}- #{heading.link}"
       output_lines.push("#{output_line}\n")

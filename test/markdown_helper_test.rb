@@ -140,9 +140,7 @@ class MarkdownHelperTest < Minitest::Test
 
     # Test no level 1.
     test_info = CreatePageTocInfo.new('no_level_one')
-    assert_raises(MarkdownHelper::TocHeadingsError) do
-      common_test(MarkdownHelper.new, test_info)
-    end
+    common_test(MarkdownHelper.new, test_info)
 
   end
 
