@@ -195,6 +195,7 @@ class MarkdownHelperTest < Minitest::Test
         :gappy_levels,
         :mixed_levels,
         :no_headers,
+        :no_level_one,
     ].each do |file_stem|
       test_info = IncludeInfo.new(
           file_stem,
