@@ -172,7 +172,7 @@ class MarkdownHelper
     ]
     page_toc_index =  output_lines.index(self.page_toc_line)
     lines_to_scan = input_lines[page_toc_index + 1..-1]
-    _create_page_toc(input_lines, toc_lines)
+    _create_page_toc(lines_to_scan, toc_lines)
     output_lines.delete_at(page_toc_index)
     output_lines.insert(page_toc_index, *toc_lines)
   end
