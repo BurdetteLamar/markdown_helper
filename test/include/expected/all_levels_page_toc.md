@@ -1,10 +1,10 @@
 ## Page Contents
-  - [One](#one)
-    - [Two](#two)
-      - [Three](#three)
-        - [Four](#four)
-          - [Five](#five)
-            - [Six](#six)
+- [One](#one)
+  - [Two](#two)
+    - [Three](#three)
+      - [Four](#four)
+        - [Five](#five)
+          - [Six](#six)
 
 # One
 

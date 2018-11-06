@@ -129,11 +129,13 @@ class MarkdownHelper
   end
 
   def _create_page_toc(input_lines, output_lines)
+    first_heading_level = nil
     input_lines.each do |input_line|
       line = input_line.chomp
       heading = Heading.parse(line)
       next unless heading
-      indentation = '  ' * heading.level
+      first_heading_level ||= heading.level
+      indentation = '  ' * (heading.level - first_heading_level)
       output_line = "#{indentation}- #{heading.link}"
       output_lines.push("#{output_line}\n")
     end
