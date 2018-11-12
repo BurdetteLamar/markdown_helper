@@ -4,8 +4,7 @@ class IncludeGeneratedText < IncludeUseCase
 
   def self.build
 
-    use_case_name = File.basename(__FILE__, '.rb')
-    use_case = self.new(use_case_name)
+    use_case = self.new
 
     use_case.files_to_write.store(
         TEMPLATE_FILE_NAME,

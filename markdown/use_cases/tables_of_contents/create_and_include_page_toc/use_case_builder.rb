@@ -10,8 +10,7 @@ class CreateAndIncludePageToc < CreatePageTocUseCase
 
   def self.build
 
-    use_case_name = File.basename(__FILE__, '.rb')
-    use_case = self.new(use_case_name)
+    use_case = self.new
 
     use_case.write_text_file
     use_case.write_includer_file

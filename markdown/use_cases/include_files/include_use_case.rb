@@ -17,7 +17,7 @@ class IncludeUseCase < UseCase
 
   BUILD_COMMAND = UseCase.construct_include_command(TEMPLATE_FILE_NAME, USE_CASE_FILE_NAME, pristine = true)
 
-  def initialize(use_case_dir_name)
+  def initialize
 
     super
 

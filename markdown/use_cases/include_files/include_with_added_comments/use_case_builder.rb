@@ -4,11 +4,10 @@ class IncludeWithAddedComments < IncludeUseCase
 
   def self.build
 
-    use_case_name = File.basename(__FILE__, '.rb')
-    use_case = self.new(use_case_name)
+    use_case = self.new
 
     include_command = IncludeUseCase.construct_include_command(INCLUDER_FILE_NAME, INCLUDED_FILE_NAME, pristine = false)
-    use_case.commands_to_execute.push(include_command)
+    use_case.commands_to_execute.unshift(include_command)
 
     use_case.files_to_write.store(
         TEMPLATE_FILE_NAME,
