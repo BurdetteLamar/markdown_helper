@@ -10,6 +10,8 @@ class ReuseText < IncludeUseCase
     use_case.write_includer_file
     use_case.write_ruby_file(pristine = true)
 
+    use_case.commands_to_execute.push('ruby include.rb')
+
     File.write(
         TEMPLATE_FILE_NAME,
         <<EOT

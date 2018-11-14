@@ -95,30 +95,4 @@ C:/Ruby25-x64/lib/ruby/gems/2.5.0/gems/markdown_helper-2.0.0/bin/_include: Inclu
         Include description: @[:markdown](includer_0.md)
       Includee:
         File path: markdown/use_cases/include_files/diagnose_circular_includes/includer_0.md
-include.rb: Includes are circular: (MarkdownHelper::CircularIncludeError)
-  Backtrace (innermost include first):
-    Level 0:
-      Includer:
-        Location: markdown/use_cases/include_files/diagnose_circular_includes/includer_2.md:1
-        Include description: @[:markdown](includer_0.md)
-      Includee:
-        File path: markdown/use_cases/include_files/diagnose_circular_includes/includer_0.md
-    Level 1:
-      Includer:
-        Location: markdown/use_cases/include_files/diagnose_circular_includes/includer_1.md:1
-        Include description: @[:markdown](includer_2.md)
-      Includee:
-        File path: markdown/use_cases/include_files/diagnose_circular_includes/includer_2.md
-    Level 2:
-      Includer:
-        Location: markdown/use_cases/include_files/diagnose_circular_includes/includer_0.md:1
-        Include description: @[:markdown](includer_1.md)
-      Includee:
-        File path: markdown/use_cases/include_files/diagnose_circular_includes/includer_1.md
-    Level 3:
-      Includer:
-        Location: includer.md:1
-        Include description: @[:markdown](includer_0.md)
-      Includee:
-        File path: markdown/use_cases/include_files/diagnose_circular_includes/includer_0.md
 ```
