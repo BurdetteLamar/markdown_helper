@@ -20,11 +20,9 @@ class UseCase
     end
     if File.exist?('includer.md')
       command = self.construct_include_command('includer.md','included.md', pristine = true)
-      puts command
       system(command)
     end
     commands_to_execute.each do |command|
-      puts command
       system(command)
     end
   end
