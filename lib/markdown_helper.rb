@@ -320,65 +320,6 @@ EOT
       lines.join("\n")
     end
 
-    def self.assert_io_exception(test, expected_exception_class, expected_label, expected_file_path, e)
-      test.assert_kind_of(expected_exception_class, e)
-      lines = e.message.split("\n")
-      actual_label = lines.shift
-      test.assert_equal(expected_label, actual_label)
-      actual_file_path = lines.shift
-      test.assert_equal(expected_file_path.inspect, actual_file_path)
-    end
-
-    def self.assert_inclusion_exception(test, expected_exception_class, exception_label, expected_inclusions, e)
-      test.assert_kind_of(expected_exception_class, e)
-      lines = e.message.split("\n")
-      label_line = lines.shift
-      test.assert_equal(exception_label, label_line)
-      backtrace_line = lines.shift
-      test.assert_equal(BACKTRACE_LABEL, backtrace_line)
-      level_line_count = 1 + Inclusion::LINE_COUNT
-      level_count = lines.size / level_line_count
-      # Backtrace levels are innermost first, opposite of inclusions.
-      reversed_inclusions = expected_inclusions.inclusions.reverse
-      (0...level_count).each do |level_index|
-        level_line = lines.shift
-        inclusion_lines = lines.shift(Inclusion::LINE_COUNT)
-        test.assert_equal("#{LEVEL_LABEL} #{level_index}:", level_line)
-        expected_inclusion = reversed_inclusions[level_index]
-        expected_inclusion.assert_lines(test, level_index, inclusion_lines)
-      end
-    end
-
-    def self.assert_circular_exception(test, expected_inclusions, e)
-      self.assert_inclusion_exception(
-              test,
-              CircularIncludeError,
-              CIRCULAR_EXCEPTION_LABEL,
-              expected_inclusions,
-              e
-      )
-    end
-
-    def self.assert_includee_missing_exception(test, expected_inclusions, e)
-      self.assert_inclusion_exception(
-          test,
-          Exception,
-          MISSING_INCLUDEE_EXCEPTION_LABEL,
-          expected_inclusions,
-          e
-      )
-    end
-
-    def self.assert_template_exception(test, expected_file_path, e)
-      self.assert_io_exception(
-          test,
-          Exception,
-          UNREADABLE_INPUT_EXCEPTION_LABEL,
-          expected_file_path,
-          e
-      )
-    end
-
   end
 
   class Inclusion
