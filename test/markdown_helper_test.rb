@@ -289,7 +289,8 @@ class MarkdownHelperTest < Minitest::Test
         include_description = "@[:markdown](#{cited_includee_file_path})",
         includer_file_path,
         includer_line_number = 1,
-        cited_includee_file_path
+        cited_includee_file_path,
+        treatment
     )
     expected_inclusions.inclusions.push(inclusion)
     # The three nested inclusions.
@@ -309,7 +310,8 @@ class MarkdownHelperTest < Minitest::Test
           include_description = "@[:markdown](#{includee_file_name})",
           includer_file_path,
           includer_line_number = 1,
-          cited_includee_file_path = includee_file_name
+          cited_includee_file_path = includee_file_name,
+          treatment
       )
       expected_inclusions.inclusions.push(inclusion)
     end
@@ -336,7 +338,8 @@ class MarkdownHelperTest < Minitest::Test
         include_description = "@[:markdown](#{cited_includee_file_path})",
         includer_file_path,
         includer_line_number = 1,
-        cited_includee_file_path
+        cited_includee_file_path,
+        treatment
     )
     expected_inclusions.inclusions.push(inclusion)
     # The three nested inclusions.
@@ -356,7 +359,8 @@ class MarkdownHelperTest < Minitest::Test
           include_description = "@[:markdown](#{includee_file_name})",
           includer_file_path,
           includer_line_number = 1,
-          cited_includee_file_path = includee_file_name
+          cited_includee_file_path = includee_file_name,
+          treatment
       )
       expected_inclusions.inclusions.push(inclusion)
     end

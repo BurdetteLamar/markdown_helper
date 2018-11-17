@@ -132,12 +132,15 @@ class MarkdownHelper
         next
       end
       cited_includee_file_path = match_data[2]
-      inclusions.include(
+      new_inclusion = Inclusion.new(
           input_line.chomp,
           includer_file_path,
           line_index + 1,
           cited_includee_file_path,
-          treatment,
+          treatment
+      )
+      inclusions.include(
+          new_inclusion,
           output_lines,
           self
       )
@@ -180,15 +183,11 @@ EOT
     end
 
     def include(
-        include_description,
-        includer_file_path,
-        includer_line_number,
-        cited_includee_file_path,
-        treatment,
-        output_lines,
-        markdown_helper
+      new_inclusion,
+      output_lines,
+      markdown_helper
     )
-      treatment = case treatment
+      treatment = case new_inclusion.treatment
                     when ':code_block'
                       :code_block
                     when ':markdown'
@@ -202,18 +201,12 @@ EOT
                     when ':pre'
                       :pre
                     else
-                      treatment
+                      new_inclusion.treatment
                   end
-      new_inclusion = Inclusion.new(
-          include_description,
-          includer_file_path,
-          includer_line_number,
-          cited_includee_file_path
-      )
       if treatment == :markdown
         check_circularity(new_inclusion)
       end
-      includee_path_in_project = MarkdownHelper.path_in_project(new_inclusion.absolute_includee_file_path)
+       includee_path_in_project = MarkdownHelper.path_in_project(new_inclusion.absolute_includee_file_path)
       output_lines.push(MarkdownHelper.comment(" >>>>>> BEGIN INCLUDED FILE (#{treatment}): SOURCE #{includee_path_in_project} ")) unless markdown_helper.pristine
       begin
         include_lines = File.readlines(new_inclusion.absolute_includee_file_path)
@@ -229,7 +222,7 @@ EOT
       end
       last_line = include_lines.last
       unless last_line && last_line.match("\n")
-        message = "Warning:  Included file has no trailing newline: #{cited_includee_file_path}"
+        message = "Warning:  Included file has no trailing newline: #{new_inclusion.cited_includee_file_path}"
         warn(message)
       end
       case treatment
@@ -246,7 +239,7 @@ EOT
           output_lines.push("</pre>\n")
         else
           # Use the file name as a label.
-          file_name_line = format("```%s```:\n", File.basename(cited_includee_file_path))
+          file_name_line = format("```%s```:\n", File.basename(new_inclusion.cited_includee_file_path))
           output_lines.push(file_name_line)
           # Put into code block.
           language = treatment == :code_block ? '' : treatment
@@ -300,19 +293,22 @@ EOT
       :includer_line_number,
       :include_description,
       :absolute_includee_file_path,
-      :cited_includee_file_path
+      :cited_includee_file_path,
+      :treatment
 
     def initialize(
         include_description,
         includer_file_path,
         includer_line_number,
-        cited_includee_file_path
+        cited_includee_file_path,
+        treatment
     )
       self.include_description = include_description
       self.includer_file_path = includer_file_path
       self.includer_line_number = includer_line_number
       self.cited_includee_file_path = cited_includee_file_path
       self.absolute_includee_file_path = absolute_includee_file_path
+      self.treatment = treatment
       self.absolute_includee_file_path = File.absolute_path(File.join(
           File.dirname(includer_file_path),
           cited_includee_file_path,
