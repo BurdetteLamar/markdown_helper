@@ -373,37 +373,6 @@ EOT
       text.split("\n")
     end
 
-    def assert_lines(test, level_index, actual_lines)
-      level_label = "Level #{level_index}:"
-      # Includer label.
-      includee_label = actual_lines.shift
-      test.assert_match(/^\s*Includer:$/, includee_label, level_label)
-      # Includer locatioin.
-      location = actual_lines.shift
-      message = "#{level_label} includer location"
-      test.assert_match(/^\s*Location:/, location, message)
-      includer_realpath =  Pathname.new(includer_file_path).realpath.to_s
-      relative_path = MarkdownHelper.path_in_project(includer_realpath)
-      r = Regexp.new(Regexp.escape("#{relative_path}:#{includer_line_number}") + '$')
-      test.assert_match(r, location, message)
-      # Include description.
-      description = actual_lines.shift
-      message = "#{level_label} include description"
-      test.assert_match(/^\s*Include description:/, description, message)
-      r = Regexp.new(Regexp.escape("#{include_description}") + '$')
-      test.assert_match(r, description, message)
-      # Includee label.
-      includee_label = actual_lines.shift
-      test.assert_match(/^\s*Includee:$/, includee_label, level_label)
-      # Includee file path.
-      includee_file_path = actual_lines.shift
-      message = "#{level_label} includee cited file path"
-      test.assert_match(/^\s*File path:/, includee_file_path, message)
-      relative_path = MarkdownHelper.path_in_project(absolute_includee_file_path)
-      r = Regexp.new(Regexp.escape("#{relative_path}") + '$')
-      test.assert_match(r, includee_file_path, message)
-    end
-
   end
 
 end
