@@ -16,6 +16,9 @@ class MarkdownHelper
 
   def initialize(options = {})
     # Confirm that we're in a git project.
+    # This is necessary so that we can prune file paths in the tests,
+    # which otherwise would fail because of differing installation directories.
+    # It also allows pruned paths to be used in the inserted comments (when not pristine).
     MarkdownHelper.git_clone_dir_path
     default_options = {
         :pristine => false,
