@@ -1,10 +1,6 @@
 require 'pathname'
 require 'markdown_helper/version'
 
-# Helper class for working with GitHub markdown.
-#  Supports file inclusion.
-#
-# @author Burdette Lamar
 class MarkdownHelper
 
   class MarkdownHelperError < RuntimeError; end
@@ -35,19 +31,6 @@ class MarkdownHelper
     end
   end
 
-  # Merges external files into markdown text.
-  # @param template_file_path [String] the path to the input template markdown file, usually containing include pragmas.
-  # @param markdown_file_path [String] the path to the output merged markdown file.
-  # @return [String] the resulting markdown text.
-  #
-  # @example pragma to include text as a highlighted code block.
-  #   @[ruby](foo.rb)
-  #
-  # @example pragma to include text as a plain code block.
-  #   @[:code_block](foo.xyz)
-  #
-  # @example pragma to include text markdown, to be rendered as markdown.
-  #   @[:markdown](foo.md)
   def include(template_file_path, markdown_file_path)
     send(:generate_file, template_file_path, markdown_file_path, __method__) do |input_lines, output_lines|
       send(:include_files, template_file_path, input_lines, output_lines, Inclusions.new)
@@ -95,16 +78,6 @@ class MarkdownHelper
     "<!--#{text}-->\n"
   end
 
-  def repo_user_and_name
-    repo_user = ENV['REPO_USER']
-    repo_name = ENV['REPO_NAME']
-    unless repo_user and repo_name
-      message = 'ENV values for both REPO_USER and REPO_NAME must be defined.'
-      raise EnvironmentError.new(message)
-    end
-    [repo_user, repo_name]
-  end
-
   def generate_file(template_file_path, markdown_file_path, method)
     unless File.readable?(template_file_path)
       message = [
@@ -142,7 +115,6 @@ class MarkdownHelper
   end
 
   def include_files(includer_file_path, input_lines, output_lines, inclusions)
-
     input_lines.each_with_index do |input_line, line_index|
       match_data = input_line.match(INCLUDE_REGEXP)
       unless match_data
