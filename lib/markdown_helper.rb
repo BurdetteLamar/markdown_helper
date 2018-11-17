@@ -152,7 +152,7 @@ class MarkdownHelper
   end
 
   def self.git_clone_dir_path
-    git_dir = `git rev-parse --git-dir`.chomp
+    git_dir = `git rev-parse --show-toplevel`.chomp
     unless $?.success?
       message = <<EOT
 
@@ -161,13 +161,7 @@ That is, the working directory one of its parents must be a .git directory.
 EOT
       raise RuntimeError.new(message)
     end
-    if git_dir == '.git'
-      path = `pwd`.chomp
-    else
-      path = File.dirname(git_dir).chomp
-    end
-    realpath = Pathname.new(path.sub(%r|/c/|, 'C:/')).realpath
-    realpath.to_s
+    git_dir
   end
 
   def self.path_in_project(path)
