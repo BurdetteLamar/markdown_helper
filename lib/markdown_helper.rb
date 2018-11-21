@@ -12,7 +12,7 @@ class MarkdownHelper
 
   INCLUDE_REGEXP = /^@\[([^\[]+)\]\(([^)]+)\)$/
 
-  attr_accessor :pristine, :page_toc_title, :page_toc_line
+  attr_accessor :pristine
 
   def initialize(options = {})
     # Confirm that we're in a git project.
@@ -118,6 +118,7 @@ class MarkdownHelper
   end
 
   def include_files(includer_file_path, input_lines, output_lines, inclusions)
+    new_inclusion = nil
     input_lines.each_with_index do |input_line, line_index|
       match_data = input_line.match(INCLUDE_REGEXP)
       unless match_data
@@ -125,12 +126,6 @@ class MarkdownHelper
         next
       end
       treatment = match_data[1]
-      if treatment == ':page_toc'
-        self.page_toc_title = match_data[2]
-        self.page_toc_line = input_line
-        output_lines.push(input_line)
-        next
-      end
       cited_includee_file_path = match_data[2]
       new_inclusion = Inclusion.new(
           input_line.chomp,
@@ -139,19 +134,25 @@ class MarkdownHelper
           cited_includee_file_path,
           treatment
       )
+      if treatment == ':page_toc'
+        new_inclusion.page_toc_title = match_data[2]
+        new_inclusion.page_toc_line = input_line
+        output_lines.push(input_line)
+        next
+      end
       inclusions.include(
           new_inclusion,
           output_lines,
           self
       )
     end
-    return if self.page_toc_title.nil?
+    return if new_inclusion.nil? || new_inclusion.page_toc_title.nil?
     toc_lines = [
-        self.page_toc_title + "\n",
+        new_inclusion.page_toc_title + "\n",
         '',
     ]
-    page_toc_index =  output_lines.index(self.page_toc_line)
-    lines_to_scan = input_lines[page_toc_index + 1..-1]
+    page_toc_index =  output_lines.index(new_inclusion.page_toc_line)
+    lines_to_scan = output_lines[page_toc_index + 1..-1]
     _create_page_toc(lines_to_scan, toc_lines)
     output_lines.delete_at(page_toc_index)
     output_lines.insert(page_toc_index, *toc_lines)
@@ -294,7 +295,9 @@ EOT
       :include_description,
       :absolute_includee_file_path,
       :cited_includee_file_path,
-      :treatment
+      :treatment,
+      :page_toc_title,
+      :page_toc_line
 
     def initialize(
         include_description,
