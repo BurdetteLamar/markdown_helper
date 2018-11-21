@@ -118,7 +118,7 @@ class MarkdownHelper
   end
 
   def include_files(includer_file_path, input_lines, output_lines, inclusions)
-    new_inclusion = nil
+    page_toc_inclusion = nil
     input_lines.each_with_index do |input_line, line_index|
       match_data = input_line.match(INCLUDE_REGEXP)
       unless match_data
@@ -135,8 +135,9 @@ class MarkdownHelper
           treatment
       )
       if treatment == ':page_toc'
-        new_inclusion.page_toc_title = match_data[2]
-        new_inclusion.page_toc_line = input_line
+        page_toc_inclusion = new_inclusion
+        page_toc_inclusion.page_toc_title = match_data[2]
+        page_toc_inclusion.page_toc_line = input_line
         output_lines.push(input_line)
         next
       end
@@ -146,12 +147,12 @@ class MarkdownHelper
           self
       )
     end
-    return if new_inclusion.nil? || new_inclusion.page_toc_title.nil?
+    return if page_toc_inclusion.nil?
     toc_lines = [
-        new_inclusion.page_toc_title + "\n",
+        page_toc_inclusion.page_toc_title + "\n",
         '',
     ]
-    page_toc_index =  output_lines.index(new_inclusion.page_toc_line)
+    page_toc_index =  output_lines.index(page_toc_inclusion.page_toc_line)
     lines_to_scan = output_lines[page_toc_index + 1..-1]
     _create_page_toc(lines_to_scan, toc_lines)
     output_lines.delete_at(page_toc_index)
