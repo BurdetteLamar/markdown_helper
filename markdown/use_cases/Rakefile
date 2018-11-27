@@ -26,6 +26,7 @@ EOT
                 include_markdown
                 include_code_block
                 include_highlighted_code
+                include_page_toc
                 include_text_as_comment
                 include_text_as_pre
                 include_generated_text
