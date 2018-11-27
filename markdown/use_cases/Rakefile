@@ -82,7 +82,7 @@ EOT
 
               title_line = File.open(UseCase::TEMPLATE_FILE_NAME).grep(/^#/).first.chomp
               title = title_line.split(/\s/, 2).pop
-              use_case_file_name = File.basename(UseCase::TEMPLATE_FILE_NAME)
+              use_case_file_name = File.basename(UseCase::USE_CASE_FILE_NAME)
               use_case_anchor = dir_name.gsub('_', '-')
               use_case_relative_url = File.join(
                   section.to_s,
