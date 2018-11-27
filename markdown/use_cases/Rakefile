@@ -22,7 +22,6 @@ EOT
         use_case_dirs = {
             :include_files => %w/
                 reuse_text
-                include_with_added_comments
                 nest_inclusions
                 include_markdown
                 include_code_block
@@ -30,6 +29,7 @@ EOT
                 include_text_as_comment
                 include_text_as_pre
                 include_generated_text
+                include_with_added_comments
                 diagnose_missing_includee
                 diagnose_circular_includes
             /,
