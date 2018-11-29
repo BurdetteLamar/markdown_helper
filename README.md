@@ -18,11 +18,15 @@ The old way is now deprecated.
   - [Restriction: ```git``` Only](#restriction-git-only)
   - [Commented or Pristine?](#commented-or-pristine)
 - [File Inclusion](#file-inclusion)
+  - [Re-use Text](#re-use-text)
+  - [Include Generated Text](#include-generated-text)
+  - [Nest Inclusions](#nest-inclusions)
   - [Merged Text Formats](#merged-text-formats)
+    - [Markdown](#markdown)
     - [Highlighted Code Block](#highlighted-code-block)
     - [Plain Code Block](#plain-code-block)
     - [Comment](#comment)
-    - [Markdown](#markdown)
+  - [Pre-Formattted Text](#pre-formattted-text)
   - [Usage](#usage)
     - [CLI](#cli)
     - [API](#api)
@@ -69,47 +73,41 @@ This markdown helper enables file inclusion in GitHub markdown.
 
 (Actually, this README file itself is built using file inclusion.)
 
-Use the markdown helper to merge external files into a markdown (</code>.md</code>) file.
+### Re-use Text
 
-See the [use cases](markdown/use_cases/use_cases.md#use-cases).
+Keep your markdown DRY (Don't Repeat Yourself) by re-using text.  See the [use case](markdown/use_cases/include_files/reuse_text/use_case.md#reuse-text).
+
+### Include Generated Text
+
+In particular, you can include text that's built during your "readme build."  See the [use case](markdown/use_cases/include_files/include_generated_text/use_case.md#include-generated-text).
+
+### Nest Inclusions
+
+You can nest inclusions.  See the [use case](markdown/use_cases/include_files/next_inclusions/use_case.md#nest-inclusions).
+
+See all [use cases](markdown/use_cases/use_cases.md#use-cases).
 
 ### Merged Text Formats
 
+#### Markdown
+
+You can include text that is to be treated simply as markdown.  See the [use case](markdown/use_cases/include_files/include_markdown/use_case.md#include-markdown).
+
 #### Highlighted Code Block
 
-<!-- >>>>>> BEGIN INCLUDED FILE (ruby): SOURCE markdown/readme/include.rb -->
-```include.rb```:
-```ruby
-class RubyCode
-  def initialize
-    raise RuntimeError.new('I am only an example!')
-  end
-end
-```
-<!-- <<<<<< END INCLUDED FILE (ruby): SOURCE markdown/readme/include.rb -->
+You can include a code block that's to be highlighted.  See the [use case](markdown/use_cases/include_files/include_highlighted_code/use_case.md#include-highlighted-code).
 
 #### Plain Code Block
 
-<!-- >>>>>> BEGIN INCLUDED FILE (code_block): SOURCE markdown/readme/include.rb -->
-```include.rb```:
-```
-class RubyCode
-  def initialize
-    raise RuntimeError.new('I am only an example!')
-  end
-end
-```
-<!-- <<<<<< END INCLUDED FILE (code_block): SOURCE markdown/readme/include.rb -->
+You can also include a code block without highlighting.  See the [use case](markdown/use_cases/include_files/include_code_block/use_case.md#include-code-block).
 
 #### Comment
 
-Comment text is written into the output between the comment delimiters <code>\<!--</code> and <code>--></code>
+You can include text that's to become a comment in the markdown.  See the [use case](markdown/use_cases/include_files/include_text_as_comment/use_case.md#include-text-as-comment).
 
-#### Markdown
+### Pre-Formattted Text
 
-Markdown text is included unadorned, and will be processed on GitHub as markdown.
-
-The markdown text is itself scanned for nested includes.
+You can include text that's pre-formatted.  See the [use case](markdown/use_cases/include_files/include_text_as_pre/use_case.md#include-text-as-pre).
 
 ### Usage
 
@@ -188,27 +186,21 @@ where:
 
 #### Page TOC
 
-Specify the location for a page TOC (table of cotents) via a *page TOC description*, which has the form:
-
-<code>@[:page_toc]\(</code>*markdown_header*<code>)</code>
-
-Example:
-
-<code>@[:page_toc]\(### Contents)</code>
+You can specify the location for an automatically-generated page TOC (table of cotents).  See the [use case](markdown/use_cases/include_files/include_page_toc/use_case.md#include-page-toc).
 
 #### Diagnostics
 
 ##### "Noisy" (Not Pristine)
 
-By default, the markdown helper inserts comments indicating inclusions.
+By default, the markdown helper inserts comments indicating inclusions.  See the [use case](markdown/use_cases/include_files/include_with_added_comments/use_case.md#include-iwth-added-comments).
 
 ##### Missing Includee File
 
-A missing includee file causes an exception that shows an inclusion backtrace.
+A missing includee file causes an exception that shows an inclusion backtrace.  See the [use case](markdown/use_cases/include_files/diagnose_missing_includee/use_case.md#diagnose-missing-includee).
 
 ##### Circular Inclusion
 
-A circular inclusion causes an exception that shows an inclusion backtrace.
+A circular inclusion causes an exception that shows an inclusion backtrace.  See the [use case](markdown/use_cases/include_files/idiagnose_circular_includes/use_case.md#diagnose-circular-includes).
 
 ## What Should Be Next?
 
