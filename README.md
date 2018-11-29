@@ -4,10 +4,10 @@
 [![Gem](https://img.shields.io/gem/v/markdown_helper.svg?style=flat)](http://rubygems.org/gems/markdown_helper "View this project in Rubygems")
 
 ### Contents
-- [What's New?](#whats-new)
-- [What's a Markdown Helper?](#whats-a-markdown-helper)
+- [What's New?](#what-s-new)
+- [What's a Markdown Helper?](#what-s-a-markdown-helper)
 - [How It Works](#how-it-works)
-  - [Restriction:  ```git``` Only](#restriction-git-only)
+  - [Restriction: ```git``` Only](#restriction-git-only)
   - [Commented or Pristine?](#commented-or-pristine)
 - [File Inclusion ](#file-inclusion-)
   - [Merged Text Formats](#merged-text-formats)
@@ -22,7 +22,7 @@
       - [Example Include Descriptions](#example-include-descriptions)
     - [Page TOC](#page-toc)
     - [Diagnostics](#diagnostics)
-      - ["Noisy" (Not Pristine)](#-noisy-not-pristine-)
+      - ["Noisy" (Not Pristine)](#noisy-not-pristine)
       - [Missing Includee File](#missing-includee-file)
       - [Circular Inclusion](#circular-inclusion)
 - [What Should Be Next?](#what-should-be-next)
@@ -49,7 +49,7 @@ The markdown helper is a preprocessor that reads a markdown document (template) 
 
 The template can contain certain instructions that call for file inclusions.
 
-### Restriction:  ```git``` Only
+### Restriction: ```git``` Only
 
 The helper works only in a ```git``` project:  the working directory or one of ita parents must be a git directory -- one in which command ```git rev-parse --git-dir``` succeeds.
 

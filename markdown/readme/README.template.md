@@ -26,7 +26,7 @@ The markdown helper is a preprocessor that reads a markdown document (template) 
 
 The template can contain certain instructions that call for file inclusions.
 
-### Restriction:  ```git``` Only
+### Restriction: ```git``` Only
 
 The helper works only in a ```git``` project:  the working directory or one of ita parents must be a git directory -- one in which command ```git rev-parse --git-dir``` succeeds.
 

@@ -76,12 +76,13 @@ EOT
       self.new(level, title)
     end
 
+
     def link
+      remove_regexp = /[\#\(\)\[\]\{\}\.\?\+\*\`\"]+/
+      to_hyphen_regexp = /\W+/
       anchor = title.
-          gsub('.', '').
-          gsub("'", '').
-          gsub('?', '').
-          gsub(/\W+/, '-').
+          gsub(remove_regexp, '').
+          gsub(to_hyphen_regexp, '-').
           downcase
       "[#{title}](##{anchor})"
     end
