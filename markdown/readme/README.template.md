@@ -4,12 +4,12 @@
 
 ## What's New?
 
-Treatments for included file:
+Page TOC (table of contents) is improved:
 
-- Support is added for including a file as a comment.  See the [use case](markdown/use_cases/include_files/include_text_as_comment/use_case.md#include-text-as-comment).
-- Support is added for including a file as pre-formatted.  See the [use case](markdown/use_cases/include_files/include_text_as_pre/use_case.md#include-text-as-pre).
+- Before:  you would first run the markdown helper to generate a page TOC, then run the helper a second time to include the page TOC where you want it.
+- Now:  you specify the site for the page TOC in the page itself, and the page TOC is automatically generated and inserted there.  See the [use case](markdown/use_cases/include_files/include_page_toc/use_case.md#include_page_toc)
 
-(The new version, 2.0.0, is not a major increment over version 1.9.9.  Numbers just ran out.)
+The old way is now deprecated.
 
 ## What's a Markdown Helper?
 
