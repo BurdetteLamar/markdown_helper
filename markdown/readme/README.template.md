@@ -121,7 +121,7 @@ You can specify the location for an automatically-generated page TOC (table of c
 
 ##### "Noisy" (Not Pristine)
 
-By default, the markdown helper inserts comments indicating inclusions.  See the [use case](markdown/use_cases/include_files/include_with_added_comments/use_case.md#include-iwth-added-comments).
+By default, the markdown helper inserts comments indicating inclusions.  See the [use case](markdown/use_cases/include_files/include_with_added_comments/use_case.md#include-with-added-comments).
 
 ##### Missing Includee File
 
