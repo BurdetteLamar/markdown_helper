@@ -2,6 +2,8 @@
 
 [![Gem](https://img.shields.io/gem/v/markdown_helper.svg?style=flat)](http://rubygems.org/gems/markdown_helper "View this project in Rubygems")
 
+@[:page_toc](### Contents)
+
 ## What's New?
 
 Page TOC (table of contents) is improved:

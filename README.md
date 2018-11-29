@@ -3,6 +3,30 @@
 
 [![Gem](https://img.shields.io/gem/v/markdown_helper.svg?style=flat)](http://rubygems.org/gems/markdown_helper "View this project in Rubygems")
 
+### Contents
+- [What's New?](#what-s-new-)
+- [What's a Markdown Helper?](#what-s-a-markdown-helper-)
+- [How It Works](#how-it-works)
+  - [Restriction:  ```git``` Only](#restriction-git-only)
+  - [Commented or Pristine?](#commented-or-pristine-)
+- [File Inclusion ](#file-inclusion-)
+  - [Merged Text Formats](#merged-text-formats)
+    - [Highlighted Code Block](#highlighted-code-block)
+    - [Plain Code Block](#plain-code-block)
+    - [Comment](#comment)
+    - [Markdown](#markdown)
+  - [Usage](#usage)
+    - [CLI](#cli)
+    - [API](#api)
+    - [Include Descriptions](#include-descriptions)
+      - [Example Include Descriptions](#example-include-descriptions)
+    - [Page TOC](#page-toc)
+    - [Diagnostics](#diagnostics)
+      - ["Noisy" (Not Pristine)](#-noisy-not-pristine-)
+      - [Missing Includee File](#missing-includee-file)
+      - [Circular Inclusion](#circular-inclusion)
+- [What Should Be Next?](#what-should-be-next-)
+
 ## What's New?
 
 Page TOC (table of contents) is improved:
@@ -78,8 +102,6 @@ end
 ```
 <!-- <<<<<< END INCLUDED FILE (code_block): SOURCE markdown/readme/include.rb -->
 
-[Note:  In the gem documentation, RubyDoc.info chooses to highlight this code block regardless.  Go figure.]
-
 #### Comment
 
 Comment text is written into the output between the comment delimiters <code>\<!--</code> and <code>--></code>
@@ -125,11 +147,9 @@ template_file_path = 'highlight_ruby_template.md'
 markdown_file_path = 'highlighted_ruby.md'
 markdown_helper = MarkdownHelper.new
 markdown_helper.include(template_file_path, markdown_file_path)
-# Pristine.
-markdown_helper.pristine = true
+markdown_helper.pristine = true # Pristine.
 markdown_helper.include(template_file_path, markdown_file_path)
-# Also pristine.
-markdown_helper = MarkdownHelper.new(:pristine => true)
+markdown_helper = MarkdownHelper.new(:pristine => true) # Also pristine.
 markdown_helper.include(template_file_path, markdown_file_path)
 ```
 <!-- <<<<<< END INCLUDED FILE (ruby): SOURCE markdown/readme/include_usage.rb -->
