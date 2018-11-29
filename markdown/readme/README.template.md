@@ -59,8 +59,6 @@ See the [use cases](markdown/use_cases/use_cases.md#use-cases).
 
 @[:code_block](include.rb)
 
-[Note:  In the gem documentation, RubyDoc.info chooses to highlight this code block regardless.  Go figure.]
-
 #### Comment
 
 Comment text is written into the output between the comment delimiters <code>\<!--</code> and <code>--></code>
