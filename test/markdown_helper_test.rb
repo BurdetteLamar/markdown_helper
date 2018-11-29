@@ -27,7 +27,7 @@ class MarkdownHelperTest < Minitest::Test
         ['  # Foo Bar', [1, '[Foo Bar](#foo-bar)']],
         ['   # Foo Bar', [1, '[Foo Bar](#foo-bar)']],
         ['#  Foo', [1, '[Foo](#foo)']],
-        ['# Foo#', [1, '[Foo#](#foo-)']],
+        ['# Foo#', [1, '[Foo#](#foo)']],
     ].each do |pair|
       text, expected = *pair
       expected_level, expected_link = *expected
