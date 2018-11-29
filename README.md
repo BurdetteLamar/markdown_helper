@@ -4,11 +4,11 @@
 [![Gem](https://img.shields.io/gem/v/markdown_helper.svg?style=flat)](http://rubygems.org/gems/markdown_helper "View this project in Rubygems")
 
 ### Contents
-- [What's New?](#what-s-new-)
-- [What's a Markdown Helper?](#what-s-a-markdown-helper-)
+- [What's New?](#whats-new)
+- [What's a Markdown Helper?](#whats-a-markdown-helper)
 - [How It Works](#how-it-works)
   - [Restriction:  ```git``` Only](#restriction-git-only)
-  - [Commented or Pristine?](#commented-or-pristine-)
+  - [Commented or Pristine?](#commented-or-pristine)
 - [File Inclusion ](#file-inclusion-)
   - [Merged Text Formats](#merged-text-formats)
     - [Highlighted Code Block](#highlighted-code-block)
@@ -25,7 +25,7 @@
       - ["Noisy" (Not Pristine)](#-noisy-not-pristine-)
       - [Missing Includee File](#missing-includee-file)
       - [Circular Inclusion](#circular-inclusion)
-- [What Should Be Next?](#what-should-be-next-)
+- [What Should Be Next?](#what-should-be-next)
 
 ## What's New?
 

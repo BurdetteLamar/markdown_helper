@@ -77,7 +77,12 @@ EOT
     end
 
     def link
-      anchor = title.gsub('.', '').gsub(/\W+/, '-').downcase
+      anchor = title.
+          gsub('.', '').
+          gsub("'", '').
+          gsub('?', '').
+          gsub(/\W+/, '-').
+          downcase
       "[#{title}](##{anchor})"
     end
 
