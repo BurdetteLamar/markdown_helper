@@ -47,6 +47,8 @@ This markdown helper enables file inclusion in GitHub markdown.
 
 (Actually, this README file itself is built using file inclusion.)
 
+See all [use cases](markdown/use_cases/use_cases.md#use-cases).
+
 ### Re-use Text
 
 Keep your markdown DRY (Don't Repeat Yourself) by re-using text.  See the [use case](markdown/use_cases/include_files/reuse_text/use_case.md#reuse-text).
@@ -57,9 +59,7 @@ In particular, you can include text that's built during your "readme build."  Se
 
 ### Nest Inclusions
 
-You can nest inclusions.  See the [use case](markdown/use_cases/include_files/next_inclusions/use_case.md#nest-inclusions).
-
-See all [use cases](markdown/use_cases/use_cases.md#use-cases).
+You can nest inclusions.  See the [use case](markdown/use_cases/include_files/nest_inclusions/use_case.md#nest-inclusions).
 
 ### Merged Text Formats
 
