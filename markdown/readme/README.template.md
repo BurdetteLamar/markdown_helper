@@ -129,7 +129,7 @@ A missing includee file causes an exception that shows an inclusion backtrace.  
 
 ##### Circular Inclusion
 
-A circular inclusion causes an exception that shows an inclusion backtrace.  See the [use case](markdown/use_cases/include_files/idiagnose_circular_includes/use_case.md#diagnose-circular-includes).
+A circular inclusion causes an exception that shows an inclusion backtrace.  See the [use case](markdown/use_cases/include_files/diagnose_circular_includes/use_case.md#diagnose-circular-includes).
 
 ## What Should Be Next?
 
