@@ -16,7 +16,7 @@ The old way is now deprecated.
 Class <code>MarkdownHelper</code> supports:
 
 * [File inclusion](#file-inclusion): to include text from other files, as code-block or markdown.
-* [Page TOC](#page-toc): to create the table of contents for a markdown page.
+* [Page TOC](#page-toc): to create and insert the table of contents for a markdown page.
 
 ## How It Works
 
@@ -93,17 +93,37 @@ where:
   * Highlighting mode such as <code>[ruby]</code>, to include a highlighted code block.  This can be any Ace mode mentioned in [GitHub Languages](https://github.com/github/linguist/blob/master/lib/linguist/languages.yml).
   * <code>[:code_block]</code>, to include a plain code block.
   * <code>[:markdown]</code>, to include text markdown (to be rendered as markdown).
+  * <code>[:comment]</code>, to insert text as a markdown comment.
+  * <code>[:pre]</code>, to include pre-formatted text.
 * *relative_file_path* points to the file to be included.
 
 ##### Example Include Descriptions
 
 @[code_block](include.md)
 
-## Page TOC
+#### Page TOC
 
-The markdown helper can create the table of contents for a markdown page.
-- The TOC is a tree of links to the headers on the page, suitable for inclusion with the page itself.
-- See the [use case](markdown/use_cases/tables_of_contents/create_and_include_page_toc/use_case.md#create-and-include-page-toc).
+Specify the location for a page TOC (table of cotents) via a *page TOC description*, which has the form:
+
+<code>@[:page_toc]\(</code>*markdown_header*<code>)</code>
+
+Example:
+
+<code>@[:page_toc]\(### Contents)</code>
+
+#### Diagnostics
+
+##### "Noisy" (Not Pristine)
+
+By default, the markdown helper inserts comments indicating inclusions.
+
+##### Missing Includee File
+
+A missing includee file causes an exception that shows an inclusion backtrace.
+
+##### Circular Inclusion
+
+A circular inclusion causes an exception that shows an inclusion backtrace.
 
 ## What Should Be Next?
 
