@@ -41,6 +41,12 @@ class MarkdownHelper
   end
 
   def create_page_toc(markdown_file_path, toc_file_path)
+    message = <<EOT
+Method create_page_toc is deprecated.
+Please use method include with embedded :page_toc treatment.
+See https://github.com/BurdetteLamar/markdown_helper/blob/master/markdown/use_cases/include_files/include_page_toc/use_case.md#include-page-toc.
+EOT
+    warn(message)
     send(:generate_file, markdown_file_path, toc_file_path, __method__) do |input_lines, output_lines|
       send(:_create_page_toc, input_lines, output_lines)
     end
