@@ -39,7 +39,7 @@ By default, the output markdown has added comments that show:
 
 You can suppress those comments using the <code>pristine</code> option.
 
-## File Inclusion 
+## File Inclusion
 
 <img src="images/include.png" alt="include_icon" width="50">
 
