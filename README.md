@@ -3,8 +3,16 @@
 
 [![Gem](https://img.shields.io/gem/v/markdown_helper.svg?style=flat)](http://rubygems.org/gems/markdown_helper "View this project in Rubygems")
 
+## What's New?
+
+Page TOC (table of contents) is improved:
+
+- Before:  you would first run the markdown helper to generate a page TOC, then run the helper a second time to include the page TOC where you want it.
+- Now:  you specify the site for the page TOC in the page itself, and the page TOC is automatically generated and inserted there.  See the [use case](markdown/use_cases/include_files/include_page_toc/use_case.md#include-page-toc)
+
+The old way is now deprecated.
+
 ### Contents
-- [What's New?](#whats-new)
 - [What's a Markdown Helper?](#whats-a-markdown-helper)
 - [How It Works](#how-it-works)
   - [Restriction: ```git``` Only](#restriction-git-only)
@@ -26,15 +34,6 @@
       - [Missing Includee File](#missing-includee-file)
       - [Circular Inclusion](#circular-inclusion)
 - [What Should Be Next?](#what-should-be-next)
-
-## What's New?
-
-Page TOC (table of contents) is improved:
-
-- Before:  you would first run the markdown helper to generate a page TOC, then run the helper a second time to include the page TOC where you want it.
-- Now:  you specify the site for the page TOC in the page itself, and the page TOC is automatically generated and inserted there.  See the [use case](markdown/use_cases/include_files/include_page_toc/use_case.md#include-page-toc)
-
-The old way is now deprecated.
 
 ## What's a Markdown Helper?
 

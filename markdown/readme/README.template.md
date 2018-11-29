@@ -2,8 +2,6 @@
 
 [![Gem](https://img.shields.io/gem/v/markdown_helper.svg?style=flat)](http://rubygems.org/gems/markdown_helper "View this project in Rubygems")
 
-@[:page_toc](### Contents)
-
 ## What's New?
 
 Page TOC (table of contents) is improved:
@@ -12,6 +10,8 @@ Page TOC (table of contents) is improved:
 - Now:  you specify the site for the page TOC in the page itself, and the page TOC is automatically generated and inserted there.  See the [use case](markdown/use_cases/include_files/include_page_toc/use_case.md#include-page-toc)
 
 The old way is now deprecated.
+
+@[:page_toc](### Contents)
 
 ## What's a Markdown Helper?
 
