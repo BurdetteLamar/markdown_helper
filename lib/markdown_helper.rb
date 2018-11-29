@@ -78,7 +78,7 @@ EOT
 
 
     def link
-      remove_regexp = /[\#\(\)\[\]\{\}\.\?\+\*\`\"]+/
+      remove_regexp = /[\#\(\)\[\]\{\}\.\?\+\*\`\"\']+/
       to_hyphen_regexp = /\W+/
       anchor = title.
           gsub(remove_regexp, '').

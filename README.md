@@ -4,8 +4,8 @@
 [![Gem](https://img.shields.io/gem/v/markdown_helper.svg?style=flat)](http://rubygems.org/gems/markdown_helper "View this project in Rubygems")
 
 ### Contents
-- [What's New?](#what-s-new)
-- [What's a Markdown Helper?](#what-s-a-markdown-helper)
+- [What's New?](#whats-new)
+- [What's a Markdown Helper?](#whats-a-markdown-helper)
 - [How It Works](#how-it-works)
   - [Restriction: ```git``` Only](#restriction-git-only)
   - [Commented or Pristine?](#commented-or-pristine)
