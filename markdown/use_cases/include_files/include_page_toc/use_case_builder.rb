@@ -76,7 +76,7 @@ The page TOC is a tree of links:
 
 Below are files to be included and an includer file that will generate the page TOC.
 
-Note that all file inclusion (even nested inclusions) will be performed before the page TOC is build, so the page TOC covers all the included material.
+Note that all file inclusion (even nested inclusions) will be performed before the page TOC is built, so the page TOC covers all the included material.
 
 #### Files to Be Included
 
