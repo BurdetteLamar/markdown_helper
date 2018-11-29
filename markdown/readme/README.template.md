@@ -4,19 +4,21 @@
 
 ## What's New?
 
-Treatments for included file:
+Page TOC (table of contents) is improved:
 
-- Support is added for including a file as a comment.  See the [use case](markdown/use_cases/include_files/include_text_as_comment/use_case.md#include-text-as-comment).
-- Support is added for including a file as pre-formatted.  See the [use case](markdown/use_cases/include_files/include_text_as_pre/use_case.md#include-text-as-pre).
+- **Old**:  You would first run the markdown helper to generate a page TOC, then run the helper a second time to include the page TOC where you want it.
+- **New**:  You specify the site for the page TOC in the page itself, and the page TOC is automatically generated and inserted there.  See the [use case](markdown/use_cases/include_files/include_page_toc/use_case.md#include-page-toc)
 
-(The new version, 2.0.0, is not a major increment over version 1.9.9.  Numbers just ran out.)
+The old way is now deprecated.
+
+@[:page_toc](### Contents)
 
 ## What's a Markdown Helper?
 
 Class <code>MarkdownHelper</code> supports:
 
 * [File inclusion](#file-inclusion): to include text from other files, as code-block or markdown.
-* [Page TOC](#page-toc): to create the table of contents for a markdown page.
+* [Page TOC](#page-toc): to create and insert the table of contents for a markdown page.
 
 ## How It Works
 
@@ -24,7 +26,7 @@ The markdown helper is a preprocessor that reads a markdown document (template) 
 
 The template can contain certain instructions that call for file inclusions.
 
-### Restriction:  ```git``` Only
+### Restriction: ```git``` Only
 
 The helper works only in a ```git``` project:  the working directory or one of ita parents must be a git directory -- one in which command ```git rev-parse --git-dir``` succeeds.
 
@@ -37,7 +39,7 @@ By default, the output markdown has added comments that show:
 
 You can suppress those comments using the <code>pristine</code> option.
 
-## File Inclusion 
+## File Inclusion
 
 <img src="images/include.png" alt="include_icon" width="50">
 
@@ -45,31 +47,41 @@ This markdown helper enables file inclusion in GitHub markdown.
 
 (Actually, this README file itself is built using file inclusion.)
 
-Use the markdown helper to merge external files into a markdown (</code>.md</code>) file.
+See all [use cases](markdown/use_cases/use_cases.md#use-cases).
 
-See the [use cases](markdown/use_cases/use_cases.md#use-cases).
+### Re-use Text
+
+Keep your markdown DRY (Don't Repeat Yourself) by re-using text.  See the [use case](markdown/use_cases/include_files/reuse_text/use_case.md#reuse-text).
+
+### Include Generated Text
+
+In particular, you can include text that's built during your "readme build."  See the [use case](markdown/use_cases/include_files/include_generated_text/use_case.md#include-generated-text).
+
+### Nest Inclusions
+
+You can nest inclusions.  See the [use case](markdown/use_cases/include_files/nest_inclusions/use_case.md#nest-inclusions).
 
 ### Merged Text Formats
 
+#### Markdown
+
+You can include text that is to be treated simply as markdown.  See the [use case](markdown/use_cases/include_files/include_markdown/use_case.md#include-markdown).
+
 #### Highlighted Code Block
 
-@[ruby](include.rb)
+You can include a code block that's to be highlighted.  See the [use case](markdown/use_cases/include_files/include_highlighted_code/use_case.md#include-highlighted-code).
 
 #### Plain Code Block
 
-@[:code_block](include.rb)
-
-[Note:  In the gem documentation, RubyDoc.info chooses to highlight this code block regardless.  Go figure.]
+You can also include a code block without highlighting.  See the [use case](markdown/use_cases/include_files/include_code_block/use_case.md#include-code-block).
 
 #### Comment
 
-Comment text is written into the output between the comment delimiters <code>\<!--</code> and <code>--></code>
+You can include text that's to become a comment in the markdown.  See the [use case](markdown/use_cases/include_files/include_text_as_comment/use_case.md#include-text-as-comment).
 
-#### Markdown
+### Pre-Formattted Text
 
-Markdown text is included unadorned, and will be processed on GitHub as markdown.
-
-The markdown text is itself scanned for nested includes.
+You can include text that's pre-formatted.  See the [use case](markdown/use_cases/include_files/include_text_as_pre/use_case.md#include-text-as-pre).
 
 ### Usage
 
@@ -93,17 +105,31 @@ where:
   * Highlighting mode such as <code>[ruby]</code>, to include a highlighted code block.  This can be any Ace mode mentioned in [GitHub Languages](https://github.com/github/linguist/blob/master/lib/linguist/languages.yml).
   * <code>[:code_block]</code>, to include a plain code block.
   * <code>[:markdown]</code>, to include text markdown (to be rendered as markdown).
+  * <code>[:comment]</code>, to insert text as a markdown comment.
+  * <code>[:pre]</code>, to include pre-formatted text.
 * *relative_file_path* points to the file to be included.
 
 ##### Example Include Descriptions
 
 @[code_block](include.md)
 
-## Page TOC
+#### Page TOC
 
-The markdown helper can create the table of contents for a markdown page.
-- The TOC is a tree of links to the headers on the page, suitable for inclusion with the page itself.
-- See the [use case](markdown/use_cases/tables_of_contents/create_and_include_page_toc/use_case.md#create-and-include-page-toc).
+You can specify the location for an automatically-generated page TOC (table of cotents).  See the [use case](markdown/use_cases/include_files/include_page_toc/use_case.md#include-page-toc).
+
+#### Diagnostics
+
+##### "Noisy" (Not Pristine)
+
+By default, the markdown helper inserts comments indicating inclusions.  See the [use case](markdown/use_cases/include_files/include_with_added_comments/use_case.md#include-with-added-comments).
+
+##### Missing Includee File
+
+A missing includee file causes an exception that shows an inclusion backtrace.  See the [use case](markdown/use_cases/include_files/diagnose_missing_includee/use_case.md#diagnose-missing-includee).
+
+##### Circular Inclusion
+
+A circular inclusion causes an exception that shows an inclusion backtrace.  See the [use case](markdown/use_cases/include_files/diagnose_circular_includes/use_case.md#diagnose-circular-includes).
 
 ## What Should Be Next?
 

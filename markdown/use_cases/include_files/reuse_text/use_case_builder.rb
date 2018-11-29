@@ -4,12 +4,13 @@ class ReuseText < IncludeUseCase
 
   def self.build
 
-    use_case_name = File.basename(__FILE__, '.rb')
-    use_case = self.new(use_case_name)
+    use_case = self.new
 
     use_case.write_includee_file
     use_case.write_includer_file
     use_case.write_ruby_file(pristine = true)
+
+    use_case.commands_to_execute.push('ruby include.rb')
 
     File.write(
         TEMPLATE_FILE_NAME,

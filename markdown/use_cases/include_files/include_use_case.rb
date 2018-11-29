@@ -17,16 +17,10 @@ class IncludeUseCase < UseCase
 
   BUILD_COMMAND = UseCase.construct_include_command(TEMPLATE_FILE_NAME, USE_CASE_FILE_NAME, pristine = true)
 
-  def initialize(use_case_dir_name)
-
+  def initialize
     super
-
-    commands_to_execute.push(RUBY_COMMAND) if File.exist?(RUBY_FILE_NAME)
-    commands_to_execute.push(BUILD_COMMAND) if File.exist?(TEMPLATE_FILE_NAME)
-
+    commands_to_execute.push(BUILD_COMMAND)
     self.use_case_dir_name = use_case_dir_name
-
-
   end
 
   def use_case_dir_path

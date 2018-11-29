@@ -1,11 +1,10 @@
 require_relative '../include_use_case'
 
-class IncludeCodeBlock < IncludeUseCase
+class IncludeTextAsComment < IncludeUseCase
 
   def self.build
 
-    use_case_name = File.basename(__FILE__, '.rb')
-    use_case = self.new(use_case_name)
+    use_case = self.new
 
     includee_file_name = 'hello.rb'
 
@@ -26,9 +25,9 @@ EOT
     use_case.files_to_write.store(
         INCLUDER_FILE_NAME,
         <<EOT
-This file includes the code as a code block.
+This file includes the code as a comment.
 
-@[:code_block](#{includee_file_name})
+@[:comment](#{includee_file_name})
 
 EOT
     )
@@ -36,9 +35,9 @@ EOT
     use_case.files_to_write.store(
         TEMPLATE_FILE_NAME,
         <<EOT
-### Include Code Block
+### Include Text As Comment
 
-Use file inclusion to include text as a code block.
+Use file inclusion to include text (or even code) as a comment.
 
 #### File to Be Included
 
@@ -52,23 +51,16 @@ Here's a template file that includes it:
 
 @[markdown](#{INCLUDER_FILE_NAME})
 
-The treatment token ```:code_block``` specifies that the included text is to be treated as a code block.
+The treatment token ```:comment``` specifies that the included text is to be treated as a comment.
 
 @[:markdown](../interface.md)
 
 #### File with Inclusion
 
-Here's the finished file with the included code block:
+Here's the finished file with the included comment:
 
-@[:pre](#{INCLUDED_FILE_NAME})
+@[markdown](#{INCLUDED_FILE_NAME})
 
-And here's the finished markdown, as rendered on this page:
-
----
-
-@[:markdown](#{INCLUDED_FILE_NAME})
-
----
 EOT
     )
 

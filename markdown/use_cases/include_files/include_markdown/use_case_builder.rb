@@ -4,8 +4,7 @@ class IncludeMarkdown < IncludeUseCase
 
   def self.build
 
-    use_case_name = File.basename(__FILE__, '.rb')
-    use_case = self.new(use_case_name)
+    use_case = self.new
 
     includee_file_name = 'markdown.md'
 

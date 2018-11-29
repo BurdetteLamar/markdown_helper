@@ -4,8 +4,7 @@ class DiagnoseCircularIncludes < IncludeUseCase
 
   def self.build
 
-    use_case_name = File.basename(__FILE__, '.rb')
-    use_case = self.new(use_case_name)
+    use_case = self.new
 
     use_case.write_ruby_file(pristine = true)
 

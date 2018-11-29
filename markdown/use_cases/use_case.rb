@@ -1,26 +1,29 @@
 class UseCase
 
-  attr_accessor :use_case_dir_path, :files_to_write, :commands_to_execute
+  attr_accessor :files_to_write, :commands_to_execute
 
   USE_CASE_FILE_NAME = 'use_case.md'
   TEMPLATE_FILE_NAME = 'use_case_template.md'
+  BUILDER_FILE_NAME = 'use_case_builder.rb'
 
-  def initialize(use_case_dir_path)
-    self.use_case_dir_path = use_case_dir_path
+  def initialize
     self.files_to_write = {}
     self.commands_to_execute = []
   end
 
   def build
-    Dir.chdir(use_case_dir_path) do
-      files_to_write.each_pair do |file_name, text|
-        File.open(file_name, 'w') do |file|
-          file.write(text)
-        end
+
+    files_to_write.each_pair do |file_name, text|
+      File.open(file_name, 'w') do |file|
+        file.write(text)
       end
-      commands_to_execute.each do |command|
-        system(command)
-      end
+    end
+    if File.exist?('includer.md')
+      command = self.construct_include_command('includer.md','included.md', pristine = true)
+      system(command)
+    end
+    commands_to_execute.each do |command|
+      system(command)
     end
   end
 

@@ -1,10 +1,6 @@
 require 'pathname'
 require 'markdown_helper/version'
 
-# Helper class for working with GitHub markdown.
-#  Supports file inclusion.
-#
-# @author Burdette Lamar
 class MarkdownHelper
 
   class MarkdownHelperError < RuntimeError; end
@@ -14,13 +10,15 @@ class MarkdownHelper
   class OptionError < MarkdownHelperError; end
   class EnvironmentError < MarkdownHelperError; end
 
-  IMAGE_REGEXP = /!\[([^\[]+)\]\(([^)]+)\)/
   INCLUDE_REGEXP = /^@\[([^\[]+)\]\(([^)]+)\)$/
 
   attr_accessor :pristine
 
   def initialize(options = {})
     # Confirm that we're in a git project.
+    # This is necessary so that we can prune file paths in the tests,
+    # which otherwise would fail because of differing installation directories.
+    # It also allows pruned paths to be used in the inserted comments (when not pristine).
     MarkdownHelper.git_clone_dir_path
     default_options = {
         :pristine => false,
@@ -36,19 +34,6 @@ class MarkdownHelper
     end
   end
 
-  # Merges external files into markdown text.
-  # @param template_file_path [String] the path to the input template markdown file, usually containing include pragmas.
-  # @param markdown_file_path [String] the path to the output merged markdown file.
-  # @return [String] the resulting markdown text.
-  #
-  # @example pragma to include text as a highlighted code block.
-  #   @[ruby](foo.rb)
-  #
-  # @example pragma to include text as a plain code block.
-  #   @[:code_block](foo.xyz)
-  #
-  # @example pragma to include text markdown, to be rendered as markdown.
-  #   @[:markdown](foo.md)
   def include(template_file_path, markdown_file_path)
     send(:generate_file, template_file_path, markdown_file_path, __method__) do |input_lines, output_lines|
       send(:include_files, template_file_path, input_lines, output_lines, Inclusions.new)
@@ -56,6 +41,12 @@ class MarkdownHelper
   end
 
   def create_page_toc(markdown_file_path, toc_file_path)
+    message = <<EOT
+Method create_page_toc is deprecated.
+Please use method include with embedded :page_toc treatment.
+See https://github.com/BurdetteLamar/markdown_helper/blob/master/markdown/use_cases/include_files/include_page_toc/use_case.md#include-page-toc.
+EOT
+    warn(message)
     send(:generate_file, markdown_file_path, toc_file_path, __method__) do |input_lines, output_lines|
       send(:_create_page_toc, input_lines, output_lines)
     end
@@ -85,8 +76,14 @@ class MarkdownHelper
       self.new(level, title)
     end
 
+
     def link
-      anchor = title.gsub(/\W+/, '-').downcase
+      remove_regexp = /[\#\(\)\[\]\{\}\.\?\+\*\`\"\']+/
+      to_hyphen_regexp = /\W+/
+      anchor = title.
+          gsub(remove_regexp, '').
+          gsub(to_hyphen_regexp, '-').
+          downcase
       "[#{title}](##{anchor})"
     end
 
@@ -94,16 +91,6 @@ class MarkdownHelper
 
   def self.comment(text)
     "<!--#{text}-->\n"
-  end
-
-  def repo_user_and_name
-    repo_user = ENV['REPO_USER']
-    repo_name = ENV['REPO_NAME']
-    unless repo_user and repo_name
-      message = 'ENV values for both REPO_USER and REPO_NAME must be defined.'
-      raise EnvironmentError.new(message)
-    end
-    [repo_user, repo_name]
   end
 
   def generate_file(template_file_path, markdown_file_path, method)
@@ -122,30 +109,28 @@ class MarkdownHelper
       yield input_lines, output_lines
       output_lines.push(MarkdownHelper.comment(" <<<<<< END GENERATED FILE (#{method.to_s}): SOURCE #{template_path_in_project} ")) unless pristine
     end
-    output = output_lines.join('')
-    File.write(markdown_file_path, output)
-    output
+    File.open(markdown_file_path, 'w') do |file|
+      output_lines.each do |line|
+        file.write(line)
+      end
+    end
   end
 
   def _create_page_toc(input_lines, output_lines)
-    level_one_seen = false
+    first_heading_level = nil
     input_lines.each do |input_line|
-      input_line.chomp!
-      heading = Heading.parse(input_line)
+      line = input_line.chomp
+      heading = Heading.parse(line)
       next unless heading
-      unless level_one_seen || heading.level == 1
-        message = "First heading must be level 1, not '#{input_line}'"
-        raise TocHeadingsError.new(message)
-      end
-      level_one_seen = true
-      indentation = '  ' * heading.level
+      first_heading_level ||= heading.level
+      indentation = '  ' * (heading.level - first_heading_level)
       output_line = "#{indentation}- #{heading.link}"
       output_lines.push("#{output_line}\n")
     end
   end
 
   def include_files(includer_file_path, input_lines, output_lines, inclusions)
-
+    page_toc_inclusion = nil
     input_lines.each_with_index do |input_line, line_index|
       match_data = input_line.match(INCLUDE_REGEXP)
       unless match_data
@@ -154,20 +139,40 @@ class MarkdownHelper
       end
       treatment = match_data[1]
       cited_includee_file_path = match_data[2]
-      inclusions.include(
+      new_inclusion = Inclusion.new(
           input_line.chomp,
           includer_file_path,
           line_index + 1,
           cited_includee_file_path,
-          treatment,
+          treatment
+      )
+      if treatment == ':page_toc'
+        page_toc_inclusion = new_inclusion
+        page_toc_inclusion.page_toc_title = match_data[2]
+        page_toc_inclusion.page_toc_line = input_line
+        output_lines.push(input_line)
+        next
+      end
+      inclusions.include(
+          new_inclusion,
           output_lines,
           self
       )
     end
+    return if page_toc_inclusion.nil?
+    toc_lines = [
+        page_toc_inclusion.page_toc_title + "\n",
+        '',
+    ]
+    page_toc_index =  output_lines.index(page_toc_inclusion.page_toc_line)
+    lines_to_scan = output_lines[page_toc_index + 1..-1]
+    _create_page_toc(lines_to_scan, toc_lines)
+    output_lines.delete_at(page_toc_index)
+    output_lines.insert(page_toc_index, *toc_lines)
   end
 
   def self.git_clone_dir_path
-    git_dir = `git rev-parse --git-dir`.chomp
+    git_dir = `git rev-parse --show-toplevel`.chomp
     unless $?.success?
       message = <<EOT
 
@@ -176,13 +181,7 @@ That is, the working directory one of its parents must be a .git directory.
 EOT
       raise RuntimeError.new(message)
     end
-    if git_dir == '.git'
-      path = `pwd`.chomp
-    else
-      path = File.dirname(git_dir).chomp
-    end
-    realpath = Pathname.new(path.sub(%r|/c/|, 'C:/')).realpath
-    realpath.to_s
+    git_dir
   end
 
   def self.path_in_project(path)
@@ -198,15 +197,11 @@ EOT
     end
 
     def include(
-        include_description,
-        includer_file_path,
-        includer_line_number,
-        cited_includee_file_path,
-        treatment,
-        output_lines,
-        markdown_helper
+      new_inclusion,
+      output_lines,
+      markdown_helper
     )
-      treatment = case treatment
+      treatment = case new_inclusion.treatment
                     when ':code_block'
                       :code_block
                     when ':markdown'
@@ -220,18 +215,12 @@ EOT
                     when ':pre'
                       :pre
                     else
-                      treatment
+                      new_inclusion.treatment
                   end
-      new_inclusion = Inclusion.new(
-          include_description,
-          includer_file_path,
-          includer_line_number,
-          cited_includee_file_path
-      )
       if treatment == :markdown
         check_circularity(new_inclusion)
       end
-      includee_path_in_project = MarkdownHelper.path_in_project(new_inclusion.absolute_includee_file_path)
+       includee_path_in_project = MarkdownHelper.path_in_project(new_inclusion.absolute_includee_file_path)
       output_lines.push(MarkdownHelper.comment(" >>>>>> BEGIN INCLUDED FILE (#{treatment}): SOURCE #{includee_path_in_project} ")) unless markdown_helper.pristine
       begin
         include_lines = File.readlines(new_inclusion.absolute_includee_file_path)
@@ -247,7 +236,7 @@ EOT
       end
       last_line = include_lines.last
       unless last_line && last_line.match("\n")
-        message = "Warning:  Included file has no trailing newline: #{cited_includee_file_path}"
+        message = "Warning:  Included file has no trailing newline: #{new_inclusion.cited_includee_file_path}"
         warn(message)
       end
       case treatment
@@ -264,7 +253,7 @@ EOT
           output_lines.push("</pre>\n")
         else
           # Use the file name as a label.
-          file_name_line = format("```%s```:\n", File.basename(cited_includee_file_path))
+          file_name_line = format("```%s```:\n", File.basename(new_inclusion.cited_includee_file_path))
           output_lines.push(file_name_line)
           # Put into code block.
           language = treatment == :code_block ? '' : treatment
@@ -307,65 +296,6 @@ EOT
       lines.join("\n")
     end
 
-    def self.assert_io_exception(test, expected_exception_class, expected_label, expected_file_path, e)
-      test.assert_kind_of(expected_exception_class, e)
-      lines = e.message.split("\n")
-      actual_label = lines.shift
-      test.assert_equal(expected_label, actual_label)
-      actual_file_path = lines.shift
-      test.assert_equal(expected_file_path.inspect, actual_file_path)
-    end
-
-    def self.assert_inclusion_exception(test, expected_exception_class, exception_label, expected_inclusions, e)
-      test.assert_kind_of(expected_exception_class, e)
-      lines = e.message.split("\n")
-      label_line = lines.shift
-      test.assert_equal(exception_label, label_line)
-      backtrace_line = lines.shift
-      test.assert_equal(BACKTRACE_LABEL, backtrace_line)
-      level_line_count = 1 + Inclusion::LINE_COUNT
-      level_count = lines.size / level_line_count
-      # Backtrace levels are innermost first, opposite of inclusions.
-      reversed_inclusions = expected_inclusions.inclusions.reverse
-      (0...level_count).each do |level_index|
-        level_line = lines.shift
-        inclusion_lines = lines.shift(Inclusion::LINE_COUNT)
-        test.assert_equal("#{LEVEL_LABEL} #{level_index}:", level_line)
-        expected_inclusion = reversed_inclusions[level_index]
-        expected_inclusion.assert_lines(test, level_index, inclusion_lines)
-      end
-    end
-
-    def self.assert_circular_exception(test, expected_inclusions, e)
-      self.assert_inclusion_exception(
-              test,
-              CircularIncludeError,
-              CIRCULAR_EXCEPTION_LABEL,
-              expected_inclusions,
-              e
-      )
-    end
-
-    def self.assert_includee_missing_exception(test, expected_inclusions, e)
-      self.assert_inclusion_exception(
-          test,
-          Exception,
-          MISSING_INCLUDEE_EXCEPTION_LABEL,
-          expected_inclusions,
-          e
-      )
-    end
-
-    def self.assert_template_exception(test, expected_file_path, e)
-      self.assert_io_exception(
-          test,
-          Exception,
-          UNREADABLE_INPUT_EXCEPTION_LABEL,
-          expected_file_path,
-          e
-      )
-    end
-
   end
 
   class Inclusion
@@ -377,19 +307,24 @@ EOT
       :includer_line_number,
       :include_description,
       :absolute_includee_file_path,
-      :cited_includee_file_path
+      :cited_includee_file_path,
+      :treatment,
+      :page_toc_title,
+      :page_toc_line
 
     def initialize(
         include_description,
         includer_file_path,
         includer_line_number,
-        cited_includee_file_path
+        cited_includee_file_path,
+        treatment
     )
       self.include_description = include_description
       self.includer_file_path = includer_file_path
       self.includer_line_number = includer_line_number
       self.cited_includee_file_path = cited_includee_file_path
       self.absolute_includee_file_path = absolute_includee_file_path
+      self.treatment = treatment
       self.absolute_includee_file_path = File.absolute_path(File.join(
           File.dirname(includer_file_path),
           cited_includee_file_path,
@@ -417,37 +352,6 @@ EOT
 #{indentation(indentation_level+1)}File path: #{relative_inludee_file_path}
 EOT
       text.split("\n")
-    end
-
-    def assert_lines(test, level_index, actual_lines)
-      level_label = "Level #{level_index}:"
-      # Includer label.
-      includee_label = actual_lines.shift
-      test.assert_match(/^\s*Includer:$/, includee_label, level_label)
-      # Includer locatioin.
-      location = actual_lines.shift
-      message = "#{level_label} includer location"
-      test.assert_match(/^\s*Location:/, location, message)
-      includer_realpath =  Pathname.new(includer_file_path).realpath.to_s
-      relative_path = MarkdownHelper.path_in_project(includer_realpath)
-      r = Regexp.new(Regexp.escape("#{relative_path}:#{includer_line_number}") + '$')
-      test.assert_match(r, location, message)
-      # Include description.
-      description = actual_lines.shift
-      message = "#{level_label} include description"
-      test.assert_match(/^\s*Include description:/, description, message)
-      r = Regexp.new(Regexp.escape("#{include_description}") + '$')
-      test.assert_match(r, description, message)
-      # Includee label.
-      includee_label = actual_lines.shift
-      test.assert_match(/^\s*Includee:$/, includee_label, level_label)
-      # Includee file path.
-      includee_file_path = actual_lines.shift
-      message = "#{level_label} includee cited file path"
-      test.assert_match(/^\s*File path:/, includee_file_path, message)
-      relative_path = MarkdownHelper.path_in_project(absolute_includee_file_path)
-      r = Regexp.new(Regexp.escape("#{relative_path}") + '$')
-      test.assert_match(r, includee_file_path, message)
     end
 
   end

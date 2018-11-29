@@ -1,51 +1,17 @@
-require_relative '../use_case'
-
-class CreatePageTocUseCase < UseCase
-
-  attr_accessor :use_case_dir_name
-
-  TEMPLATE_FILE_NAME = 'use_case_template.md'
-  TEXT_FILE_NAME = 'text.md'
-  TOC_FILE_NAME = 'toc.md'
-  INCLUDER_FILE_NAME = 'includer.md'
-  PAGE_FILE_NAME = 'page.md'
-
-  RUBY_FILE_NAME = 'include.rb'
-
-  BUILD_COMMAND = UseCase.construct_include_command(TEMPLATE_FILE_NAME, USE_CASE_FILE_NAME, pristine = true)
-
-  def initialize
-
-    super
-
-    commands_to_execute.push(RUBY_COMMAND) if File.exist?(RUBY_FILE_NAME)
-    commands_to_execute.push(BUILD_COMMAND) if File.exist?(TEMPLATE_FILE_NAME)
-
-    self.use_case_dir_name = use_case_dir_name
-
-  end
-
-  def use_case_dir_path
-    File.join(File.absolute_path(File.dirname(__FILE__)), use_case_dir_name)
-  end
-
-  def write_includer_file
-    File.write(
-        INCLUDER_FILE_NAME,
-        <<EOT
+<!-- >>>>>> BEGIN GENERATED FILE (include): SOURCE includer.md -->
 ### Page Contents
         
-@[:markdown](#{TOC_FILE_NAME})
+<!-- >>>>>> BEGIN INCLUDED FILE (markdown): SOURCE markdown/use_cases/tables_of_contents/create_and_include_page_toc/toc.md -->
+- [Lorem Ipsum](#lorem-ipsum)
+  - [Curabitur Tortor](#curabitur-tortor)
+    - [Quisque Volutpat](#quisque-volutpat)
+    - [Sed Lectus](#sed-lectus)
+  - [Curabitur Sit](#curabitur-sit)
+    - [Vestibulum Nisi](#vestibulum-nisi)
+    - [Sed Cursus](#sed-cursus)
+<!-- <<<<<< END INCLUDED FILE (markdown): SOURCE markdown/use_cases/tables_of_contents/create_and_include_page_toc/toc.md -->
 
-@[:markdown](#{TEXT_FILE_NAME})
-EOT
-    )
-  end
-
-  def write_text_file
-    File.write(
-        TEXT_FILE_NAME,
-        <<EOT
+<!-- >>>>>> BEGIN INCLUDED FILE (markdown): SOURCE markdown/use_cases/tables_of_contents/create_and_include_page_toc/text.md -->
 # Lorem Ipsum
 
 Dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed augue semper porta. Mauris massa. Vestibulum lacinia arcu eget nulla. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Curabitur sodales ligula in libero. Sed dignissim lacinia nunc. 
@@ -74,8 +40,5 @@ Integer euismod lacus luctus magna. Quisque cursus, metus vitae pharetra auctor,
 
 Ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed augue semper porta. Mauris massa. Vestibulum lacinia arcu eget nulla. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Curabitur sodales ligula in libero. Sed dignissim lacinia nunc. 
 
-EOT
-    )
-  end
-
-end
+<!-- <<<<<< END INCLUDED FILE (markdown): SOURCE markdown/use_cases/tables_of_contents/create_and_include_page_toc/text.md -->
+<!-- <<<<<< END GENERATED FILE (include): SOURCE includer.md -->

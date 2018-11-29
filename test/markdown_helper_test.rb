@@ -27,7 +27,7 @@ class MarkdownHelperTest < Minitest::Test
         ['  # Foo Bar', [1, '[Foo Bar](#foo-bar)']],
         ['   # Foo Bar', [1, '[Foo Bar](#foo-bar)']],
         ['#  Foo', [1, '[Foo](#foo)']],
-        ['# Foo#', [1, '[Foo#](#foo-)']],
+        ['# Foo#', [1, '[Foo#](#foo)']],
     ].each do |pair|
       text, expected = *pair
       expected_level, expected_link = *expected
@@ -140,9 +140,7 @@ class MarkdownHelperTest < Minitest::Test
 
     # Test no level 1.
     test_info = CreatePageTocInfo.new('no_level_one')
-    assert_raises(MarkdownHelper::TocHeadingsError) do
-      common_test(MarkdownHelper.new, test_info)
-    end
+    common_test(MarkdownHelper.new, test_info)
 
   end
 
@@ -151,7 +149,8 @@ class MarkdownHelperTest < Minitest::Test
     # Create the template for this test.
     def create_template(test_info)
       File.open(test_info.template_file_path, 'w') do |file|
-        if test_info.file_stem == :nothing
+        case
+        when test_info.file_stem == :nothing
           file.puts 'This file includes nothing.'
         else
           # Inspect, in case it's a symbol, and remove double quotes after inspection.
@@ -183,10 +182,28 @@ class MarkdownHelperTest < Minitest::Test
             file_stem,
             file_type,
             treatment,
-        )
+            )
         create_template(test_info)
         common_test(MarkdownHelper.new, test_info)
       end
+    end
+
+    # Test automatic page TOC.
+    [
+        :all_levels,
+        :embedded,
+        :gappy_levels,
+        :mixed_levels,
+        :no_headers,
+        :no_level_one,
+        :includer,
+    ].each do |file_stem|
+      test_info = IncludeInfo.new(
+          file_stem,
+          :md,
+          :page_toc,
+          )
+      common_test(MarkdownHelper.new({:pristine => true}), test_info)
     end
 
     # Test treatment as comment.
@@ -237,7 +254,7 @@ class MarkdownHelperTest < Minitest::Test
     e = assert_raises(Exception) do
       common_test(MarkdownHelper.new, test_info)
     end
-    MarkdownHelper::Inclusions.assert_template_exception(self, test_info.template_file_path, e)
+    assert_template_exception(test_info.template_file_path, e)
 
     # Test markdown (output) open failure.
     test_info = IncludeInfo.new(
@@ -251,7 +268,7 @@ class MarkdownHelperTest < Minitest::Test
         'nonexistent_directory',
         'nosuch.md',
     )
-    e = assert_raises(Exception) do
+    assert_raises(Exception) do
       common_test(MarkdownHelper.new, test_info)
     end
 
@@ -273,7 +290,8 @@ class MarkdownHelperTest < Minitest::Test
         include_description = "@[:markdown](#{cited_includee_file_path})",
         includer_file_path,
         includer_line_number = 1,
-        cited_includee_file_path
+        cited_includee_file_path,
+        treatment
     )
     expected_inclusions.inclusions.push(inclusion)
     # The three nested inclusions.
@@ -293,14 +311,15 @@ class MarkdownHelperTest < Minitest::Test
           include_description = "@[:markdown](#{includee_file_name})",
           includer_file_path,
           includer_line_number = 1,
-          cited_includee_file_path = includee_file_name
+          cited_includee_file_path = includee_file_name,
+          treatment
       )
       expected_inclusions.inclusions.push(inclusion)
     end
     e = assert_raises(MarkdownHelper::CircularIncludeError) do
       common_test(MarkdownHelper.new, test_info)
     end
-    MarkdownHelper::Inclusions.assert_circular_exception(self, expected_inclusions, e)
+    assert_circular_exception(expected_inclusions, e)
 
     # Test includee not found.
     test_info = IncludeInfo.new(
@@ -320,7 +339,8 @@ class MarkdownHelperTest < Minitest::Test
         include_description = "@[:markdown](#{cited_includee_file_path})",
         includer_file_path,
         includer_line_number = 1,
-        cited_includee_file_path
+        cited_includee_file_path,
+        treatment
     )
     expected_inclusions.inclusions.push(inclusion)
     # The three nested inclusions.
@@ -340,14 +360,15 @@ class MarkdownHelperTest < Minitest::Test
           include_description = "@[:markdown](#{includee_file_name})",
           includer_file_path,
           includer_line_number = 1,
-          cited_includee_file_path = includee_file_name
+          cited_includee_file_path = includee_file_name,
+          treatment
       )
       expected_inclusions.inclusions.push(inclusion)
     end
     e = assert_raises(Exception) do
       common_test(MarkdownHelper.new, test_info)
     end
-    MarkdownHelper::Inclusions.assert_includee_missing_exception(self, expected_inclusions, e)
+    assert_includee_missing_exception(expected_inclusions, e)
 
   end
 
@@ -356,7 +377,7 @@ class MarkdownHelperTest < Minitest::Test
   def _test_interface(test_info)
     File.write(test_info.actual_file_path, '') if File.exist?(test_info.actual_file_path)
     yield
-    diffs = MarkdownHelperTest.diff_files(test_info.expected_file_path, test_info.actual_file_path)
+    diffs = diff_files(test_info.expected_file_path, test_info.actual_file_path)
     unless diffs.empty?
       puts 'EXPECTED'
       puts File.read(test_info.expected_file_path)
@@ -388,7 +409,7 @@ class MarkdownHelperTest < Minitest::Test
 
   end
 
-  def self.diff_files(expected_file_path, actual_file_path)
+  def diff_files(expected_file_path, actual_file_path)
     diffs = nil
     File.open(expected_file_path) do |expected_file|
       expected_lines = expected_file.readlines
@@ -398,6 +419,93 @@ class MarkdownHelperTest < Minitest::Test
       end
     end
     diffs
+  end
+
+  def assert_io_exception(expected_exception_class, expected_label, expected_file_path, e)
+    assert_kind_of(expected_exception_class, e)
+    lines = e.message.split("\n")
+    actual_label = lines.shift
+    assert_equal(expected_label, actual_label)
+    actual_file_path = lines.shift
+    assert_equal(expected_file_path.inspect, actual_file_path)
+  end
+
+  def assert_inclusion_exception(expected_exception_class, exception_label, expected_inclusions, e)
+    assert_kind_of(expected_exception_class, e)
+    lines = e.message.split("\n")
+    label_line = lines.shift
+    assert_equal(exception_label, label_line)
+    backtrace_line = lines.shift
+    assert_equal(MarkdownHelper::Inclusions::BACKTRACE_LABEL, backtrace_line)
+    level_line_count = 1 + MarkdownHelper::Inclusion::LINE_COUNT
+    level_count = lines.size / level_line_count
+    # Backtrace levels are innermost first, opposite of inclusions.
+    reversed_inclusions = expected_inclusions.inclusions.reverse
+    (0...level_count).each do |level_index|
+      level_line = lines.shift
+      inclusion_lines = lines.shift(MarkdownHelper::Inclusion::LINE_COUNT)
+      assert_equal("#{MarkdownHelper::Inclusions::LEVEL_LABEL} #{level_index}:", level_line)
+      expected_inclusion = reversed_inclusions[level_index]
+      assert_lines(level_index, inclusion_lines, expected_inclusion)
+    end
+  end
+
+  def assert_circular_exception(expected_inclusions, e)
+    assert_inclusion_exception(
+        MarkdownHelper::CircularIncludeError,
+        MarkdownHelper::Inclusions::CIRCULAR_EXCEPTION_LABEL,
+        expected_inclusions,
+        e
+    )
+  end
+
+  def assert_includee_missing_exception(expected_inclusions, e)
+    assert_inclusion_exception(
+        Exception,
+        MarkdownHelper::Inclusions::MISSING_INCLUDEE_EXCEPTION_LABEL,
+        expected_inclusions,
+        e
+    )
+  end
+
+  def assert_lines(level_index, actual_lines, expected_inclusion)
+    level_label = "Level #{level_index}:"
+    # Includer label.
+    includee_label = actual_lines.shift
+    assert_match(/^\s*Includer:$/, includee_label, level_label)
+    # Includer locatioin.
+    location = actual_lines.shift
+    message = "#{level_label} includer location"
+    assert_match(/^\s*Location:/, location, message)
+    includer_realpath =  Pathname.new(expected_inclusion.includer_file_path).realpath.to_s
+    relative_path = MarkdownHelper.path_in_project(includer_realpath)
+    r = Regexp.new(Regexp.escape("#{relative_path}:#{expected_inclusion.includer_line_number}") + '$')
+    assert_match(r, location, message)
+    # Include description.
+    description = actual_lines.shift
+    message = "#{level_label} include description"
+    assert_match(/^\s*Include description:/, description, message)
+    r = Regexp.new(Regexp.escape("#{expected_inclusion.include_description}") + '$')
+    assert_match(r, description, message)
+    # Includee label.
+    includee_label = actual_lines.shift
+    assert_match(/^\s*Includee:$/, includee_label, level_label)
+    # Includee file path.
+    includee_file_path = actual_lines.shift
+    message = "#{level_label} includee cited file path"
+    assert_match(/^\s*File path:/, includee_file_path, message)
+    relative_path = MarkdownHelper.path_in_project(expected_inclusion.absolute_includee_file_path)
+    r = Regexp.new(Regexp.escape("#{relative_path}") + '$')
+    assert_match(r, includee_file_path, message)
+  end
+
+  def assert_template_exception(expected_file_path, e)
+    assert_io_exception(
+        Exception,
+        MarkdownHelper::Inclusions::UNREADABLE_INPUT_EXCEPTION_LABEL,
+        expected_file_path,
+        e
+    )
   end
 
 end

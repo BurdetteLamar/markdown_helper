@@ -22,20 +22,24 @@ EOT
         use_case_dirs = {
             :include_files => %w/
                 reuse_text
-                include_with_added_comments
                 nest_inclusions
                 include_markdown
                 include_code_block
                 include_highlighted_code
+                include_page_toc
                 include_text_as_comment
                 include_text_as_pre
                 include_generated_text
+                include_with_added_comments
                 diagnose_missing_includee
                 diagnose_circular_includes
             /,
-            :tables_of_contents => %w/
-                create_and_include_page_toc
-            /,
+
+            # include_page_toc
+
+            # :tables_of_contents => %w/
+            #     create_and_include_page_toc
+            # /,
         }
         use_case_dirs.each_pair do |section, dir_names|
 
@@ -47,40 +51,38 @@ EOT
 EOT
 ) unless dir_names.empty?
 
+          # Be careful with use case that has a backtrace.
           backtrace_cases = %w/
               diagnose_missing_includee
               diagnose_circular_includes
           /
+
+          # Each use case is in a separate directory.
           dir_names.each do |dir_name|
             Dir.chdir("#{section}/#{dir_name}") do
-              # If the dir has a Ruby file, run it.
-              ruby_file_path = "#{dir_name}.rb"
-              if File.exist?(ruby_file_path)
-                class_name = camelize(dir_name)
-                command = "ruby -I . -r #{dir_name} -e #{class_name}.build"
-                if backtrace_cases.include?(dir_name)
-                  command += " 2> #{dir_name}.err"
-                  begin
-                    system(command)
-                  rescue
-                    #
-                  ensure
-                  end
-                else
+
+              # There should be a conventionally-named ruby file to build the use case.
+              fail dir_name unless File.exist?(UseCase::BUILDER_FILE_NAME)
+
+              # There should be a conventionally-named use-case template.
+              fail dir_name unless File.exist?(UseCase::TEMPLATE_FILE_NAME)
+
+              class_name = camelize(dir_name)
+              command = "ruby -I . -r #{UseCase::BUILDER_FILE_NAME} -e #{class_name}.build"
+              if backtrace_cases.include?(dir_name)
+                command += " 2> #{dir_name}.err"
+                begin
                   system(command)
+                rescue
+                  #
                 end
+              else
+                system(command)
               end
 
-              # If the dir has a use case file, link to it.
-              use_case_file_path = 'use_case.md'
-              unless File.exist?(use_case_file_path)
-                message = "File #{dir_name}/use_case.md does not exist"
-                warn(message)
-                next
-              end
-              title_line = File.open(use_case_file_path).grep(/^#/).first.chomp
+              title_line = File.open(UseCase::TEMPLATE_FILE_NAME).grep(/^#/).first.chomp
               title = title_line.split(/\s/, 2).pop
-              use_case_file_name = File.basename(use_case_file_path)
+              use_case_file_name = File.basename(UseCase::USE_CASE_FILE_NAME)
               use_case_anchor = dir_name.gsub('_', '-')
               use_case_relative_url = File.join(
                   section.to_s,
