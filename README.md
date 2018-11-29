@@ -9,7 +9,7 @@
 - [How It Works](#how-it-works)
   - [Restriction: ```git``` Only](#restriction-git-only)
   - [Commented or Pristine?](#commented-or-pristine)
-- [File Inclusion ](#file-inclusion-)
+- [File Inclusion](#file-inclusion)
   - [Merged Text Formats](#merged-text-formats)
     - [Highlighted Code Block](#highlighted-code-block)
     - [Plain Code Block](#plain-code-block)
@@ -62,7 +62,7 @@ By default, the output markdown has added comments that show:
 
 You can suppress those comments using the <code>pristine</code> option.
 
-## File Inclusion 
+## File Inclusion
 
 <img src="images/include.png" alt="include_icon" width="50">
 
