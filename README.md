@@ -8,7 +8,7 @@
 Page TOC (table of contents) is improved:
 
 - Before:  you would first run the markdown helper to generate a page TOC, then run the helper a second time to include the page TOC where you want it.
-- Now:  you specify the site for the page TOC in the page itself, and the page TOC is automatically generated and inserted there.  See the [use case](markdown/use_cases/include_files/include_page_toc/use_case.md#include=page-toc)
+- Now:  you specify the site for the page TOC in the page itself, and the page TOC is automatically generated and inserted there.  See the [use case](markdown/use_cases/include_files/include_page_toc/use_case.md#include-page-toc)
 
 The old way is now deprecated.
 
