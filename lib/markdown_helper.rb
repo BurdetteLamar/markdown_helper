@@ -130,11 +130,14 @@ EOT
   end
 
   def include_files(includer_file_path, input_lines, output_lines, inclusions)
+    # First gather all markdown, including nested, to prepare for page TOC.
+    # This guarantees that nothing from, say, a code block gets into the page TOC.
+    markdown_lines = []
     page_toc_inclusion = nil
     input_lines.each_with_index do |input_line, line_index|
       match_data = input_line.match(INCLUDE_REGEXP)
       unless match_data
-        output_lines.push(input_line)
+        markdown_lines.push(input_line)
         next
       end
       treatment = match_data[1]
@@ -146,29 +149,57 @@ EOT
           cited_includee_file_path,
           treatment
       )
-      if treatment == ':page_toc'
+      case treatment
+      when ':markdown'
+        inclusions.include(
+            new_inclusion,
+            markdown_lines,
+            self
+        )
+      when ':page_toc'
         page_toc_inclusion = new_inclusion
         page_toc_inclusion.page_toc_title = match_data[2]
         page_toc_inclusion.page_toc_line = input_line
-        output_lines.push(input_line)
+        markdown_lines.push(input_line)
+      else
+        markdown_lines.push(input_line)
+      end
+    end
+    # If needed, create page TOC and insert into markdown_lines.
+    unless page_toc_inclusion.nil?
+      toc_lines = [
+          page_toc_inclusion.page_toc_title + "\n",
+          '',
+      ]
+      page_toc_index =  markdown_lines.index(page_toc_inclusion.page_toc_line)
+      lines_to_scan = markdown_lines[page_toc_index + 1..-1]
+      _create_page_toc(lines_to_scan, toc_lines)
+      markdown_lines.delete_at(page_toc_index)
+      markdown_lines.insert(page_toc_index, *toc_lines)
+    end
+    # Now review the markdown and include everything.
+    markdown_lines.each_with_index do |markdown_line, line_index|
+      match_data = markdown_line.match(INCLUDE_REGEXP)
+      unless match_data
+        output_lines.push(markdown_line)
         next
       end
+      treatment = match_data[1]
+      cited_includee_file_path = match_data[2]
+      new_inclusion = Inclusion.new(
+          markdown_line.chomp,
+          includer_file_path,
+          line_index + 1,
+          cited_includee_file_path,
+          treatment
+      )
       inclusions.include(
           new_inclusion,
           output_lines,
           self
       )
     end
-    return if page_toc_inclusion.nil?
-    toc_lines = [
-        page_toc_inclusion.page_toc_title + "\n",
-        '',
-    ]
-    page_toc_index =  output_lines.index(page_toc_inclusion.page_toc_line)
-    lines_to_scan = output_lines[page_toc_index + 1..-1]
-    _create_page_toc(lines_to_scan, toc_lines)
-    output_lines.delete_at(page_toc_index)
-    output_lines.insert(page_toc_index, *toc_lines)
+
   end
 
   def self.git_clone_dir_path
