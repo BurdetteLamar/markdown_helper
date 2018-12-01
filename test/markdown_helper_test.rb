@@ -205,6 +205,16 @@ class MarkdownHelperTest < Minitest::Test
           )
       common_test(MarkdownHelper.new({:pristine => true}), test_info)
     end
+    # Test misplaced page TOC.
+    # Test invalid page TOC title.
+    test_info = IncludeInfo.new(
+        'invalid_title',
+        :md,
+        :page_toc
+    )
+    assert_raises(MarkdownHelper::InvalidTocTitleError) do
+      common_test(MarkdownHelper.new({:pristine => true}), test_info)
+    end
 
     # Test treatment as comment.
     test_info = IncludeInfo.new(

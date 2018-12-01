@@ -9,6 +9,7 @@ class MarkdownHelper
   class TocHeadingsError < MarkdownHelperError; end
   class OptionError < MarkdownHelperError; end
   class EnvironmentError < MarkdownHelperError; end
+  class InvalidTocTitleError < MarkdownHelperError; end
 
   INCLUDE_REGEXP = /^@\[([^\[]+)\]\(([^)]+)\)$/
 
@@ -130,8 +131,6 @@ EOT
   end
 
   def include_files(includer_file_path, input_lines, output_lines, inclusions)
-    # First gather all markdown, including nested, to prepare for page TOC.
-    # This guarantees that nothing from, say, a code block gets into the page TOC.
     markdown_lines = []
     page_toc_inclusion = nil
     input_lines.each_with_index do |input_line, line_index|
@@ -158,7 +157,13 @@ EOT
         )
       when ':page_toc'
         page_toc_inclusion = new_inclusion
-        page_toc_inclusion.page_toc_title = match_data[2]
+        toc_title = match_data[2]
+        title_regexp = /^\#{1,6}\s/
+        unless toc_title.match(title_regexp)
+          message = "TOC title must be a valid markdown header, not #{toc_title}"
+          raise InvalidTocTitleError.new(message)
+        end
+        page_toc_inclusion.page_toc_title = toc_title
         page_toc_inclusion.page_toc_line = input_line
         markdown_lines.push(input_line)
       else
