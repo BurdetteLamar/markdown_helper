@@ -12,7 +12,7 @@ Page TOC (table of contents) is improved:
 
 The old way is now deprecated.
 
-### Contents
+## Contents
 - [What's a Markdown Helper?](#whats-a-markdown-helper)
 - [How It Works](#how-it-works)
   - [Restriction: ```git``` Only](#restriction-git-only)
