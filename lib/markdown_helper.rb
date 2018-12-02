@@ -10,6 +10,7 @@ class MarkdownHelper
   class OptionError < MarkdownHelperError; end
   class EnvironmentError < MarkdownHelperError; end
   class InvalidTocTitleError < MarkdownHelperError; end
+  class MisplacedPageTocError < MarkdownHelperError; end
 
   INCLUDE_REGEXP = /^@\[([^\[]+)\]\(([^)]+)\)$/
 
@@ -156,6 +157,10 @@ EOT
             self
         )
       when ':page_toc'
+        unless inclusions.inclusions.size == 0
+          message = 'Page TOC must be in outermost markdown file.'
+          raise MisplacedPageTocError.new(message)
+        end
         page_toc_inclusion = new_inclusion
         toc_title = match_data[2]
         title_regexp = /^\#{1,6}\s/
@@ -204,7 +209,6 @@ EOT
           self
       )
     end
-
   end
 
   def self.git_clone_dir_path
