@@ -11,6 +11,7 @@ class MarkdownHelper
   class EnvironmentError < MarkdownHelperError; end
   class InvalidTocTitleError < MarkdownHelperError; end
   class MisplacedPageTocError < MarkdownHelperError; end
+  class MultiplePageTocError < MarkdownHelperError; end
 
   INCLUDE_REGEXP = /^@\[([^\[]+)\]\(([^)]+)\)$/
 
@@ -160,6 +161,10 @@ EOT
         unless inclusions.inclusions.size == 0
           message = 'Page TOC must be in outermost markdown file.'
           raise MisplacedPageTocError.new(message)
+        end
+        unless page_toc_inclusion.nil?
+          message = 'Only one page TOC allowed.'
+          raise MultiplePageTocError.new(message)
         end
         page_toc_inclusion = new_inclusion
         toc_title = match_data[2]

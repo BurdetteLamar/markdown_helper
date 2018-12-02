@@ -214,6 +214,15 @@ class MarkdownHelperTest < Minitest::Test
     assert_raises(MarkdownHelper::InvalidTocTitleError) do
       common_test(MarkdownHelper.new({:pristine => true}), test_info)
     end
+    # Test multiple page TOC.
+    test_info = IncludeInfo.new(
+        'multiple',
+        :md,
+        :page_toc,
+        )
+    assert_raises(MarkdownHelper::MultiplePageTocError) do
+      common_test(MarkdownHelper.new({:pristine => true}), test_info)
+    end
     # Test misplaced page TOC.
     test_info = IncludeInfo.new(
         'misplaced',
