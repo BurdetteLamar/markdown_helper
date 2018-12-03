@@ -71,7 +71,7 @@ Here's the resulting backtrace of inclusions.
 
 ```diagnose_missing_includee.err```:
 ```
-C:/Ruby25-x64/lib/ruby/gems/2.5.0/gems/markdown_helper-2.0.0/bin/_include: Could not read include file, (MarkdownHelper::UnreadableInputError)
+C:/Ruby25-x64/lib/ruby/gems/2.5.0/gems/markdown_helper-2.1.0/bin/_include: Could not read include file, (MarkdownHelper::UnreadableInputError)
   Backtrace (innermost include first):
     Level 0:
       Includer:

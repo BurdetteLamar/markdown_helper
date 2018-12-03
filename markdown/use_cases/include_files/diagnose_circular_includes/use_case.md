@@ -69,7 +69,7 @@ Here's the resulting backtrace of inclusions.
 
 ```diagnose_circular_includes.err```:
 ```
-C:/Ruby25-x64/lib/ruby/gems/2.5.0/gems/markdown_helper-2.0.0/bin/_include: Includes are circular: (MarkdownHelper::CircularIncludeError)
+C:/Ruby25-x64/lib/ruby/gems/2.5.0/gems/markdown_helper-2.1.0/bin/_include: Includes are circular: (MarkdownHelper::CircularIncludeError)
   Backtrace (innermost include first):
     Level 0:
       Includer:
