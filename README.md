@@ -12,7 +12,7 @@ Page TOC (table of contents) is improved:
 
 The old way is now deprecated.
 
-### Contents
+## Contents
 - [What's a Markdown Helper?](#whats-a-markdown-helper)
 - [How It Works](#how-it-works)
   - [Restriction: ```git``` Only](#restriction-git-only)
@@ -142,11 +142,12 @@ require 'markdown_helper'
 
 template_file_path = 'highlight_ruby_template.md'
 markdown_file_path = 'highlighted_ruby.md'
+# Pristine.
 markdown_helper = MarkdownHelper.new
+markdown_helper.pristine = true
 markdown_helper.include(template_file_path, markdown_file_path)
-markdown_helper.pristine = true # Pristine.
-markdown_helper.include(template_file_path, markdown_file_path)
-markdown_helper = MarkdownHelper.new(:pristine => true) # Also pristine.
+# Also pristine.
+markdown_helper = MarkdownHelper.new(:pristine => true)
 markdown_helper.include(template_file_path, markdown_file_path)
 ```
 <!-- <<<<<< END INCLUDED FILE (ruby): SOURCE markdown/readme/include_usage.rb -->

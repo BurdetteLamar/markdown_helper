@@ -11,7 +11,7 @@ Page TOC (table of contents) is improved:
 
 The old way is now deprecated.
 
-@[:page_toc](### Contents)
+@[:page_toc](## Contents)
 
 ## What's a Markdown Helper?
 

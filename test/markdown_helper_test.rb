@@ -197,12 +197,40 @@ class MarkdownHelperTest < Minitest::Test
         :no_headers,
         :no_level_one,
         :includer,
+        :nested_headers,
     ].each do |file_stem|
       test_info = IncludeInfo.new(
           file_stem,
           :md,
           :page_toc,
           )
+      common_test(MarkdownHelper.new({:pristine => true}), test_info)
+    end
+    # Test invalid page TOC title.
+    test_info = IncludeInfo.new(
+        'invalid_title',
+        :md,
+        :page_toc
+    )
+    assert_raises(MarkdownHelper::InvalidTocTitleError) do
+      common_test(MarkdownHelper.new({:pristine => true}), test_info)
+    end
+    # Test multiple page TOC.
+    test_info = IncludeInfo.new(
+        'multiple',
+        :md,
+        :page_toc,
+        )
+    assert_raises(MarkdownHelper::MultiplePageTocError) do
+      common_test(MarkdownHelper.new({:pristine => true}), test_info)
+    end
+    # Test misplaced page TOC.
+    test_info = IncludeInfo.new(
+        'misplaced',
+        :md,
+        :page_toc,
+        )
+    assert_raises(MarkdownHelper::MisplacedPageTocError) do
       common_test(MarkdownHelper.new({:pristine => true}), test_info)
     end
 
