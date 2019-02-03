@@ -273,6 +273,12 @@ class MarkdownHelperTest < Minitest::Test
       common_test(markdown_helper, test_info)
     end
 
+    # Test unknown option.
+    e = assert_raises(MarkdownHelper::OptionError) do
+      markdown_helper = MarkdownHelper.new(:foo => true)
+    end
+    assert_equal('Unknown option: foo', e.message)
+
     # Test template open failure.
     test_info = IncludeInfo.new(
         file_stem = 'no_such',
