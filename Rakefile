@@ -26,7 +26,6 @@ namespace :build do
   desc 'Build usage for executables'
   task :usages do
     %w/
-        create_page_toc
         include
     /.each do |executable_name|
       usage_text = `ruby bin/_#{executable_name} --help`
