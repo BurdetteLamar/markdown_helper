@@ -4,12 +4,7 @@
 
 ## What's New?
 
-Page TOC (table of contents) is improved:
-
-- **Old**:  You would first run the markdown helper to generate a page TOC, then run the helper a second time to include the page TOC where you want it.
-- **New**:  You specify the site for the page TOC in the page itself, and the page TOC is automatically generated and inserted there.  See the [use case](markdown/use_cases/include_files/include_page_toc/use_case.md#include-page-toc)
-
-The old way is now deprecated.
+Command line creation of page TOC (table of contents), previously deprecated, is removed.
 
 @[:page_toc](## Contents)
 

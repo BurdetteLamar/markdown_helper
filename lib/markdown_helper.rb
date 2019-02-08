@@ -43,18 +43,6 @@ class MarkdownHelper
     end
   end
 
-  def create_page_toc(markdown_file_path, toc_file_path)
-    message = <<EOT
-Method create_page_toc is deprecated.
-Please use method include with embedded :page_toc treatment.
-See https://github.com/BurdetteLamar/markdown_helper/blob/master/markdown/use_cases/include_files/include_page_toc/use_case.md#include-page-toc.
-EOT
-    warn(message)
-    send(:generate_file, markdown_file_path, toc_file_path, __method__) do |input_lines, output_lines|
-      send(:_create_page_toc, input_lines, output_lines)
-    end
-  end
-
   private
 
   class Heading
@@ -119,7 +107,7 @@ EOT
     end
   end
 
-  def _create_page_toc(input_lines, output_lines)
+  def create_page_toc(input_lines, output_lines)
     first_heading_level = nil
     input_lines.each do |input_line|
       line = input_line.chomp
@@ -188,7 +176,7 @@ EOT
       ]
       page_toc_index =  markdown_lines.index(page_toc_inclusion.page_toc_line)
       lines_to_scan = markdown_lines[page_toc_index + 1..-1]
-      _create_page_toc(lines_to_scan, toc_lines)
+      create_page_toc(lines_to_scan, toc_lines)
       markdown_lines.delete_at(page_toc_index)
       markdown_lines.insert(page_toc_index, *toc_lines)
     end

@@ -121,29 +121,6 @@ class MarkdownHelperTest < Minitest::Test
 
   end
 
-  def test_create_page_toc
-
-    %w/
-      no_headers
-      one_header
-      all_levels
-      mixed_levels
-      gappy_levels
-    /.each do |name|
-      test_info = CreatePageTocInfo.new(name)
-      common_test(MarkdownHelper.new, test_info)
-    end
-
-    # Test pristine.
-    test_info = CreatePageTocInfo.new('pristine')
-    common_test(MarkdownHelper.new(:pristine => true), test_info)
-
-    # Test no level 1.
-    test_info = CreatePageTocInfo.new('no_level_one')
-    common_test(MarkdownHelper.new, test_info)
-
-  end
-
   def test_include
 
     # Create the template for this test.

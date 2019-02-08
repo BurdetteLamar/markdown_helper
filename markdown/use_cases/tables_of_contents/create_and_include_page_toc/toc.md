@@ -1,7 +1,0 @@
-- [Lorem Ipsum](#lorem-ipsum)
-  - [Curabitur Tortor](#curabitur-tortor)
-    - [Quisque Volutpat](#quisque-volutpat)
-    - [Sed Lectus](#sed-lectus)
-  - [Curabitur Sit](#curabitur-sit)
-    - [Vestibulum Nisi](#vestibulum-nisi)
-    - [Sed Cursus](#sed-cursus)

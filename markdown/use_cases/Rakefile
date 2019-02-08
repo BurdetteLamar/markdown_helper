@@ -34,12 +34,6 @@ EOT
                 diagnose_missing_includee
                 diagnose_circular_includes
             /,
-
-            # include_page_toc
-
-            # :tables_of_contents => %w/
-            #     create_and_include_page_toc
-            # /,
         }
         use_case_dirs.each_pair do |section, dir_names|
 
