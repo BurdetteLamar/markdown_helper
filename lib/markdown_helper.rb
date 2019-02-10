@@ -72,13 +72,10 @@ class MarkdownHelper
       e = UnreadableInputError.new(template_file_path.inspect)
       raise e
     end
-    File.open(template_file_path, 'r') do |template_file|
-      template_path_in_project = MarkdownHelper.path_in_project(template_file_path)
-      output_lines.push(MarkdownHelper.comment(" >>>>>> BEGIN GENERATED FILE (#{method.to_s}): SOURCE #{template_path_in_project} ")) unless pristine
-      inclusion.input_lines = template_file.readlines
-      yield
+    template_path_in_project = MarkdownHelper.path_in_project(template_file_path)
+    output_lines.push(MarkdownHelper.comment(" >>>>>> BEGIN GENERATED FILE (#{method.to_s}): SOURCE #{template_path_in_project} ")) unless pristine
+    yield
       output_lines.push(MarkdownHelper.comment(" <<<<<< END GENERATED FILE (#{method.to_s}): SOURCE #{template_path_in_project} ")) unless pristine
-    end
     File.open(markdown_file_path, 'w') do |file|
       output_lines.each do |line|
         file.write(line)
@@ -95,22 +92,18 @@ class MarkdownHelper
         markdown_lines.push(input_line)
         next
       end
-      # treatment = match_data[1]
-      # cited_includee_file_path = match_data[2]
-#       new_inclusion = Inclusion.new(
-#           input_line.chomp,
-#           includer_file_path,
-#           line_index + 1,
-#           cited_includee_file_path,
-#           treatment
-#       )
-#       case treatment
-#       when ':markdown'
-#         inclusions.include(
-#             new_inclusion,
-#             markdown_lines,
-#             self
-#         )
+      treatment = match_data[1]
+      cited_includee_file_path = match_data[2]
+      includee = Includee.new(
+          inclusion.template_file_path,
+          input_line.chomp,
+          line_index + 1,
+          cited_includee_file_path,
+          treatment
+      )
+      case treatment
+      when ':markdown'
+        include_markdown(includee, markdown_lines)
 #       when ':page_toc'
 #         unless inclusions.inclusions.size == 0
 #           message = 'Page TOC must be in outermost markdown file.'
@@ -132,7 +125,7 @@ class MarkdownHelper
 #         markdown_lines.push(input_line)
 #       else
 #         markdown_lines.push(input_line)
-#       end
+      end
 #     end
 #     # If needed, create page TOC and insert into markdown_lines.
 #     unless page_toc_inclusion.nil?
@@ -170,6 +163,16 @@ class MarkdownHelper
     end
   end
 
+  def include_markdown(includee, markdown_lines)
+    Dir.chdir(File.dirname(includee.includer_file_path)) do
+      template_file_path = includee.cited_includee_file_path
+      inclusion = Inclusion.new(template_file_path, markdown_lines)
+      template_file = File.open(template_file_path, 'r')
+      inclusion.input_lines = template_file.readlines
+      include_files(inclusion)
+    end
+  end
+
   def self.git_clone_dir_path
     git_dir = `git rev-parse --show-toplevel`.chomp
     unless $?.success?
@@ -202,9 +205,28 @@ EOT
     def initialize(tempate_file_path, markdown_file_path)
       self.template_file_path = tempate_file_path
       self.markdown_file_path = markdown_file_path
-      self.input_lines = nil
+      self.input_lines = File.open(template_file_path, 'r').readlines
       self.output_lines = []
     end
+  end
+
+  class Includee
+
+    attr_accessor \
+      :includer_file_path,
+      :directive,
+      :line_index,
+      :cited_includee_file_path,
+      :treatment
+
+    def initialize(includer_file_path, directive, line_index, cited_includee_file_path, treatment)
+      self.directive = directive
+      self.includer_file_path = includer_file_path
+      self.line_index = line_index
+      self.cited_includee_file_path = cited_includee_file_path
+      self.treatment = treatment
+    end
+
   end
 
 #   class Heading
