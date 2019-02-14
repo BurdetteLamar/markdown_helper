@@ -141,7 +141,7 @@ class MarkdownHelperTest < Minitest::Test
     # Test combinations of treatments and templates.
     {
         :nothing => :txt,
-        # :md => :md,
+        :md => :md,
         # :python => :py,
         # :ruby => :rb,
         # :text => :txt,
@@ -150,10 +150,10 @@ class MarkdownHelperTest < Minitest::Test
     }.each_pair do |file_stem, file_type|
       [
           :markdown,
-          :code_block,
-          :comment,
-          :pre,
-          file_stem.to_s,
+          # :code_block,
+          # :comment,
+          # :pre,
+          # file_stem.to_s,
       ].each do |treatment|
         test_info = IncludeInfo.new(
             file_stem,

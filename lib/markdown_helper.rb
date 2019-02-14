@@ -28,7 +28,9 @@ class MarkdownHelper
   end
 
   def include(template_file_path, markdown_file_path)
-    inclusion = Inclusion.new(template_file_path, markdown_file_path)
+    inclusion = Inclusion.new(
+        template_file_path: template_file_path,
+        markdown_file_path: markdown_file_path)
     send(:generate_file, __method__, inclusion) do
       send(:include_files, inclusion)
     end
@@ -84,7 +86,7 @@ class MarkdownHelper
   end
 
   def include_files(inclusion)
-    markdown_lines = []
+    markdown_lines = inclusion.markdown_lines
 #     page_toc_inclusion = nil
     inclusion.input_lines.each_with_index do |input_line, line_index|
       match_data = input_line.match(INCLUDE_REGEXP)
@@ -93,17 +95,19 @@ class MarkdownHelper
         next
       end
       treatment = match_data[1]
-      cited_includee_file_path = match_data[2]
+      cited_file_path = match_data[2]
       includee = Includee.new(
-          inclusion.template_file_path,
+          inclusion,
           input_line.chomp,
           line_index + 1,
-          cited_includee_file_path,
+          cited_file_path,
           treatment
       )
       case treatment
       when ':markdown'
-        include_markdown(includee, markdown_lines)
+        markdown_lines.push(MarkdownHelper.comment(" >>>>>> BEGIN INCLUDED FILE (#{treatment}): SOURCE #{includee.file_path_in_project} ")) unless pristine
+        include_markdown(includee)
+        markdown_lines.push(MarkdownHelper.comment(" >>>>>> END INCLUDED FILE (#{treatment}): SOURCE #{includee.file_path_in_project} ")) unless pristine
 #       when ':page_toc'
 #         unless inclusions.inclusions.size == 0
 #           message = 'Page TOC must be in outermost markdown file.'
@@ -123,8 +127,8 @@ class MarkdownHelper
 #         page_toc_inclusion.page_toc_title = toc_title
 #         page_toc_inclusion.page_toc_line = input_line
 #         markdown_lines.push(input_line)
-#       else
-#         markdown_lines.push(input_line)
+      else
+        markdown_lines.push(input_line)
       end
 #     end
 #     # If needed, create page TOC and insert into markdown_lines.
@@ -147,12 +151,12 @@ class MarkdownHelper
         next
       end
 #       treatment = match_data[1]
-#       cited_includee_file_path = match_data[2]
+#       cited_file_path = match_data[2]
 #       new_inclusion = Inclusion.new(
 #           markdown_line.chomp,
 #           includer_file_path,
 #           line_index + 1,
-#           cited_includee_file_path,
+#           cited_file_path,
 #           treatment
 #       )
 #       inclusions.include(
@@ -163,12 +167,14 @@ class MarkdownHelper
     end
   end
 
-  def include_markdown(includee, markdown_lines)
-    Dir.chdir(File.dirname(includee.includer_file_path)) do
-      template_file_path = includee.cited_includee_file_path
-      inclusion = Inclusion.new(template_file_path, markdown_lines)
-      template_file = File.open(template_file_path, 'r')
-      inclusion.input_lines = template_file.readlines
+  def include_markdown(includee)
+    # Go to template directory, to make inclusion relative file path easy to work with.
+    Dir.chdir(File.dirname(includee.inclusion.template_file_path)) do
+      template_file_path = includee.cited_file_path
+      inclusion = Inclusion.new(
+          template_file_path: template_file_path,
+          markdown_file_path: includee.inclusion.markdown_file_path,
+          markdown_lines: includee.inclusion.markdown_lines)
       include_files(inclusion)
     end
   end
@@ -199,12 +205,14 @@ EOT
     attr_accessor \
       :template_file_path,
       :markdown_file_path,
+      :markdown_lines,
       :input_lines,
       :output_lines
 
-    def initialize(tempate_file_path, markdown_file_path)
-      self.template_file_path = tempate_file_path
+    def initialize(template_file_path:, markdown_file_path:, markdown_lines: [])
+      self.template_file_path = template_file_path
       self.markdown_file_path = markdown_file_path
+      self.markdown_lines  = markdown_lines
       self.input_lines = File.open(template_file_path, 'r').readlines
       self.output_lines = []
     end
@@ -213,18 +221,22 @@ EOT
   class Includee
 
     attr_accessor \
-      :includer_file_path,
+      :inclusion,
       :directive,
       :line_index,
-      :cited_includee_file_path,
+      :cited_file_path,
+      :file_path_in_project,
       :treatment
 
-    def initialize(includer_file_path, directive, line_index, cited_includee_file_path, treatment)
+    def initialize(inclusion, directive, line_index, cited_file_path, treatment)
+      self.inclusion = inclusion
       self.directive = directive
-      self.includer_file_path = includer_file_path
       self.line_index = line_index
-      self.cited_includee_file_path = cited_includee_file_path
+      self.cited_file_path = cited_file_path
       self.treatment = treatment
+      Dir.chdir(File.dirname(inclusion.template_file_path)) do
+        self.file_path_in_project = MarkdownHelper.path_in_project(File.absolute_path(cited_file_path))
+      end
     end
 
   end
@@ -309,8 +321,8 @@ EOT
 #       if treatment == :markdown
 #         check_circularity(new_inclusion)
 #       end
-#        includee_path_in_project = MarkdownHelper.path_in_project(new_inclusion.absolute_includee_file_path)
-#       output_lines.push(MarkdownHelper.comment(" >>>>>> BEGIN INCLUDED FILE (#{treatment}): SOURCE #{includee_path_in_project} ")) unless markdown_helper.pristine
+#        file_path_in_project = MarkdownHelper.path_in_project(new_inclusion.absolute_includee_file_path)
+#       output_lines.push(MarkdownHelper.comment(" >>>>>> BEGIN INCLUDED FILE (#{treatment}): SOURCE #{file_path_in_project} ")) unless pristine
 #       begin
 #         include_lines = File.readlines(new_inclusion.absolute_includee_file_path)
 #       rescue => e
@@ -325,7 +337,7 @@ EOT
 #       end
 #       last_line = include_lines.last
 #       unless last_line && last_line.match("\n")
-#         message = "Warning:  Included file has no trailing newline: #{new_inclusion.cited_includee_file_path}"
+#         message = "Warning:  Included file has no trailing newline: #{new_inclusion.cited_file_path}"
 #         warn(message)
 #       end
 #       case treatment
@@ -342,7 +354,7 @@ EOT
 #           output_lines.push("</pre>\n")
 #         else
 #           # Use the file name as a label.
-#           file_name_line = format("```%s```:\n", File.basename(new_inclusion.cited_includee_file_path))
+#           file_name_line = format("```%s```:\n", File.basename(new_inclusion.cited_file_path))
 #           output_lines.push(file_name_line)
 #           # Put into code block.
 #           language = treatment == :code_block ? '' : treatment
@@ -350,7 +362,7 @@ EOT
 #           output_lines.push(*include_lines)
 #           output_lines.push("```\n")
 #       end
-#       output_lines.push(MarkdownHelper.comment(" <<<<<< END INCLUDED FILE (#{treatment}): SOURCE #{includee_path_in_project} ")) unless markdown_helper.pristine
+#       output_lines.push(MarkdownHelper.comment(" <<<<<< END INCLUDED FILE (#{treatment}): SOURCE #{file_path_in_project} ")) unless markdown_helper.pristine
 #     end
 #
 #     CIRCULAR_EXCEPTION_LABEL = 'Includes are circular:'
@@ -396,7 +408,7 @@ EOT
 #       :includer_line_number,
 #       :include_description,
 #       :absolute_includee_file_path,
-#       :cited_includee_file_path,
+#       :cited_file_path,
 #       :treatment,
 #       :page_toc_title,
 #       :page_toc_line
@@ -405,18 +417,18 @@ EOT
 #         include_description,
 #         includer_file_path,
 #         includer_line_number,
-#         cited_includee_file_path,
+#         cited_file_path,
 #         treatment
 #     )
 #       self.include_description = include_description
 #       self.includer_file_path = includer_file_path
 #       self.includer_line_number = includer_line_number
-#       self.cited_includee_file_path = cited_includee_file_path
+#       self.cited_file_path = cited_file_path
 #       self.absolute_includee_file_path = absolute_includee_file_path
 #       self.treatment = treatment
 #       self.absolute_includee_file_path = File.absolute_path(File.join(
 #           File.dirname(includer_file_path),
-#           cited_includee_file_path,
+#           cited_file_path,
 #       ))
 #     end
 #
