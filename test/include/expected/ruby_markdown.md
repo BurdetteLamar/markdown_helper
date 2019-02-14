@@ -1,5 +1,5 @@
 <!-- >>>>>> BEGIN GENERATED FILE (include): SOURCE test/include/templates/ruby_markdown.md -->
-<!-- >>>>>> BEGIN INCLUDED FILE (markdown): SOURCE test/include/includes/ruby.rb -->
+<!-- >>>>>> BEGIN INCLUDED FILE (:markdown): SOURCE test/include/includes/ruby.rb -->
 class RubyCode
 
   def initialize
@@ -7,5 +7,5 @@ class RubyCode
   end
 
 end
-<!-- <<<<<< END INCLUDED FILE (markdown): SOURCE test/include/includes/ruby.rb -->
+<!-- <<<<<< END INCLUDED FILE (:markdown): SOURCE test/include/includes/ruby.rb -->
 <!-- <<<<<< END GENERATED FILE (include): SOURCE test/include/templates/ruby_markdown.md -->
