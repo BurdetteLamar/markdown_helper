@@ -145,7 +145,7 @@ class MarkdownHelperTest < Minitest::Test
         :python => :py,
         :ruby => :rb,
         :text => :txt,
-        # :text_no_newline => :txt,
+        :text_no_newline => :txt,
         # :xml => :xml,
     }.each_pair do |file_stem, file_type|
       [
