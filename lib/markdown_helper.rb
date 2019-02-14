@@ -107,7 +107,7 @@ class MarkdownHelper
       when ':markdown'
         markdown_lines.push(MarkdownHelper.comment(" >>>>>> BEGIN INCLUDED FILE (#{treatment}): SOURCE #{includee.file_path_in_project} ")) unless pristine
         include_markdown(includee)
-        markdown_lines.push(MarkdownHelper.comment(" >>>>>> END INCLUDED FILE (#{treatment}): SOURCE #{includee.file_path_in_project} ")) unless pristine
+        markdown_lines.push(MarkdownHelper.comment(" <<<<<< END INCLUDED FILE (#{treatment}): SOURCE #{includee.file_path_in_project} ")) unless pristine
 #       when ':page_toc'
 #         unless inclusions.inclusions.size == 0
 #           message = 'Page TOC must be in outermost markdown file.'

@@ -142,7 +142,7 @@ class MarkdownHelperTest < Minitest::Test
     {
         :nothing => :txt,
         :md => :md,
-        # :python => :py,
+        :python => :py,
         # :ruby => :rb,
         # :text => :txt,
         # :text_no_newline => :txt,
