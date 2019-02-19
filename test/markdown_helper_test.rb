@@ -151,7 +151,7 @@ class MarkdownHelperTest < Minitest::Test
       [
           :markdown,
           # :code_block,
-          # :comment,
+          :comment,
           # :pre,
           # file_stem.to_s,
       ].each do |treatment|

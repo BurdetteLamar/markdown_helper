@@ -150,20 +150,22 @@ class MarkdownHelper
         inclusion.output_lines.push(markdown_line)
         next
       end
-#       treatment = match_data[1]
-#       cited_file_path = match_data[2]
-#       new_inclusion = Inclusion.new(
-#           markdown_line.chomp,
-#           includer_file_path,
-#           line_index + 1,
-#           cited_file_path,
-#           treatment
-#       )
-#       inclusions.include(
-#           new_inclusion,
-#           output_lines,
-#           self
-#       )
+      Dir.chdir(File.dirname(inclusion.template_file_path)) do
+        treatment = match_data[1]
+        cited_file_path = match_data[2]
+        output_lines = inclusion.output_lines
+        directive = markdown_line.chomp
+        includee = Includee.new(inclusion, directive, 1, cited_file_path, treatment)
+        output_lines.push(MarkdownHelper.comment(" >>>>>> BEGIN INCLUDED FILE (#{treatment}): SOURCE #{includee.file_path_in_project} ")) unless pristine
+        case treatment
+        when ':comment'
+          include_lines = File.readlines(cited_file_path)
+          output_lines.push(MarkdownHelper.comment(include_lines.join('')))
+        else
+          #
+        end
+        output_lines.push(MarkdownHelper.comment(" <<<<<< END INCLUDED FILE (#{treatment}): SOURCE #{includee.file_path_in_project} ")) unless pristine
+      end
     end
   end
 
