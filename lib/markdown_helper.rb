@@ -257,39 +257,38 @@ EOT
 
   end
 
-#   class Heading
-#
-#     attr_accessor :level, :title
-#
-#     def initialize(level, title)
-#       self.level = level
-#       self.title = title
-#     end
-#
-#     def self.parse(line)
-#       # Four leading spaces not allowed (but three are allowed).
-#       return nil if line.start_with?(' ' * 4)
-#       stripped_line = line.sub(/^ */, '')
-#       # Now must begin with hash marks and space.
-#       return nil unless stripped_line.match(/^#+ /)
-#       hash_marks, title = stripped_line.split(' ', 2)
-#       level = hash_marks.size
-#       # Seventh level heading not allowed.
-#       return nil if level > 6
-#       self.new(level, title)
-#     end
-#
-#
-#     def link
-#       remove_regexp = /[\#\(\)\[\]\{\}\.\?\+\*\`\"\']+/
-#       to_hyphen_regexp = /\W+/
-#       anchor = title.
-#           gsub(remove_regexp, '').
-#           gsub(to_hyphen_regexp, '-').
-#           downcase
-#       "[#{title}](##{anchor})"
-#     end
-#
+  class Heading
+
+    attr_accessor :level, :title
+
+    def initialize(level, title)
+      self.level = level
+      self.title = title
+    end
+
+    def self.parse(line)
+      # Four leading spaces not allowed (but three are allowed).
+      return nil if line.start_with?(' ' * 4)
+      stripped_line = line.sub(/^ */, '')
+      # Now must begin with hash marks and space.
+      return nil unless stripped_line.match(/^#+ /)
+      hash_marks, title = stripped_line.split(' ', 2)
+      level = hash_marks.size
+      # Seventh level heading not allowed.
+      return nil if level > 6
+      self.new(level, title)
+    end
+
+    def link
+      remove_regexp = /[\#\(\)\[\]\{\}\.\?\+\*\`\"\']+/
+      to_hyphen_regexp = /\W+/
+      anchor = title.
+          gsub(remove_regexp, '').
+          gsub(to_hyphen_regexp, '-').
+          downcase
+      "[#{title}](##{anchor})"
+    end
+
 #   end
 #
 #   def create_page_toc(input_lines, output_lines)
@@ -412,9 +411,9 @@ EOT
 #       end
 #       lines.join("\n")
 #     end
-#
-#   end
-#
+
+  end
+
 #   class Inclusion
 #
 #     LINE_COUNT = 5

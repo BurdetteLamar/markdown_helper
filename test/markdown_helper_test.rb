@@ -14,7 +14,7 @@ class MarkdownHelperTest < Minitest::Test
     refute_nil MarkdownHelper::VERSION
   end
 
-  def zzz_test_link
+  def test_link
     [
         ['# Foo', [1, '[Foo](#foo)']],
         ['# Foo Bar', [1, '[Foo Bar](#foo-bar)']],
