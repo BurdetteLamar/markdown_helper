@@ -165,8 +165,6 @@ class MarkdownHelperTest < Minitest::Test
       end
     end
 
-    return
-
     # Test automatic page TOC.
     [
         :all_levels,
@@ -185,6 +183,9 @@ class MarkdownHelperTest < Minitest::Test
           )
       common_test(MarkdownHelper.new({:pristine => true}), test_info)
     end
+
+    return
+
     # Test invalid page TOC title.
     test_info = IncludeInfo.new(
         'invalid_title',

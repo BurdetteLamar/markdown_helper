@@ -87,7 +87,7 @@ class MarkdownHelper
 
   def include_files(inclusion)
     markdown_lines = inclusion.markdown_lines
-#     page_toc_inclusion = nil
+    page_toc_inclusion = nil
     inclusion.input_lines.each_with_index do |input_line, line_index|
       match_data = input_line.match(INCLUDE_REGEXP)
       unless match_data
@@ -108,40 +108,40 @@ class MarkdownHelper
         markdown_lines.push(MarkdownHelper.comment(" >>>>>> BEGIN INCLUDED FILE (#{treatment}): SOURCE #{includee.file_path_in_project} ")) unless pristine
         include_markdown(includee)
         markdown_lines.push(MarkdownHelper.comment(" <<<<<< END INCLUDED FILE (#{treatment}): SOURCE #{includee.file_path_in_project} ")) unless pristine
-#       when ':page_toc'
-#         unless inclusions.inclusions.size == 0
-#           message = 'Page TOC must be in outermost markdown file.'
-#           raise MisplacedPageTocError.new(message)
-#         end
-#         unless page_toc_inclusion.nil?
-#           message = 'Only one page TOC allowed.'
-#           raise MultiplePageTocError.new(message)
-#         end
-#         page_toc_inclusion = new_inclusion
-#         toc_title = match_data[2]
-#         title_regexp = /^\#{1,6}\s/
-#         unless toc_title.match(title_regexp)
-#           message = "TOC title must be a valid markdown header, not #{toc_title}"
-#           raise InvalidTocTitleError.new(message)
-#         end
-#         page_toc_inclusion.page_toc_title = toc_title
-#         page_toc_inclusion.page_toc_line = input_line
-#         markdown_lines.push(input_line)
+      when ':page_toc'
+        # unless inclusions.inclusions.size == 0
+        #   message = 'Page TOC must be in outermost markdown file.'
+        #   raise MisplacedPageTocError.new(message)
+        # end
+        # unless page_toc_inclusion.nil?
+        #   message = 'Only one page TOC allowed.'
+        #   raise MultiplePageTocError.new(message)
+        # end
+        page_toc_inclusion = inclusion
+        toc_title = match_data[2]
+        title_regexp = /^\#{1,6}\s/
+        unless toc_title.match(title_regexp)
+          message = "TOC title must be a valid markdown header, not #{toc_title}"
+          raise InvalidTocTitleError.new(message)
+        end
+        page_toc_inclusion.page_toc_title = toc_title
+        page_toc_inclusion.page_toc_line = input_line
+        markdown_lines.push(input_line)
       else
         markdown_lines.push(input_line)
       end
-#     end
-#     # If needed, create page TOC and insert into markdown_lines.
-#     unless page_toc_inclusion.nil?
-#       toc_lines = [
-#           page_toc_inclusion.page_toc_title + "\n",
-#           '',
-#       ]
-#       page_toc_index =  markdown_lines.index(page_toc_inclusion.page_toc_line)
-#       lines_to_scan = markdown_lines[page_toc_index + 1..-1]
-#       create_page_toc(lines_to_scan, toc_lines)
-#       markdown_lines.delete_at(page_toc_index)
-#       markdown_lines.insert(page_toc_index, *toc_lines)
+    end
+    # If needed, create page TOC and insert into markdown_lines.
+    unless page_toc_inclusion.nil?
+      toc_lines = [
+          page_toc_inclusion.page_toc_title + "\n",
+          '',
+      ]
+      page_toc_index =  markdown_lines.index(page_toc_inclusion.page_toc_line)
+      lines_to_scan = markdown_lines[page_toc_index + 1..-1]
+      create_page_toc(lines_to_scan, toc_lines)
+      markdown_lines.delete_at(page_toc_index)
+      markdown_lines.insert(page_toc_index, *toc_lines)
     end
     # Now review the markdown and include everything.
     markdown_lines.each_with_index do |markdown_line, line_index|
@@ -157,7 +157,7 @@ class MarkdownHelper
         directive = markdown_line.chomp
         includee = Includee.new(inclusion, directive, 1, cited_file_path, treatment)
         output_lines.push(MarkdownHelper.comment(" >>>>>> BEGIN INCLUDED FILE (#{treatment}): SOURCE #{includee.file_path_in_project} ")) unless pristine
-        include_lines = File.readlines(cited_file_path)
+        include_lines = File.readlines(cited_file_path) unless treatment == ':page_toc'
         case treatment
         when ':comment'
           output_lines.push(MarkdownHelper.comment(include_lines.join('')))
@@ -223,7 +223,9 @@ EOT
       :markdown_file_path,
       :markdown_lines,
       :input_lines,
-      :output_lines
+      :output_lines,
+      :page_toc_title,
+      :page_toc_line
 
     def initialize(template_file_path:, markdown_file_path:, markdown_lines: [])
       self.template_file_path = template_file_path
@@ -289,21 +291,21 @@ EOT
       "[#{title}](##{anchor})"
     end
 
-#   end
-#
-#   def create_page_toc(input_lines, output_lines)
-#     first_heading_level = nil
-#     input_lines.each do |input_line|
-#       line = input_line.chomp
-#       heading = Heading.parse(line)
-#       next unless heading
-#       first_heading_level ||= heading.level
-#       indentation = '  ' * (heading.level - first_heading_level)
-#       output_line = "#{indentation}- #{heading.link}"
-#       output_lines.push("#{output_line}\n")
-#     end
-#   end
-#
+  end
+
+  def create_page_toc(input_lines, output_lines)
+    first_heading_level = nil
+    input_lines.each do |input_line|
+      line = input_line.chomp
+      heading = Heading.parse(line)
+      next unless heading
+      first_heading_level ||= heading.level
+      indentation = '  ' * (heading.level - first_heading_level)
+      output_line = "#{indentation}- #{heading.link}"
+      output_lines.push("#{output_line}\n")
+    end
+  end
+
 #   class Inclusions
 #
 #     attr_accessor :inclusions
@@ -412,8 +414,8 @@ EOT
 #       lines.join("\n")
 #     end
 
-  end
-
+  # end
+#
 #   class Inclusion
 #
 #     LINE_COUNT = 5
