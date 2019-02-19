@@ -1,5 +1,5 @@
 <!-- >>>>>> BEGIN GENERATED FILE (include): SOURCE test/include/templates/ruby_pre.md -->
-<!-- >>>>>> BEGIN INCLUDED FILE (pre): SOURCE test/include/includes/ruby.rb -->
+<!-- >>>>>> BEGIN INCLUDED FILE (:pre): SOURCE test/include/includes/ruby.rb -->
 <pre>
 class RubyCode
 
@@ -9,5 +9,5 @@ class RubyCode
 
 end
 </pre>
-<!-- <<<<<< END INCLUDED FILE (pre): SOURCE test/include/includes/ruby.rb -->
+<!-- <<<<<< END INCLUDED FILE (:pre): SOURCE test/include/includes/ruby.rb -->
 <!-- <<<<<< END GENERATED FILE (include): SOURCE test/include/templates/ruby_pre.md -->

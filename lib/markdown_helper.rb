@@ -157,10 +157,12 @@ class MarkdownHelper
         directive = markdown_line.chomp
         includee = Includee.new(inclusion, directive, 1, cited_file_path, treatment)
         output_lines.push(MarkdownHelper.comment(" >>>>>> BEGIN INCLUDED FILE (#{treatment}): SOURCE #{includee.file_path_in_project} ")) unless pristine
+        include_lines = File.readlines(cited_file_path)
         case treatment
         when ':comment'
-          include_lines = File.readlines(cited_file_path)
           output_lines.push(MarkdownHelper.comment(include_lines.join('')))
+        when ':pre'
+          output_lines.push(MarkdownHelper.pre(include_lines.join('')))
         else
           #
         end
@@ -196,6 +198,13 @@ EOT
 
   def self.path_in_project(path)
     path.sub(MarkdownHelper.git_clone_dir_path + '/', '')
+  end
+
+  def self.pre(text)
+    <<EOT
+<pre>
+#{text}</pre>
+EOT
   end
 
   def self.comment(text)

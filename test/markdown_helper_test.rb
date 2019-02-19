@@ -152,7 +152,7 @@ class MarkdownHelperTest < Minitest::Test
           :markdown,
           # :code_block,
           :comment,
-          # :pre,
+          :pre,
           # file_stem.to_s,
       ].each do |treatment|
         test_info = IncludeInfo.new(
