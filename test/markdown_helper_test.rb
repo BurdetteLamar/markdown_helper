@@ -150,7 +150,7 @@ class MarkdownHelperTest < Minitest::Test
     }.each_pair do |file_stem, file_type|
       [
           :markdown,
-          # :code_block,
+          :code_block,
           :comment,
           :pre,
           # file_stem.to_s,

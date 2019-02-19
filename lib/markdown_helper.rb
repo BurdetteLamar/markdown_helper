@@ -164,7 +164,12 @@ class MarkdownHelper
         when ':pre'
           output_lines.push(MarkdownHelper.pre(include_lines.join('')))
         else
-          #
+          file_name_line = format("```%s```:\n", File.basename(includee.file_path_in_project))
+          output_lines.push(file_name_line)
+          language = treatment == ':code_block' ? '' : treatment.sub(':', '')
+          output_lines.push("```#{language}\n")
+          output_lines.push(*include_lines)
+          output_lines.push("```\n")
         end
         output_lines.push(MarkdownHelper.comment(" <<<<<< END INCLUDED FILE (#{treatment}): SOURCE #{includee.file_path_in_project} ")) unless pristine
       end

@@ -1,5 +1,5 @@
 <!-- >>>>>> BEGIN GENERATED FILE (include): SOURCE test/include/templates/xml_code_block.md -->
-<!-- >>>>>> BEGIN INCLUDED FILE (code_block): SOURCE test/include/includes/xml.xml -->
+<!-- >>>>>> BEGIN INCLUDED FILE (:code_block): SOURCE test/include/includes/xml.xml -->
 ```xml.xml```:
 ```
 <root>
@@ -10,5 +10,5 @@
   </element>
 </root>
 ```
-<!-- <<<<<< END INCLUDED FILE (code_block): SOURCE test/include/includes/xml.xml -->
+<!-- <<<<<< END INCLUDED FILE (:code_block): SOURCE test/include/includes/xml.xml -->
 <!-- <<<<<< END GENERATED FILE (include): SOURCE test/include/templates/xml_code_block.md -->
