@@ -5,7 +5,7 @@ class MarkdownHelper
 
   INCLUDE_REGEXP = /^@\[([^\[]+)\]\(([^)]+)\)$/
 
-  attr_accessor :pristine
+  attr_accessor :pristine, :inclusions
 
   def initialize(options = {})
     # Confirm that we're in a git project.
@@ -24,6 +24,7 @@ class MarkdownHelper
       setter_method = "#{method}="
       send(setter_method, value)
       merged_options.delete(method)
+      self.inclusions = []
     end
   end
 
@@ -97,6 +98,7 @@ EOT
   end
 
   def include_files(inclusion)
+    inclusions.push(inclusion)
     markdown_lines = inclusion.markdown_lines
     page_toc_inclusion = nil
     inclusion.input_lines.each_with_index do |input_line, line_index|
@@ -120,14 +122,14 @@ EOT
         include_markdown(includee)
         markdown_lines.push(MarkdownHelper.comment(" <<<<<< END INCLUDED FILE (#{treatment}): SOURCE #{includee.file_path_in_project} ")) unless pristine
       when ':page_toc'
-        # unless inclusions.inclusions.size == 0
-        #   message = 'Page TOC must be in outermost markdown file.'
-        #   raise MisplacedPageTocError.new(message)
-        # end
-        # unless page_toc_inclusion.nil?
-        #   message = 'Only one page TOC allowed.'
-        #   raise MultiplePageTocError.new(message)
-        # end
+        unless inclusions.size == 1
+          message = 'Page TOC must be in outermost markdown file.'
+          raise MisplacedPageTocError.new(message)
+        end
+        unless page_toc_inclusion.nil?
+          message = 'Only one page TOC allowed.'
+          raise MultiplePageTocError.new(message)
+        end
         page_toc_inclusion = inclusion
         toc_title = match_data[2]
         title_regexp = /^\#{1,6}\s/
@@ -185,6 +187,7 @@ EOT
         output_lines.push(MarkdownHelper.comment(" <<<<<< END INCLUDED FILE (#{treatment}): SOURCE #{includee.file_path_in_project} ")) unless pristine
       end
     end
+    inclusions.pop
   end
 
   def include_markdown(includee)
