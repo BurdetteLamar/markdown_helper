@@ -268,8 +268,6 @@ class MarkdownHelperTest < Minitest::Test
     e = assert_raises(MarkdownHelper::UnreadableInputError) do
       common_test(MarkdownHelper.new, test_info)
     end
-    # assert_template_exception(test_info.template_file_path, e)
-    assert_kind_of(MarkdownHelper::UnreadableInputError, e)
     expected_message = <<EOT
 Could not read input file:
 C:/Users/Burde/Documents/GitHub/markdown_helper/test/include/templates/no_such_markdown.md
@@ -282,15 +280,19 @@ EOT
         file_type = 'md',
         treatment = :markdown,
     )
-    # create_template(test_info)
     test_info.actual_file_path = File.join(
         File.dirname(test_info.actual_file_path),
         'nonexistent_directory',
         'nosuch.md',
     )
-    assert_raises(Exception) do
+    e = assert_raises(MarkdownHelper::UnwritableOutputError) do
       common_test(MarkdownHelper.new, test_info)
     end
+    expected_message = <<EOT
+Could not write output file:
+C:/Users/Burde/Documents/GitHub/markdown_helper/test/include/actual/nonexistent_directory/nosuch.md
+EOT
+    assert_equal(expected_message, e.message)
 
     return
 

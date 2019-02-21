@@ -53,6 +53,16 @@ EOT
     end
   end
 
+  class UnwritableOutputError < MarkdownHelperError
+    attr_accessor :message
+    def initialize(file_path)
+      self.message = <<EOT
+Could not write output file:
+#{file_path}
+EOT
+    end
+  end
+
   class TocHeadingsError < MarkdownHelperError; end
 
   class OptionError < MarkdownHelperError; end
@@ -75,6 +85,10 @@ EOT
     output_lines.push(MarkdownHelper.comment(" >>>>>> BEGIN GENERATED FILE (#{method.to_s}): SOURCE #{template_path_in_project} ")) unless pristine
     yield
       output_lines.push(MarkdownHelper.comment(" <<<<<< END GENERATED FILE (#{method.to_s}): SOURCE #{template_path_in_project} ")) unless pristine
+    unless File.writable?(markdown_file_path)
+      e = UnwritableOutputError.new(markdown_file_path)
+      raise e
+    end
     File.open(markdown_file_path, 'w') do |file|
       output_lines.each do |line|
         file.write(line)
