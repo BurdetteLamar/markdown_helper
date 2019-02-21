@@ -194,27 +194,25 @@ class MarkdownHelperTest < Minitest::Test
       common_test(MarkdownHelper.new({:pristine => true}), test_info)
     end
 
-    return
+    # # Test multiple page TOC.
+    # test_info = IncludeInfo.new(
+    #     'multiple',
+    #     :md,
+    #     :page_toc,
+    #     )
+    # assert_raises(MarkdownHelper::MultiplePageTocError) do
+    #   common_test(MarkdownHelper.new({:pristine => true}), test_info)
+    # end
 
-    # Test multiple page TOC.
-    test_info = IncludeInfo.new(
-        'multiple',
-        :md,
-        :page_toc,
-        )
-    assert_raises(MarkdownHelper::MultiplePageTocError) do
-      common_test(MarkdownHelper.new({:pristine => true}), test_info)
-    end
-
-    # Test misplaced page TOC.
-    test_info = IncludeInfo.new(
-        'misplaced',
-        :md,
-        :page_toc,
-        )
-    assert_raises(MarkdownHelper::MisplacedPageTocError) do
-      common_test(MarkdownHelper.new({:pristine => true}), test_info)
-    end
+    # # Test misplaced page TOC.
+    # test_info = IncludeInfo.new(
+    #     'misplaced',
+    #     :md,
+    #     :page_toc,
+    #     )
+    # assert_raises(MarkdownHelper::MisplacedPageTocError) do
+    #   common_test(MarkdownHelper.new({:pristine => true}), test_info)
+    # end
 
     # Test treatment as comment.
     test_info = IncludeInfo.new(
@@ -267,10 +265,16 @@ class MarkdownHelperTest < Minitest::Test
         file_type = 'md',
         treatment = :markdown,
     )
-    e = assert_raises(Exception) do
+    e = assert_raises(MarkdownHelper::UnreadableInputError) do
       common_test(MarkdownHelper.new, test_info)
     end
-    assert_template_exception(test_info.template_file_path, e)
+    # assert_template_exception(test_info.template_file_path, e)
+    assert_kind_of(MarkdownHelper::UnreadableInputError, e)
+    expected_message = <<EOT
+Could not read input file:
+C:/Users/Burde/Documents/GitHub/markdown_helper/test/include/templates/no_such_markdown.md
+EOT
+    assert_equal(expected_message, e.message)
 
     # Test markdown (output) open failure.
     test_info = IncludeInfo.new(
@@ -287,6 +291,8 @@ class MarkdownHelperTest < Minitest::Test
     assert_raises(Exception) do
       common_test(MarkdownHelper.new, test_info)
     end
+
+    return
 
     # Test circular includes.
     test_info = IncludeInfo.new(
@@ -437,15 +443,6 @@ class MarkdownHelperTest < Minitest::Test
     diffs
   end
 
-  def assert_io_exception(expected_exception_class, expected_label, expected_file_path, e)
-    assert_kind_of(expected_exception_class, e)
-    lines = e.message.split("\n")
-    actual_label = lines.shift
-    assert_equal(expected_label, actual_label)
-    actual_file_path = lines.shift
-    assert_equal(expected_file_path.inspect, actual_file_path)
-  end
-
   def assert_inclusion_exception(expected_exception_class, exception_label, expected_inclusions, e)
     assert_kind_of(expected_exception_class, e)
     lines = e.message.split("\n")
@@ -513,15 +510,6 @@ class MarkdownHelperTest < Minitest::Test
     relative_path = MarkdownHelper.path_in_project(expected_inclusion.absolute_includee_file_path)
     r = Regexp.new(Regexp.escape("#{relative_path}") + '$')
     assert_match(r, includee_file_path, message)
-  end
-
-  def assert_template_exception(expected_file_path, e)
-    assert_io_exception(
-        Exception,
-        MarkdownHelper::Inclusions::UNREADABLE_INPUT_EXCEPTION_LABEL,
-        expected_file_path,
-        e
-    )
   end
 
 end

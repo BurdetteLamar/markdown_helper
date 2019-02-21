@@ -44,11 +44,12 @@ class MarkdownHelper
 
 
   class UnreadableInputError < MarkdownHelperError
+    attr_accessor :message
     def initialize(file_path)
-      self.message = [
-          'Could not read input file:',
-          file_path.inspect,
-      ].join("\n")
+      self.message = <<EOT
+Could not read input file:
+#{file_path}
+EOT
     end
   end
 
@@ -70,10 +71,6 @@ class MarkdownHelper
     template_file_path = inclusion.template_file_path
     markdown_file_path = inclusion.markdown_file_path
     output_lines = inclusion.output_lines
-    unless File.readable?(template_file_path)
-      e = UnreadableInputError.new(template_file_path.inspect)
-      raise e
-    end
     template_path_in_project = MarkdownHelper.path_in_project(template_file_path)
     output_lines.push(MarkdownHelper.comment(" >>>>>> BEGIN GENERATED FILE (#{method.to_s}): SOURCE #{template_path_in_project} ")) unless pristine
     yield
@@ -231,6 +228,10 @@ EOT
       self.template_file_path = template_file_path
       self.markdown_file_path = markdown_file_path
       self.markdown_lines  = markdown_lines
+      unless File.readable?(template_file_path)
+        e = UnreadableInputError.new(template_file_path)
+        raise e
+      end
       self.input_lines = File.open(template_file_path, 'r').readlines
       self.output_lines = []
     end
