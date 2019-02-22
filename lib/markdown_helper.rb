@@ -119,24 +119,7 @@ EOT
       when ':markdown'
         include_markdown(includee, markdown_lines)
       when ':page_toc'
-        unless inclusions.size == 1
-          message = 'Page TOC must be in outermost markdown file.'
-          raise MisplacedPageTocError.new(message)
-        end
-        unless page_toc_inclusion.nil?
-          message = 'Only one page TOC allowed.'
-          raise MultiplePageTocError.new(message)
-        end
-        page_toc_inclusion = inclusion
-        toc_title = match_data[2]
-        title_regexp = /^\#{1,6}\s/
-        unless toc_title.match(title_regexp)
-          message = "TOC title must be a valid markdown header, not #{toc_title}"
-          raise InvalidTocTitleError.new(message)
-        end
-        page_toc_inclusion.page_toc_title = toc_title
-        page_toc_inclusion.page_toc_line = input_line
-        markdown_lines.push(input_line)
+        page_toc_inclusion = get_page_toc_inclusion(inclusion, page_toc_inclusion, match_data, input_line, markdown_lines)
       else
         markdown_lines.push(input_line)
       end
@@ -207,6 +190,28 @@ EOT
       include_files(inclusion)
       markdown_lines.push(MarkdownHelper.comment(" <<<<<< END INCLUDED FILE (#{treatment}): SOURCE #{includee.file_path_in_project} ")) unless pristine
     end
+  end
+
+  def get_page_toc_inclusion(inclusion, page_toc_inclusion, match_data, input_line, markdown_lines)
+    unless inclusions.size == 1
+      message = 'Page TOC must be in outermost markdown file.'
+      raise MisplacedPageTocError.new(message)
+    end
+    unless page_toc_inclusion.nil?
+      message = 'Only one page TOC allowed.'
+      raise MultiplePageTocError.new(message)
+    end
+    page_toc_inclusion = inclusion
+    toc_title = match_data[2]
+    title_regexp = /^\#{1,6}\s/
+    unless toc_title.match(title_regexp)
+      message = "TOC title must be a valid markdown header, not #{toc_title}"
+      raise InvalidTocTitleError.new(message)
+    end
+    page_toc_inclusion.page_toc_title = toc_title
+    page_toc_inclusion.page_toc_line = input_line
+    markdown_lines.push(input_line)
+    page_toc_inclusion
   end
 
   def self.git_clone_dir_path
