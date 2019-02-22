@@ -19,7 +19,8 @@ class MarkdownHelper
     merged_options = default_options.merge(options)
     merged_options.each_pair do |method, value|
       unless self.respond_to?(method)
-        raise OptionError.new("Unknown option: #{method}")
+        message = "Unknown option: #{method}"
+        raise OptionError.new(message)
       end
       setter_method = "#{method}="
       send(setter_method, value)
@@ -87,8 +88,7 @@ EOT
     yield
       output_lines.push(MarkdownHelper.comment(" <<<<<< END GENERATED FILE (#{method.to_s}): SOURCE #{template_path_in_project} ")) unless pristine
     unless File.writable?(markdown_file_path)
-      e = UnwritableOutputError.new(markdown_file_path)
-      raise e
+      raise UnwritableOutputError.new(markdown_file_path)
     end
     File.open(markdown_file_path, 'w') do |file|
       output_lines.each do |line|
@@ -246,8 +246,7 @@ EOT
       self.markdown_file_path = markdown_file_path
       self.markdown_lines  = markdown_lines
       unless File.readable?(template_file_path)
-        e = UnreadableInputError.new(template_file_path)
-        raise e
+        raise UnreadableInputError.new(template_file_path)
       end
       self.input_lines = File.open(template_file_path, 'r').readlines
       self.output_lines = []
