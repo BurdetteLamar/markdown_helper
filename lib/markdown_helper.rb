@@ -64,11 +64,7 @@ EOT
     end
   end
 
-  class TocHeadingsError < MarkdownHelperError; end
-
   class OptionError < MarkdownHelperError; end
-
-  class EnvironmentError < MarkdownHelperError; end
 
   class InvalidTocTitleError < MarkdownHelperError; end
 
