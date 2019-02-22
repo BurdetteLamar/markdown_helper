@@ -117,9 +117,7 @@ EOT
       )
       case treatment
       when ':markdown'
-        markdown_lines.push(MarkdownHelper.comment(" >>>>>> BEGIN INCLUDED FILE (#{treatment}): SOURCE #{includee.file_path_in_project} ")) unless pristine
-        include_markdown(includee)
-        markdown_lines.push(MarkdownHelper.comment(" <<<<<< END INCLUDED FILE (#{treatment}): SOURCE #{includee.file_path_in_project} ")) unless pristine
+        include_markdown(includee, markdown_lines)
       when ':page_toc'
         unless inclusions.size == 1
           message = 'Page TOC must be in outermost markdown file.'
@@ -195,15 +193,19 @@ EOT
       end
     end
   end
-  def include_markdown(includee)
+
+  def include_markdown(includee, markdown_lines)
     # Go to template directory, to make inclusion relative file path easy to work with.
     Dir.chdir(File.dirname(includee.inclusion.template_file_path)) do
       template_file_path = includee.cited_file_path
+      treatment = includee.treatment
       inclusion = Inclusion.new(
           template_file_path: template_file_path,
           markdown_file_path: includee.inclusion.markdown_file_path,
           markdown_lines: includee.inclusion.markdown_lines)
+      markdown_lines.push(MarkdownHelper.comment(" >>>>>> BEGIN INCLUDED FILE (#{treatment}): SOURCE #{includee.file_path_in_project} ")) unless pristine
       include_files(inclusion)
+      markdown_lines.push(MarkdownHelper.comment(" <<<<<< END INCLUDED FILE (#{treatment}): SOURCE #{includee.file_path_in_project} ")) unless pristine
     end
   end
 
