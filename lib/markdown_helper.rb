@@ -35,10 +35,16 @@ class MarkdownHelper
         markdown_file_path: markdown_file_path
     )
     output_lines = inclusion.output_lines
-    template_path_in_project = MarkdownHelper.path_in_project(template_file_path)
-    output_lines.push(MarkdownHelper.comment(" >>>>>> BEGIN GENERATED FILE (include): SOURCE #{template_path_in_project} ")) unless pristine
-    send(:include_files, inclusion)
-    output_lines.push(MarkdownHelper.comment(" <<<<<< END GENERATED FILE (include): SOURCE #{template_path_in_project} ")) unless pristine
+
+    if pristine
+      send(:include_files, inclusion)
+    else
+      template_path_in_project = MarkdownHelper.path_in_project(template_file_path)
+      output_lines.push(MarkdownHelper.comment(" >>>>>> BEGIN GENERATED FILE (include): SOURCE #{template_path_in_project} "))
+      send(:include_files, inclusion)
+      output_lines.push(MarkdownHelper.comment(" <<<<<< END GENERATED FILE (include): SOURCE #{template_path_in_project} "))
+    end
+
     unless File.writable?(markdown_file_path)
       raise UnwritableMarkdownError.new(markdown_file_path)
     end
