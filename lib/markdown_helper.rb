@@ -84,6 +84,15 @@ EOT
   def include_files(inclusion)
     inclusions.push(inclusion)
     markdown_lines = inclusion.markdown_lines
+    # First pass:  include only markdown; ignore code blocks, etc.
+    # This is because a code block containing # would confuse page TOC.
+    do_first_pass(inclusion, markdown_lines)
+    # Second pass:  review the markdown and include everything.
+    do_second_pass(inclusion, markdown_lines)
+    inclusions.pop
+  end
+
+  def do_first_pass(inclusion, markdown_lines)
     page_toc_inclusion = nil
     inclusion.input_lines.each_with_index do |input_line, line_index|
       match_data = input_line.match(INCLUDE_REGEXP)
@@ -140,7 +149,9 @@ EOT
       markdown_lines.delete_at(page_toc_index)
       markdown_lines.insert(page_toc_index, *toc_lines)
     end
-    # Now review the markdown and include everything.
+  end
+
+  def do_second_pass(inclusion, markdown_lines)
     markdown_lines.each_with_index do |markdown_line, line_index|
       match_data = markdown_line.match(INCLUDE_REGEXP)
       unless match_data
@@ -177,9 +188,7 @@ EOT
         output_lines.push(MarkdownHelper.comment(" <<<<<< END INCLUDED FILE (#{treatment}): SOURCE #{includee.file_path_in_project} ")) unless pristine
       end
     end
-    inclusions.pop
   end
-
   def include_markdown(includee)
     # Go to template directory, to make inclusion relative file path easy to work with.
     Dir.chdir(File.dirname(includee.inclusion.template_file_path)) do
