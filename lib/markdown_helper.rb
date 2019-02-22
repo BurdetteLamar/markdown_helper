@@ -32,17 +32,24 @@ class MarkdownHelper
   def include(template_file_path, markdown_file_path)
     inclusion = Inclusion.new(
         template_file_path: template_file_path,
-        markdown_file_path: markdown_file_path)
-    send(:generate_file, __method__, inclusion) do
-      send(:include_files, inclusion)
+        markdown_file_path: markdown_file_path
+    )
+    output_lines = inclusion.output_lines
+    template_path_in_project = MarkdownHelper.path_in_project(template_file_path)
+    output_lines.push(MarkdownHelper.comment(" >>>>>> BEGIN GENERATED FILE (include): SOURCE #{template_path_in_project} ")) unless pristine
+    send(:include_files, inclusion)
+    output_lines.push(MarkdownHelper.comment(" <<<<<< END GENERATED FILE (include): SOURCE #{template_path_in_project} ")) unless pristine
+    unless File.writable?(markdown_file_path)
+      raise UnwritableMarkdownError.new(markdown_file_path)
+    end
+    File.open(markdown_file_path, 'w') do |file|
+      output_lines.each do |line|
+        file.write(line)
+      end
     end
   end
 
   class MarkdownHelperError < RuntimeError; end
-
-  # class CircularIncludeError < MarkdownHelperError
-  #   def self.label; 'Includes are circular:'; end
-  # end
 
   class UnreadableTemplateError < MarkdownHelperError
     attr_accessor :message
@@ -73,24 +80,6 @@ EOT
   class MultiplePageTocError < MarkdownHelperError; end
 
   private
-
-  def generate_file(method, inclusion)
-    template_file_path = inclusion.template_file_path
-    markdown_file_path = inclusion.markdown_file_path
-    output_lines = inclusion.output_lines
-    template_path_in_project = MarkdownHelper.path_in_project(template_file_path)
-    output_lines.push(MarkdownHelper.comment(" >>>>>> BEGIN GENERATED FILE (#{method.to_s}): SOURCE #{template_path_in_project} ")) unless pristine
-    yield
-      output_lines.push(MarkdownHelper.comment(" <<<<<< END GENERATED FILE (#{method.to_s}): SOURCE #{template_path_in_project} ")) unless pristine
-    unless File.writable?(markdown_file_path)
-      raise UnwritableMarkdownError.new(markdown_file_path)
-    end
-    File.open(markdown_file_path, 'w') do |file|
-      output_lines.each do |line|
-        file.write(line)
-      end
-    end
-  end
 
   def include_files(inclusion)
     inclusions.push(inclusion)
