@@ -110,11 +110,11 @@ EOT
       treatment = match_data[1]
       cited_file_path = match_data[2]
       includee = Includee.new(
-          inclusion,
-          input_line.chomp,
-          line_index + 1,
-          cited_file_path,
-          treatment
+          inclusion: inclusion,
+          directive: input_line.chomp,
+          line_index: line_index + 1,
+          cited_file_path: cited_file_path,
+          treatment: treatment
       )
       case treatment
       when ':markdown'
@@ -168,7 +168,13 @@ EOT
         cited_file_path = match_data[2]
         output_lines = inclusion.output_lines
         directive = markdown_line.chomp
-        includee = Includee.new(inclusion, directive, 1, cited_file_path, treatment)
+        includee = Includee.new(
+            inclusion: inclusion,
+            directive: directive,
+            line_index: 1,
+            cited_file_path: cited_file_path,
+            treatment: treatment
+        )
         output_lines.push(MarkdownHelper.comment(" >>>>>> BEGIN INCLUDED FILE (#{treatment}): SOURCE #{includee.file_path_in_project} ")) unless pristine
         include_lines = File.readlines(cited_file_path) unless treatment == ':page_toc'
         case treatment
@@ -263,7 +269,7 @@ EOT
       :file_path_in_project,
       :treatment
 
-    def initialize(inclusion, directive, line_index, cited_file_path, treatment)
+    def initialize(inclusion:, directive:, line_index:, cited_file_path:, treatment:)
       self.inclusion = inclusion
       self.directive = directive
       self.line_index = line_index
