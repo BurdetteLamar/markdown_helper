@@ -125,17 +125,7 @@ EOT
       end
     end
     # If needed, create page TOC and insert into markdown_lines.
-    unless page_toc_inclusion.nil?
-      toc_lines = [
-          page_toc_inclusion.page_toc_title + "\n",
-          '',
-      ]
-      page_toc_index =  markdown_lines.index(page_toc_inclusion.page_toc_line)
-      lines_to_scan = markdown_lines[page_toc_index + 1..-1]
-      create_page_toc(lines_to_scan, toc_lines)
-      markdown_lines.delete_at(page_toc_index)
-      markdown_lines.insert(page_toc_index, *toc_lines)
-    end
+    include_page_toc(page_toc_inclusion, markdown_lines) if page_toc_inclusion
   end
 
   def do_second_pass(inclusion, markdown_lines)
@@ -212,6 +202,18 @@ EOT
     page_toc_inclusion.page_toc_line = input_line
     markdown_lines.push(input_line)
     page_toc_inclusion
+  end
+
+  def include_page_toc(page_toc_inclusion, markdown_lines)
+    toc_lines = [
+        page_toc_inclusion.page_toc_title + "\n",
+        '',
+    ]
+    page_toc_index =  markdown_lines.index(page_toc_inclusion.page_toc_line)
+    lines_to_scan = markdown_lines[page_toc_index + 1..-1]
+    create_page_toc(lines_to_scan, toc_lines)
+    markdown_lines.delete_at(page_toc_index)
+    markdown_lines.insert(page_toc_index, *toc_lines)
   end
 
   def self.git_clone_dir_path
