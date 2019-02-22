@@ -40,26 +40,25 @@ class MarkdownHelper
 
   class MarkdownHelperError < RuntimeError; end
 
-  class CircularIncludeError < MarkdownHelperError
-    def self.label; 'Includes are circular:'; end
-  end
+  # class CircularIncludeError < MarkdownHelperError
+  #   def self.label; 'Includes are circular:'; end
+  # end
 
-
-  class UnreadableInputError < MarkdownHelperError
+  class UnreadableTemplateError < MarkdownHelperError
     attr_accessor :message
     def initialize(file_path)
       self.message = <<EOT
-Could not read input file:
+Could not read template file:
 #{file_path}
 EOT
     end
   end
 
-  class UnwritableOutputError < MarkdownHelperError
+  class UnwritableMarkdownError < MarkdownHelperError
     attr_accessor :message
     def initialize(file_path)
       self.message = <<EOT
-Could not write output file:
+Could not write markdown file:
 #{file_path}
 EOT
     end
@@ -88,7 +87,7 @@ EOT
     yield
       output_lines.push(MarkdownHelper.comment(" <<<<<< END GENERATED FILE (#{method.to_s}): SOURCE #{template_path_in_project} ")) unless pristine
     unless File.writable?(markdown_file_path)
-      raise UnwritableOutputError.new(markdown_file_path)
+      raise UnwritableMarkdownError.new(markdown_file_path)
     end
     File.open(markdown_file_path, 'w') do |file|
       output_lines.each do |line|
@@ -252,7 +251,7 @@ EOT
       self.markdown_file_path = markdown_file_path
       self.markdown_lines  = markdown_lines
       unless File.readable?(template_file_path)
-        raise UnreadableInputError.new(template_file_path)
+        raise UnreadableTemplateError.new(template_file_path)
       end
       self.input_lines = File.open(template_file_path, 'r').readlines
       self.output_lines = []
@@ -371,7 +370,7 @@ EOT
 #             MISSING_INCLUDEE_EXCEPTION_LABEL,
 #             backtrace_inclusions,
 #         ].join("\n")
-#         e = UnreadableInputError.new(message)
+#         e = UnreadableTemplateError.new(message)
 #         e.set_backtrace([])
 #         raise e
 #       end
