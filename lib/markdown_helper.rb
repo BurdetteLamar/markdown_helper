@@ -68,6 +68,12 @@ class MarkdownHelper
       end
       includee_lines = include_markdown(includee_file_path)
       markdown_lines.concat(includee_lines)
+      unless pristine
+        comment = format(' >>>>>> BEGIN INCLUDED FILE (%s): SOURCE %s ', treatment, includee_file_path)
+        markdown_lines.unshift(MarkdownHelper.comment(comment))
+        comment = format(' <<<<<< END INCLUDED FILE (%s): SOURCE %s ', treatment, includee_file_path)
+        markdown_lines.push(MarkdownHelper.comment(comment))
+      end
     end
     markdown_lines
   end
