@@ -69,13 +69,20 @@ class MarkdownHelper
       includee_lines = include_markdown(includee_file_path)
       markdown_lines.concat(includee_lines)
       unless pristine
-        comment = format(' >>>>>> BEGIN INCLUDED FILE (%s): SOURCE %s ', treatment, includee_file_path)
+        treatment.sub!(':', '')
+        path_in_project = MarkdownHelper.path_in_project(includee_file_path)
+        comment = format(' >>>>>> BEGIN INCLUDED FILE (%s): SOURCE %s ', treatment, path_in_project)
         markdown_lines.unshift(MarkdownHelper.comment(comment))
-        comment = format(' <<<<<< END INCLUDED FILE (%s): SOURCE %s ', treatment, includee_file_path)
+        comment = format(' <<<<<< END INCLUDED FILE (%s): SOURCE %s ', treatment, path_in_project)
         markdown_lines.push(MarkdownHelper.comment(comment))
       end
     end
     markdown_lines
+  end
+
+  def self.path_in_project(file_path)
+    abs_path = File.absolute_path(file_path)
+    abs_path.sub(self.git_clone_dir_path + '/', '')
   end
 
   def include_page_toc(markdown_lines)
@@ -109,10 +116,6 @@ EOT
       raise RuntimeError.new(message)
     end
     git_dir
-  end
-
-  def self.path_in_project(path)
-    path.sub(MarkdownHelper.git_clone_dir_path + '/', '')
   end
 
   class Heading
