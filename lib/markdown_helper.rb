@@ -59,7 +59,7 @@ class MarkdownHelper
 
   def include_markdown(template_file_path)
     markdown_lines = []
-    template_lines = File.readlines(template_file_path  )
+    template_lines = File.readlines(template_file_path)
     template_lines.each do |template_line|
       treatment, includee_file_path = *parse_include(template_line)
       unless treatment == ':markdown'
@@ -80,11 +80,6 @@ class MarkdownHelper
     markdown_lines
   end
 
-  def self.path_in_project(file_path)
-    abs_path = File.absolute_path(file_path)
-    abs_path.sub(self.git_clone_dir_path + '/', '')
-  end
-
   def include_page_toc(markdown_lines)
     markdown_lines
   end
@@ -99,6 +94,11 @@ class MarkdownHelper
     treatment = match_data[1]
     includee_file_path = match_data[2]
     [treatment, includee_file_path]
+  end
+
+  def self.path_in_project(file_path)
+    abs_path = File.absolute_path(file_path)
+    abs_path.sub(self.git_clone_dir_path + '/', '')
   end
 
   def self.comment(text)
