@@ -31,9 +31,9 @@ class MarkdownHelper
   end
 
   def include(template_file_path, markdown_file_path)
-    send(:generate_file, template_file_path, markdown_file_path) do |template_lines, output_lines|
+    send(:generate_file, template_file_path, markdown_file_path) do |output_lines|
       Dir.chdir(File.dirname(template_file_path)) do
-        markdown_lines = include_markdown(template_lines)
+        markdown_lines = include_markdown(template_file_path)
         markdown_lines = include_page_toc(markdown_lines)
         include_all(markdown_lines, output_lines)
       end
@@ -44,9 +44,8 @@ class MarkdownHelper
 
   def generate_file(template_file_path, markdown_file_path)
     template_path_in_project = MarkdownHelper.path_in_project(template_file_path)
-    template_lines = File.readlines(template_file_path)
     output_lines = []
-    yield template_lines, output_lines
+    yield output_lines
     unless pristine
       output_lines.unshift(MarkdownHelper.comment(" >>>>>> BEGIN GENERATED FILE (include): SOURCE #{template_path_in_project} "))
       output_lines.push(MarkdownHelper.comment(" <<<<<< END GENERATED FILE (include): SOURCE #{template_path_in_project} "))
@@ -58,15 +57,16 @@ class MarkdownHelper
     end
   end
 
-  def include_markdown(template_lines)
+  def include_markdown(template_file_path)
     markdown_lines = []
+    template_lines = File.readlines(template_file_path  )
     template_lines.each do |template_line|
       treatment, includee_file_path = *parse_include(template_line)
       unless treatment == ':markdown'
         markdown_lines.push(template_line)
         next
       end
-      includee_lines = include_markdown(File.readlines(includee_file_path))
+      includee_lines = include_markdown(includee_file_path)
       markdown_lines.concat(includee_lines)
     end
     markdown_lines
