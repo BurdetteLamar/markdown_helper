@@ -61,6 +61,10 @@ class MarkdownHelper
     template_lines.each do |template_line|
       template_line.chomp!
       treatment, includee_file_path = *parse_include(template_line)
+      if treatment.nil?
+        markdown_lines.push(template_line)
+        next
+      end
       case treatment
       when ':markdown'
         includee_lines = include_markdown(includee_file_path)
