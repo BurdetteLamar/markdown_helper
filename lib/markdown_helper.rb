@@ -74,7 +74,27 @@ class MarkdownHelper
           markdown_lines.push(MarkdownHelper.comment(comment))
         end
       when ':comment'
-        # output_lines.push(MarkdownHelper.comment(include_lines.join('')))
+        text = File.read(includee_file_path)
+        markdown_lines.push(MarkdownHelper.comment(text))
+        unless pristine
+          treatment.sub!(':', '')
+          path_in_project = MarkdownHelper.path_in_project(includee_file_path)
+          comment = format(' >>>>>> BEGIN INCLUDED FILE (%s): SOURCE %s ', treatment, path_in_project)
+          markdown_lines.unshift(MarkdownHelper.comment(comment))
+          comment = format(' <<<<<< END INCLUDED FILE (%s): SOURCE %s ', treatment, path_in_project)
+          markdown_lines.push(MarkdownHelper.comment(comment))
+        end
+      when ':pre'
+        text = File.read(includee_file_path)
+        markdown_lines.push(MarkdownHelper.pre(text))
+        unless pristine
+          treatment.sub!(':', '')
+          path_in_project = MarkdownHelper.path_in_project(includee_file_path)
+          comment = format(' >>>>>> BEGIN INCLUDED FILE (%s): SOURCE %s ', treatment, path_in_project)
+          markdown_lines.unshift(MarkdownHelper.comment(comment))
+          comment = format(' <<<<<< END INCLUDED FILE (%s): SOURCE %s ', treatment, path_in_project)
+          markdown_lines.push(MarkdownHelper.comment(comment))
+        end
       else
         markdown_lines.push(template_line)
         next
@@ -95,7 +115,7 @@ class MarkdownHelper
         output_lines.push(template_line)
         next
       end
-      file_marker = format('```%s```', File.basename(includee_file_path))
+      file_marker = format('```%s```:', File.basename(includee_file_path))
       output_lines.push(file_marker)
       includee_lines = include_markdown(includee_file_path)
       output_lines.push('```')
@@ -127,6 +147,10 @@ class MarkdownHelper
 
   def self.comment(text)
     "<!--#{text}-->"
+  end
+
+  def self.pre(text)
+    "<pre>\n#{text}</pre>"
   end
 
   def self.git_clone_dir_path
