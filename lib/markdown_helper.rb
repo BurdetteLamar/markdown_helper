@@ -5,6 +5,9 @@ class MarkdownHelper
   class MarkdownHelperError < RuntimeError; end
   class OptionError < MarkdownHelperError; end
 
+  INCLUDE_REGEXP = /^@\[([^\[]+)\]\(([^)]+)\)$/
+  INCLUDE_MARKDOWN_REGEXP = /^@\[:markdown\]\(([^)]+)\)$/
+
   attr_accessor :pristine
 
   def initialize(options = {})
@@ -28,26 +31,61 @@ class MarkdownHelper
   end
 
   def include(template_file_path, markdown_file_path)
-    send(:generate_file, template_file_path, markdown_file_path)
-      # send(:include_files, template_file_path, input_lines, output_lines, Inclusions.new)
+    send(:generate_file, template_file_path, markdown_file_path) do |template_lines, output_lines|
+      Dir.chdir(File.dirname(template_file_path)) do
+        markdown_lines = include_markdown(template_lines)
+        markdown_lines = include_page_toc(markdown_lines)
+        include_all(markdown_lines, output_lines)
+      end
+    end
   end
-
 
   private
 
   def generate_file(template_file_path, markdown_file_path)
     template_path_in_project = MarkdownHelper.path_in_project(template_file_path)
     template_lines = File.readlines(template_file_path)
-    markdown_lines = template_lines
+    output_lines = []
+    yield template_lines, output_lines
     unless pristine
-      markdown_lines.unshift(MarkdownHelper.comment(" >>>>>> BEGIN GENERATED FILE (include): SOURCE #{template_path_in_project} "))
-      markdown_lines.push(MarkdownHelper.comment(" <<<<<< END GENERATED FILE (include): SOURCE #{template_path_in_project} "))
+      output_lines.unshift(MarkdownHelper.comment(" >>>>>> BEGIN GENERATED FILE (include): SOURCE #{template_path_in_project} "))
+      output_lines.push(MarkdownHelper.comment(" <<<<<< END GENERATED FILE (include): SOURCE #{template_path_in_project} "))
     end
     File.open(markdown_file_path, 'w') do |markdown_file|
-      markdown_lines.each do |markdown_line|
+      output_lines.each do |markdown_line|
         markdown_file.write(markdown_line)
       end
     end
+  end
+
+  def include_markdown(template_lines)
+    markdown_lines = []
+    template_lines.each do |template_line|
+      treatment, includee_file_path = *parse_include(template_line)
+      unless treatment == ':markdown'
+        markdown_lines.push(template_line)
+        next
+      end
+      includee_lines = include_markdown(File.readlines(includee_file_path))
+      markdown_lines.concat(includee_lines)
+    end
+    markdown_lines
+  end
+
+  def include_page_toc(markdown_lines)
+    markdown_lines
+  end
+
+  def include_all(markdown_lines, output_lines)
+    output_lines.concat(markdown_lines)
+  end
+
+  def parse_include(line)
+    match_data = line.match(INCLUDE_REGEXP)
+    return [nil, nil] unless match_data
+    treatment = match_data[1]
+    includee_file_path = match_data[2]
+    [treatment, includee_file_path]
   end
 
   def self.comment(text)
