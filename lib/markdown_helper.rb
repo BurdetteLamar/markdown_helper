@@ -65,43 +65,27 @@ class MarkdownHelper
         markdown_lines.push(template_line)
         next
       end
+      treatment.sub!(/^:/, '')
+      path_in_project = MarkdownHelper.path_in_project(includee_file_path)
       case treatment
-      when ':markdown'
+      when 'markdown'
         includee_lines = include_markdown(includee_file_path)
         markdown_lines.concat(includee_lines)
-        unless pristine
-          treatment.sub!(':', '')
-          path_in_project = MarkdownHelper.path_in_project(includee_file_path)
-          comment = format(' >>>>>> BEGIN INCLUDED FILE (%s): SOURCE %s ', treatment, path_in_project)
-          markdown_lines.unshift(MarkdownHelper.comment(comment))
-          comment = format(' <<<<<< END INCLUDED FILE (%s): SOURCE %s ', treatment, path_in_project)
-          markdown_lines.push(MarkdownHelper.comment(comment))
-        end
-      when ':comment'
+      when 'comment'
         text = File.read(includee_file_path)
         markdown_lines.push(MarkdownHelper.comment(text))
-        unless pristine
-          treatment.sub!(':', '')
-          path_in_project = MarkdownHelper.path_in_project(includee_file_path)
-          comment = format(' >>>>>> BEGIN INCLUDED FILE (%s): SOURCE %s ', treatment, path_in_project)
-          markdown_lines.unshift(MarkdownHelper.comment(comment))
-          comment = format(' <<<<<< END INCLUDED FILE (%s): SOURCE %s ', treatment, path_in_project)
-          markdown_lines.push(MarkdownHelper.comment(comment))
-        end
-      when ':pre'
+      when 'pre'
         text = File.read(includee_file_path)
         markdown_lines.push(MarkdownHelper.pre(text))
-        unless pristine
-          treatment.sub!(':', '')
-          path_in_project = MarkdownHelper.path_in_project(includee_file_path)
-          comment = format(' >>>>>> BEGIN INCLUDED FILE (%s): SOURCE %s ', treatment, path_in_project)
-          markdown_lines.unshift(MarkdownHelper.comment(comment))
-          comment = format(' <<<<<< END INCLUDED FILE (%s): SOURCE %s ', treatment, path_in_project)
-          markdown_lines.push(MarkdownHelper.comment(comment))
-        end
       else
         markdown_lines.push(template_line)
         next
+      end
+      unless pristine
+        comment = format(' >>>>>> BEGIN INCLUDED FILE (%s): SOURCE %s ', treatment, path_in_project)
+        markdown_lines.unshift(MarkdownHelper.comment(comment))
+        comment = format(' <<<<<< END INCLUDED FILE (%s): SOURCE %s ', treatment, path_in_project)
+        markdown_lines.push(MarkdownHelper.comment(comment))
       end
     end
     markdown_lines
