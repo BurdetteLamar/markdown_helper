@@ -108,7 +108,6 @@ class MarkdownHelper
   end
 
   def include_all(template_lines, output_lines)
-    # output_lines.concat(markdown_lines)
     template_lines.each do |template_line|
       treatment, includee_file_path = *parse_include(template_line)
       if treatment.nil?
@@ -118,7 +117,9 @@ class MarkdownHelper
       file_marker = format('```%s```:', File.basename(includee_file_path))
       output_lines.push(file_marker)
       includee_lines = include_markdown(includee_file_path)
-      output_lines.push('```')
+      begin_backticks = '```'
+      begin_backticks += treatment unless treatment.start_with?(':')
+      output_lines.push(begin_backticks)
       output_lines.concat(includee_lines)
       output_lines.push('```')
       unless pristine
