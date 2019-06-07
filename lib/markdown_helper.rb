@@ -50,42 +50,66 @@ class MarkdownHelper
       output_lines.unshift(MarkdownHelper.comment(" >>>>>> BEGIN GENERATED FILE (include): SOURCE #{template_path_in_project} "))
       output_lines.push(MarkdownHelper.comment(" <<<<<< END GENERATED FILE (include): SOURCE #{template_path_in_project} "))
     end
-    File.open(markdown_file_path, 'w') do |markdown_file|
-      output_lines.each do |markdown_line|
-        markdown_file.write(markdown_line)
-      end
-    end
+    output_lines.push('')
+    output = output_lines.join("\n")
+    File.write(markdown_file_path, output)
   end
 
   def include_markdown(template_file_path)
     markdown_lines = []
     template_lines = File.readlines(template_file_path)
     template_lines.each do |template_line|
+      template_line.chomp!
       treatment, includee_file_path = *parse_include(template_line)
-      unless treatment == ':markdown'
+      case treatment
+      when ':markdown'
+        includee_lines = include_markdown(includee_file_path)
+        markdown_lines.concat(includee_lines)
+        unless pristine
+          treatment.sub!(':', '')
+          path_in_project = MarkdownHelper.path_in_project(includee_file_path)
+          comment = format(' >>>>>> BEGIN INCLUDED FILE (%s): SOURCE %s ', treatment, path_in_project)
+          markdown_lines.unshift(MarkdownHelper.comment(comment))
+          comment = format(' <<<<<< END INCLUDED FILE (%s): SOURCE %s ', treatment, path_in_project)
+          markdown_lines.push(MarkdownHelper.comment(comment))
+        end
+      when ':comment'
+        # output_lines.push(MarkdownHelper.comment(include_lines.join('')))
+      else
         markdown_lines.push(template_line)
         next
-      end
-      includee_lines = include_markdown(includee_file_path)
-      markdown_lines.concat(includee_lines)
-      unless pristine
-        treatment.sub!(':', '')
-        path_in_project = MarkdownHelper.path_in_project(includee_file_path)
-        comment = format(' >>>>>> BEGIN INCLUDED FILE (%s): SOURCE %s ', treatment, path_in_project)
-        markdown_lines.unshift(MarkdownHelper.comment(comment))
-        comment = format(' <<<<<< END INCLUDED FILE (%s): SOURCE %s ', treatment, path_in_project)
-        markdown_lines.push(MarkdownHelper.comment(comment))
       end
     end
     markdown_lines
   end
 
-  def include_page_toc(markdown_lines)
-    markdown_lines
+  def include_page_toc(template_lines)
+    template_lines
   end
 
-  def include_all(markdown_lines, output_lines)
-    output_lines.concat(markdown_lines)
+  def include_all(template_lines, output_lines)
+    # output_lines.concat(markdown_lines)
+    template_lines.each do |template_line|
+      treatment, includee_file_path = *parse_include(template_line)
+      if treatment.nil?
+        output_lines.push(template_line)
+        next
+      end
+      file_marker = format('```%s```', File.basename(includee_file_path))
+      output_lines.push(file_marker)
+      includee_lines = include_markdown(includee_file_path)
+      output_lines.push('```')
+      output_lines.concat(includee_lines)
+      output_lines.push('```')
+      unless pristine
+        treatment.sub!(':', '')
+        path_in_project = MarkdownHelper.path_in_project(includee_file_path)
+        comment = format(' >>>>>> BEGIN INCLUDED FILE (%s): SOURCE %s ', treatment, path_in_project)
+        output_lines.unshift(MarkdownHelper.comment(comment))
+        comment = format(' <<<<<< END INCLUDED FILE (%s): SOURCE %s ', treatment, path_in_project)
+        output_lines.push(MarkdownHelper.comment(comment))
+      end
+    end
   end
 
   def parse_include(line)
@@ -102,7 +126,7 @@ class MarkdownHelper
   end
 
   def self.comment(text)
-    "<!--#{text}-->\n"
+    "<!--#{text}-->"
   end
 
   def self.git_clone_dir_path
