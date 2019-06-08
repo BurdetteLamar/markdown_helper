@@ -66,7 +66,6 @@ class MarkdownHelper
         next
       end
       treatment.sub!(/^:/, '')
-      path_in_project = MarkdownHelper.path_in_project(includee_file_path)
       case treatment
       when 'markdown'
         includee_lines = include_markdown(includee_file_path)
@@ -81,12 +80,7 @@ class MarkdownHelper
         markdown_lines.push(template_line)
         next
       end
-      unless pristine
-        comment = format(' >>>>>> BEGIN INCLUDED FILE (%s): SOURCE %s ', treatment, path_in_project)
-        markdown_lines.unshift(MarkdownHelper.comment(comment))
-        comment = format(' <<<<<< END INCLUDED FILE (%s): SOURCE %s ', treatment, path_in_project)
-        markdown_lines.push(MarkdownHelper.comment(comment))
-      end
+      add_inclusion_comments(treatment, includee_file_path, markdown_lines)
     end
     markdown_lines
   end
@@ -110,18 +104,22 @@ class MarkdownHelper
       output_lines.push(begin_backticks)
       output_lines.concat(includee_lines)
       output_lines.push('```')
-      unless pristine
-        treatment.sub!(':', '')
-        path_in_project = MarkdownHelper.path_in_project(includee_file_path)
-        comment = format(' >>>>>> BEGIN INCLUDED FILE (%s): SOURCE %s ', treatment, path_in_project)
-        output_lines.unshift(MarkdownHelper.comment(comment))
-        comment = format(' <<<<<< END INCLUDED FILE (%s): SOURCE %s ', treatment, path_in_project)
-        output_lines.push(MarkdownHelper.comment(comment))
-      end
+      treatment.sub!(':', '')
+      add_inclusion_comments(treatment, includee_file_path, output_lines)
     end
   end
 
-  def parse_include(line)
+  def add_inclusion_comments(treatment, includee_file_path, lines)
+    path_in_project = MarkdownHelper.path_in_project(includee_file_path)
+    unless pristine
+      comment = format(' >>>>>> BEGIN INCLUDED FILE (%s): SOURCE %s ', treatment, path_in_project)
+      lines.unshift(MarkdownHelper.comment(comment))
+      comment = format(' <<<<<< END INCLUDED FILE (%s): SOURCE %s ', treatment, path_in_project)
+      lines.push(MarkdownHelper.comment(comment))
+    end
+  end
+
+    def parse_include(line)
     match_data = line.match(INCLUDE_REGEXP)
     return [nil, nil] unless match_data
     treatment = match_data[1]
