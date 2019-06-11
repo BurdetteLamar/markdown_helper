@@ -4,6 +4,9 @@ class MarkdownHelper
 
   class MarkdownHelperError < RuntimeError; end
   class OptionError < MarkdownHelperError; end
+  class MultiplePageTocError < MarkdownHelperError; end
+  class InvalidTocTitleError < MarkdownHelperError; end
+
 
   INCLUDE_REGEXP = /^@\[([^\[]+)\]\(([^)]+)\)$/
   INCLUDE_MARKDOWN_REGEXP = /^@\[:markdown\]\(([^)]+)\)$/
@@ -86,6 +89,40 @@ class MarkdownHelper
   end
 
   def include_page_toc(template_lines)
+    toc_line_index = nil
+    toc_title = nil
+    template_lines.each_with_index do |template_line, i|
+      match_data = template_line.match(INCLUDE_REGEXP)
+      next unless match_data
+      treatment = match_data[1]
+      next unless treatment == ':page_toc'
+      unless toc_line_index.nil?
+        message = 'Multiple page TOC not allowed'
+        raise MultiplePageTocError.new(message)
+      end
+      toc_line_index = i
+      toc_title = match_data[2]
+      title_regexp = /^\#{1,6}\s/
+      unless toc_title.match(title_regexp)
+        message = "TOC title must be a valid markdown header, not #{toc_title}"
+        raise InvalidTocTitleError.new(message)
+      end
+    end
+    return template_lines unless toc_line_index
+    toc_lines = [toc_title]
+    first_heading_level = nil
+    template_lines.each_with_index do |input_line, i|
+      next if i < toc_line_index
+      line = input_line.chomp
+      heading = Heading.parse(line)
+      next unless heading
+      first_heading_level ||= heading.level
+      indentation = '  ' * (heading.level - first_heading_level)
+      toc_line = "#{indentation}- #{heading.link}"
+      toc_lines.push(toc_line)
+    end
+    template_lines.delete_at(toc_line_index)
+    template_lines.insert(toc_line_index, *toc_lines)
     template_lines
   end
 
@@ -203,7 +240,6 @@ end
 #   class EnvironmentError < MarkdownHelperError; end
 #   class InvalidTocTitleError < MarkdownHelperError; end
 #   class MisplacedPageTocError < MarkdownHelperError; end
-#   class MultiplePageTocError < MarkdownHelperError; end
 #
 #   INCLUDE_REGEXP = /^@\[([^\[]+)\]\(([^)]+)\)$/
 #
