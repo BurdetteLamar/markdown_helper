@@ -250,8 +250,6 @@ class MarkdownHelperTest < Minitest::Test
       common_test(markdown_helper, test_info)
     end
 
-    return
-
     # Test unknown option.
     e = assert_raises(MarkdownHelper::OptionError) do
       markdown_helper = MarkdownHelper.new(:foo => true)
@@ -264,10 +262,13 @@ class MarkdownHelperTest < Minitest::Test
         file_type = 'md',
         treatment = :markdown,
     )
-    e = assert_raises(Exception) do
+    e = assert_raises(MarkdownHelper::UnreadableTemplateError) do
       common_test(MarkdownHelper.new, test_info)
     end
-    assert_template_exception(test_info.template_file_path, e)
+    expected_message = %q{Template file not readable:
+test/include/templates/no_such_markdown.md}
+    assert_equal(expected_message, e.message)
+
 
     # Test markdown (output) open failure.
     test_info = IncludeInfo.new(
@@ -291,48 +292,36 @@ class MarkdownHelperTest < Minitest::Test
         file_type = 'md',
         treatment = :markdown,
     )
-    create_template(test_info)
-    expected_inclusions = MarkdownHelper::Inclusions.new
-    # The outer inclusion.
-    includer_file_path = File.join(
-        TEST_DIR_PATH,
-        'include/templates/circular_0_markdown.md'
-    )
-    cited_includee_file_path  = '../includes/circular_0.md'
-    inclusion = MarkdownHelper::Inclusion.new(
-        include_description = "@[:markdown](#{cited_includee_file_path})",
-        includer_file_path,
-        includer_line_number = 1,
-        cited_includee_file_path,
-        treatment
-    )
-    expected_inclusions.inclusions.push(inclusion)
-    # The three nested inclusions.
-    [
-        [0, 1],
-        [1, 2],
-        [2, 0],
-    ].each do |indexes|
-      includer_index, includee_index = *indexes
-      includer_file_name = "circular_#{includer_index}.md"
-      includee_file_name = "circular_#{includee_index}.md"
-      includer_file_path = File.join(
-          TEST_DIR_PATH,
-          "include/templates/../includes/#{includer_file_name}"
-      )
-      inclusion = MarkdownHelper::Inclusion.new(
-          include_description = "@[:markdown](#{includee_file_name})",
-          includer_file_path,
-          includer_line_number = 1,
-          cited_includee_file_path = includee_file_name,
-          treatment
-      )
-      expected_inclusions.inclusions.push(inclusion)
-    end
     e = assert_raises(MarkdownHelper::CircularIncludeError) do
       common_test(MarkdownHelper.new, test_info)
     end
-    assert_circular_exception(expected_inclusions, e)
+    expected_message = %q{Includes are circular:
+  Backtrace (innermost include first):
+    Level 0:
+      Includer:
+        Location: test/include/includes/circular_2.md:0
+        Include description: @[:markdown](circular_0.md)
+      Includee:
+        File path: test/include/includes/circular_0.md
+    Level 1:
+      Includer:
+        Location: test/include/includes/circular_1.md:0
+        Include description: @[:markdown](circular_2.md)
+      Includee:
+        File path: test/include/includes/circular_2.md
+    Level 2:
+      Includer:
+        Location: test/include/includes/circular_0.md:0
+        Include description: @[:markdown](circular_1.md)
+      Includee:
+        File path: test/include/includes/circular_1.md
+    Level 3:
+      Includer:
+        Location: test/include/templates/circular_0_markdown.md:0
+        Include description: @[:markdown](../includes/circular_0.md)
+      Includee:
+        File path: test/include/includes/circular_0.md}
+    assert_equal(expected_message, e.message)
 
     # Test includee not found.
     test_info = IncludeInfo.new(
@@ -340,48 +329,30 @@ class MarkdownHelperTest < Minitest::Test
                                file_type = 'md',
                                treatment = :markdown,
     )
-    create_template(test_info)
-    expected_inclusions = MarkdownHelper::Inclusions.new
-    # The outer inclusion.
-    includer_file_path = File.join(
-        TEST_DIR_PATH,
-        'include/templates/includer_0_markdown.md'
-    )
-    cited_includee_file_path = '../includes/includer_0.md'
-    inclusion = MarkdownHelper::Inclusion.new(
-        include_description = "@[:markdown](#{cited_includee_file_path})",
-        includer_file_path,
-        includer_line_number = 1,
-        cited_includee_file_path,
-        treatment
-    )
-    expected_inclusions.inclusions.push(inclusion)
-    # The three nested inclusions.
-    [
-        [0, 1],
-        [1, 2],
-        [2, 3],
-    ].each do |indexes|
-      includer_index, includee_index = *indexes
-      includer_file_name = "includer_#{includer_index}.md"
-      includee_file_name = "includer_#{includee_index}.md"
-      includer_file_path = File.join(
-          TEST_DIR_PATH,
-          "include/templates/../includes/#{includer_file_name}"
-      )
-      inclusion = MarkdownHelper::Inclusion.new(
-          include_description = "@[:markdown](#{includee_file_name})",
-          includer_file_path,
-          includer_line_number = 1,
-          cited_includee_file_path = includee_file_name,
-          treatment
-      )
-      expected_inclusions.inclusions.push(inclusion)
-    end
-    e = assert_raises(Exception) do
+    e = assert_raises(MarkdownHelper::UnreadableIncludeeError) do
       common_test(MarkdownHelper.new, test_info)
     end
-    assert_includee_missing_exception(expected_inclusions, e)
+    expected_message = %q{Could not read includee file:
+  Backtrace (innermost include first):
+    Level 0:
+      Includer:
+        Location: test/include/includes/includer_1.md:0
+        Include description: @[:markdown](includer_2.md)
+      Includee:
+        File path: test/include/includes/includer_2.md
+    Level 1:
+      Includer:
+        Location: test/include/includes/includer_0.md:0
+        Include description: @[:markdown](includer_1.md)
+      Includee:
+        File path: test/include/includes/includer_1.md
+    Level 2:
+      Includer:
+        Location: test/include/templates/includer_0_markdown.md:0
+        Include description: @[:markdown](../includes/includer_0.md)
+      Includee:
+        File path: test/include/includes/includer_0.md}
+    assert_equal(expected_message, e.message)
 
   end
 
@@ -462,15 +433,6 @@ class MarkdownHelperTest < Minitest::Test
     end
   end
 
-  def assert_circular_exception(expected_inclusions, e)
-    assert_inclusion_exception(
-        MarkdownHelper::CircularIncludeError,
-        MarkdownHelper::Inclusions::CIRCULAR_EXCEPTION_LABEL,
-        expected_inclusions,
-        e
-    )
-  end
-
   def assert_includee_missing_exception(expected_inclusions, e)
     assert_inclusion_exception(
         Exception,
@@ -509,15 +471,6 @@ class MarkdownHelperTest < Minitest::Test
     relative_path = MarkdownHelper.path_in_project(expected_inclusion.absolute_includee_file_path)
     r = Regexp.new(Regexp.escape("#{relative_path}") + '$')
     assert_match(r, includee_file_path, message)
-  end
-
-  def assert_template_exception(expected_file_path, e)
-    assert_io_exception(
-        Exception,
-        MarkdownHelper::Inclusions::UNREADABLE_INPUT_EXCEPTION_LABEL,
-        expected_file_path,
-        e
-    )
   end
 
 end
