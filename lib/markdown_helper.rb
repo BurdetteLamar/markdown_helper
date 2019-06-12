@@ -8,8 +8,11 @@ class MarkdownHelper
   class OptionError < MarkdownHelperError; end
   class MultiplePageTocError < MarkdownHelperError; end
   class InvalidTocTitleError < MarkdownHelperError; end
-  class UnreadableInputError < MarkdownHelperError; end
+  class UnreadableTemplateError < MarkdownHelperError; end
+  class UnwritableMarkdownError < MarkdownHelperError; end
   class CircularIncludeError < MarkdownHelperError; end
+  class MissingIncludeeError < MarkdownHelperError; end
+  class UnreadableIncludeeError < MarkdownHelperError; end
 
   INCLUDE_REGEXP = /^@\[([^\[]+)\]\(([^)]+)\)$/
   INCLUDE_MARKDOWN_REGEXP = /^@\[:markdown\]\(([^)]+)\)$/
@@ -52,10 +55,10 @@ class MarkdownHelper
   def generate_file(template_file_path, markdown_file_path)
     unless File.readable?(template_file_path)
       message = [
-          'Could not read input file.',
-          template_file_path.inspect,
+          'Template file not readable:',
+          MarkdownHelper.path_in_project(template_file_path),
       ].join("\n")
-      raise UnreadableInputError.new(message)
+      raise UnreadableTemplateError.new(message)
     end
     template_path_in_project = MarkdownHelper.path_in_project(template_file_path)
     output_lines = []
@@ -89,7 +92,8 @@ class MarkdownHelper
             template_line,
             i,
             treatment,
-            includee_file_path
+            includee_file_path,
+            @inclusions
             )
         treatment.sub!(/^:/, '')
         case treatment
@@ -167,7 +171,8 @@ class MarkdownHelper
           template_line,
           i,
           treatment,
-          includee_file_path
+          includee_file_path,
+          @inclusions
       )
       @inclusions.push(inclusion)
       file_marker = format('```%s```:', File.basename(includee_file_path))
@@ -269,7 +274,7 @@ EOT
       @inclusions.push(inclusion)
       message = [
           'Includes are circular:',
-          backtrace_inclusions,
+          MarkdownHelper.backtrace_inclusions(@inclusions),
       ].join("\n")
       e = MarkdownHelper::CircularIncludeError.new(message)
       e.set_backtrace([])
@@ -277,9 +282,9 @@ EOT
     end
   end
 
-  def backtrace_inclusions
+  def self.backtrace_inclusions(inclusions)
     lines = ['  Backtrace (innermost include first):']
-    @inclusions.reverse.each_with_index do |inclusion, i|
+    inclusions.reverse.each_with_index do |inclusion, i|
       lines.push("#{'    Level'} #{i}:")
       level_lines = inclusion.to_lines(indentation_level = 3)
       lines.push(*level_lines)
@@ -305,26 +310,35 @@ EOT
         include_pragma,
         includer_line_number,
         treatment,
-        cited_includee_file_path
+        cited_includee_file_path,
+        inclusions
         )
       self.includer_file_path = includer_file_path
       self.include_pragma = include_pragma
       self.includer_line_number = includer_line_number
-      self.cited_includee_file_path = cited_includee_file_path
       self.treatment = treatment
+      self.cited_includee_file_path = cited_includee_file_path
+
+      self.includer_absolute_file_path = File.absolute_path(includer_file_path)
+      unless File.exist?(self.includer_absolute_file_path)
+        fail 'Boo!'
+      end
+      self.includer_real_file_path = Pathname.new(self.includer_absolute_file_path).realpath.to_s
+
       self.includee_absolute_file_path = File.absolute_path(File.join(
           File.dirname(includer_file_path),
           cited_includee_file_path,
-      ))
-      self.includer_absolute_file_path = File.absolute_path(includer_file_path)
-      self.includer_real_file_path = Pathname.new(self.includer_absolute_file_path).realpath.to_s
+          ))
+      unless File.readable?(self.includee_absolute_file_path)
+        message = [
+            'Could not read includee file:',
+            MarkdownHelper.backtrace_inclusions(inclusions),
+        ].join("\n")
+        e = MarkdownHelper::UnreadableIncludeeError.new(message)
+        e.set_backtrace([])
+        raise e
+      end
       self.includee_real_file_path = Pathname.new(self.includee_absolute_file_path).realpath.to_s
-    end
-
-    def real_includee_file_path
-      # Would raise exception unless exists.
-      return nil unless File.exist?(includee_absolute_file_path)
-      Pathname.new(includee_absolute_file_path).realpath.to_s
     end
 
     def indentation(level)
