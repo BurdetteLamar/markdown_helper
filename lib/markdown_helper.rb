@@ -1,3 +1,5 @@
+require 'pathname'
+
 require 'markdown_helper/version'
 
 class MarkdownHelper
@@ -6,7 +8,8 @@ class MarkdownHelper
   class OptionError < MarkdownHelperError; end
   class MultiplePageTocError < MarkdownHelperError; end
   class InvalidTocTitleError < MarkdownHelperError; end
-
+  class UnreadableInputError < MarkdownHelperError; end
+  class CircularIncludeError < MarkdownHelperError; end
 
   INCLUDE_REGEXP = /^@\[([^\[]+)\]\(([^)]+)\)$/
   INCLUDE_MARKDOWN_REGEXP = /^@\[:markdown\]\(([^)]+)\)$/
@@ -31,6 +34,7 @@ class MarkdownHelper
       send(setter_method, value)
       merged_options.delete(method)
     end
+    @inclusions = []
   end
 
   def include(template_file_path, markdown_file_path)
@@ -38,7 +42,7 @@ class MarkdownHelper
       Dir.chdir(File.dirname(template_file_path)) do
         markdown_lines = include_markdown(template_file_path)
         markdown_lines = include_page_toc(markdown_lines)
-        include_all(markdown_lines, output_lines)
+        include_all(template_file_path, markdown_lines, output_lines)
       end
     end
   end
@@ -46,6 +50,13 @@ class MarkdownHelper
   private
 
   def generate_file(template_file_path, markdown_file_path)
+    unless File.readable?(template_file_path)
+      message = [
+          'Could not read input file.',
+          template_file_path.inspect,
+      ].join("\n")
+      raise UnreadableInputError.new(message)
+    end
     template_path_in_project = MarkdownHelper.path_in_project(template_file_path)
     output_lines = []
     yield output_lines
@@ -59,33 +70,51 @@ class MarkdownHelper
   end
 
   def include_markdown(template_file_path)
-    markdown_lines = []
-    template_lines = File.readlines(template_file_path)
-    template_lines.each do |template_line|
-      template_line.chomp!
-      treatment, includee_file_path = *parse_include(template_line)
-      if treatment.nil?
-        markdown_lines.push(template_line)
-        next
+    Dir.chdir(File.dirname(template_file_path)) do
+      markdown_lines = []
+      template_lines = File.readlines(template_file_path)
+      template_lines.each_with_index do |template_line, i|
+        template_line.chomp!
+        treatment, includee_file_path = *parse_include(template_line)
+        if treatment.nil?
+          markdown_lines.push(template_line)
+          next
+        end
+        if treatment == ':page_toc'
+          markdown_lines.push(template_line)
+          next
+        end
+        inclusion = Inclusion.new(
+            template_file_path,
+            template_line,
+            i,
+            treatment,
+            includee_file_path
+            )
+        treatment.sub!(/^:/, '')
+        case treatment
+        when 'markdown'
+          check_circularity(inclusion)
+          @inclusions.push(inclusion)
+          includee_lines = include_markdown(includee_file_path)
+          markdown_lines.concat(includee_lines)
+        when 'comment'
+          text = File.read(includee_file_path)
+          markdown_lines.push(MarkdownHelper.comment(text))
+          @inclusions.push(inclusion)
+        when 'pre'
+          text = File.read(includee_file_path)
+          markdown_lines.push(MarkdownHelper.pre(text))
+          @inclusions.push(inclusion)
+        else
+          markdown_lines.push(template_line)
+          next
+        end
+        @inclusions.pop
+        add_inclusion_comments(treatment, includee_file_path, markdown_lines)
       end
-      treatment.sub!(/^:/, '')
-      case treatment
-      when 'markdown'
-        includee_lines = include_markdown(includee_file_path)
-        markdown_lines.concat(includee_lines)
-      when 'comment'
-        text = File.read(includee_file_path)
-        markdown_lines.push(MarkdownHelper.comment(text))
-      when 'pre'
-        text = File.read(includee_file_path)
-        markdown_lines.push(MarkdownHelper.pre(text))
-      else
-        markdown_lines.push(template_line)
-        next
-      end
-      add_inclusion_comments(treatment, includee_file_path, markdown_lines)
+      markdown_lines
     end
-    markdown_lines
   end
 
   def include_page_toc(template_lines)
@@ -126,13 +155,21 @@ class MarkdownHelper
     template_lines
   end
 
-  def include_all(template_lines, output_lines)
-    template_lines.each do |template_line|
+  def include_all(template_file_path, template_lines, output_lines)
+    template_lines.each_with_index do |template_line, i|
       treatment, includee_file_path = *parse_include(template_line)
       if treatment.nil?
         output_lines.push(template_line)
         next
       end
+      inclusion = Inclusion.new(
+          template_file_path,
+          template_line,
+          i,
+          treatment,
+          includee_file_path
+      )
+      @inclusions.push(inclusion)
       file_marker = format('```%s```:', File.basename(includee_file_path))
       output_lines.push(file_marker)
       includee_lines = include_markdown(includee_file_path)
@@ -221,6 +258,90 @@ EOT
           gsub(to_hyphen_regexp, '-').
           downcase
       "[#{title}](##{anchor})"
+    end
+
+  end
+
+  def check_circularity(inclusion)
+    included_file_paths = @inclusions.collect { |x| x.includee_real_file_path}
+    previously_included = included_file_paths.include?(inclusion.includee_real_file_path)
+    if previously_included
+      @inclusions.push(inclusion)
+      message = [
+          'Includes are circular:',
+          backtrace_inclusions,
+      ].join("\n")
+      e = MarkdownHelper::CircularIncludeError.new(message)
+      e.set_backtrace([])
+      raise e
+    end
+  end
+
+  def backtrace_inclusions
+    lines = ['  Backtrace (innermost include first):']
+    @inclusions.reverse.each_with_index do |inclusion, i|
+      lines.push("#{'    Level'} #{i}:")
+      level_lines = inclusion.to_lines(indentation_level = 3)
+      lines.push(*level_lines)
+    end
+    lines.join("\n")
+  end
+
+  class Inclusion
+
+    attr_accessor \
+      :includer_file_path,
+      :includer_absolute_file_path,
+      :includer_real_file_path,
+      :include_pragma,
+      :treatment,
+      :includer_line_number,
+      :cited_includee_file_path,
+      :includee_absolute_file_path,
+      :includee_real_file_path
+
+    def initialize(
+        includer_file_path,
+        include_pragma,
+        includer_line_number,
+        treatment,
+        cited_includee_file_path
+        )
+      self.includer_file_path = includer_file_path
+      self.include_pragma = include_pragma
+      self.includer_line_number = includer_line_number
+      self.cited_includee_file_path = cited_includee_file_path
+      self.treatment = treatment
+      self.includee_absolute_file_path = File.absolute_path(File.join(
+          File.dirname(includer_file_path),
+          cited_includee_file_path,
+      ))
+      self.includer_absolute_file_path = File.absolute_path(includer_file_path)
+      self.includer_real_file_path = Pathname.new(self.includer_absolute_file_path).realpath.to_s
+      self.includee_real_file_path = Pathname.new(self.includee_absolute_file_path).realpath.to_s
+    end
+
+    def real_includee_file_path
+      # Would raise exception unless exists.
+      return nil unless File.exist?(includee_absolute_file_path)
+      Pathname.new(includee_absolute_file_path).realpath.to_s
+    end
+
+    def indentation(level)
+      '  ' * level
+    end
+
+    def to_lines(indentation_level)
+      relative_inluder_file_path = MarkdownHelper.path_in_project(includer_file_path)
+      relative_inludee_file_path = MarkdownHelper.path_in_project(includee_absolute_file_path)
+       text = <<EOT
+#{indentation(indentation_level)}Includer:
+#{indentation(indentation_level+1)}Location: #{relative_inluder_file_path}:#{includer_line_number}
+#{indentation(indentation_level+1)}Include description: #{include_pragma}
+#{indentation(indentation_level)}Includee:
+#{indentation(indentation_level+1)}File path: #{relative_inludee_file_path}
+EOT
+      text.split("\n")
     end
 
   end
