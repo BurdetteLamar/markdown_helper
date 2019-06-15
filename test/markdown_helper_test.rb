@@ -258,10 +258,7 @@ class MarkdownHelperTest < Minitest::Test
     e = assert_raises(MarkdownHelper::UnreadableTemplateError) do
       common_test(MarkdownHelper.new, test_info)
     end
-    expected_message = %q{Template file not readable:
-test/include/templates/no_such_markdown.md}
-    assert_equal(expected_message, e.message)
-
+    assert_template_exception(test_info.template_file_path, e)
 
     # Test markdown (output) open failure.
     test_info = IncludeInfo.new(
@@ -439,7 +436,7 @@ test/include/templates/no_such_markdown.md}
     actual_label = lines.shift
     assert_equal(expected_label, actual_label)
     actual_file_path = lines.shift
-    assert_equal(expected_file_path.inspect, actual_file_path)
+    assert_equal(expected_file_path, actual_file_path)
   end
 
   def assert_inclusion_exception(expected_exception_class, exception_label, expected_inclusions, e)
@@ -514,10 +511,10 @@ test/include/templates/no_such_markdown.md}
   end
 
   def assert_template_exception(expected_file_path, e)
-    assert_io_exception(
-        Exception,
-        MarkdownHelper::Inclusions::UNREADABLE_INPUT_EXCEPTION_LABEL,
-        expected_file_path,
+    assert_inclusion_exception(
+        MarkdownHelper::UnreadableTemplateError,
+        'Could not read template file:',
+        MarkdownHelper.path_in_project(expected_file_path),
         e
     )
   end

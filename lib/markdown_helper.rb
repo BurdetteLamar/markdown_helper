@@ -54,10 +54,17 @@ class MarkdownHelper
   def generate_file(template_file_path, markdown_file_path)
     unless File.readable?(template_file_path)
       message = [
-          'Template file not readable:',
-          MarkdownHelper.path_in_project(template_file_path),
+          'Could not read template file:',
+          MarkdownHelper.backtrace_inclusions(@inclusions),
       ].join("\n")
-      raise UnreadableTemplateError.new(message)
+      e = UnreadableTemplateError.new(message)
+      e.set_backtrace([])
+      raise e
+      # message = [
+      #     'Could not read template file:',
+      #     MarkdownHelper.path_in_project(template_file_path),
+      # ].join("\n")
+      # raise UnreadableTemplateError.new(message)
     end
     template_path_in_project = MarkdownHelper.path_in_project(template_file_path)
     output_lines = []
