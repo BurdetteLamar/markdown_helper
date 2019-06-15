@@ -1,2 +1,0 @@
-@[:page_toc](## Contents)
-
