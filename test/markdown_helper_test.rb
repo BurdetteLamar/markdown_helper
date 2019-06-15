@@ -287,41 +287,87 @@ test/include/templates/no_such_markdown.md}
     end
 
     # Test circular includes.
-    test_info = IncludeInfo.new(
-        file_stem = 'circular_0',
-        file_type = 'md',
-        treatment = :markdown,
-    )
-    e = assert_raises(MarkdownHelper::CircularIncludeError) do
-      common_test(MarkdownHelper.new, test_info)
+    Dir.chdir(File.join(TEST_DIR_PATH, 'include/includes')) do
+      test_info = IncludeInfo.new(
+          file_stem = 'circular_0',
+          file_type = 'md',
+          treatment = :markdown,
+          )
+      create_template(test_info)
+      expected_inclusions = []
+      # The outer inclusion.
+      includer_file_path = File.join(
+          TEST_DIR_PATH,
+          'include/templates/circular_0_markdown.md'
+      )
+      cited_includee_file_path  = '../includes/circular_0.md'
+      inclusion = MarkdownHelper::Inclusion.new(
+          includer_file_path,
+          include_description = "@[:markdown](#{cited_includee_file_path})",
+          includer_line_number = 1,
+          treatment,
+          cited_includee_file_path,
+          expected_inclusions,
+          )
+      expected_inclusions = expected_inclusions.push(inclusion)
+      # The three nested inclusions.
+      [
+          [0, 1],
+          [1, 2],
+          [2, 0],
+      ].each do |indexes|
+        includer_index, includee_index = *indexes
+        includer_file_name = "circular_#{includer_index}.md"
+        includee_file_name = "circular_#{includee_index}.md"
+        includer_file_path = File.join(
+            TEST_DIR_PATH,
+            "include/templates/../includes/#{includer_file_name}"
+        )
+        inclusion = MarkdownHelper::Inclusion.new(
+            includer_file_name,
+            include_description = "@[:markdown](#{includee_file_name})",
+            includer_line_number = 1,
+            treatment,
+            cited_includee_file_path = includee_file_name,
+            expected_inclusions,
+            )
+        expected_inclusions = expected_inclusions.push(inclusion)
+      end
+      e = assert_raises(MarkdownHelper::CircularIncludeError) do
+        common_test(MarkdownHelper.new, test_info)
+      end
+      assert_circular_exception(expected_inclusions, e)
+      # e = assert_raises(MarkdownHelper::CircularIncludeError) do
+      #   common_test(MarkdownHelper.new, test_info)
+      # end
+      # expected_message = %q{Includes are circular:
+      # Backtrace (innermost include first):
+      #   Level 0:
+      #     Includer:
+      #       Location: test/include/includes/circular_2.md:0
+      #       Include description: @[:markdown](circular_0.md)
+      #     Includee:
+      #       File path: test/include/includes/circular_0.md
+      #   Level 1:
+      #     Includer:
+      #       Location: test/include/includes/circular_1.md:0
+      #       Include description: @[:markdown](circular_2.md)
+      #     Includee:
+      #       File path: test/include/includes/circular_2.md
+      #   Level 2:
+      #     Includer:
+      #       Location: test/include/includes/circular_0.md:0
+      #       Include description: @[:markdown](circular_1.md)
+      #     Includee:
+      #       File path: test/include/includes/circular_1.md
+      #   Level 3:
+      #     Includer:
+      #       Location: test/include/templates/circular_0_markdown.md:0
+      #       Include description: @[:markdown](../includes/circular_0.md)
+      #     Includee:
+      #       File path: test/include/includes/circular_0.md}
+      #   assert_equal(expected_message, e.message)
     end
-    expected_message = %q{Includes are circular:
-  Backtrace (innermost include first):
-    Level 0:
-      Includer:
-        Location: test/include/includes/circular_2.md:0
-        Include description: @[:markdown](circular_0.md)
-      Includee:
-        File path: test/include/includes/circular_0.md
-    Level 1:
-      Includer:
-        Location: test/include/includes/circular_1.md:0
-        Include description: @[:markdown](circular_2.md)
-      Includee:
-        File path: test/include/includes/circular_2.md
-    Level 2:
-      Includer:
-        Location: test/include/includes/circular_0.md:0
-        Include description: @[:markdown](circular_1.md)
-      Includee:
-        File path: test/include/includes/circular_1.md
-    Level 3:
-      Includer:
-        Location: test/include/templates/circular_0_markdown.md:0
-        Include description: @[:markdown](../includes/circular_0.md)
-      Includee:
-        File path: test/include/includes/circular_0.md}
-    assert_equal(expected_message, e.message)
 
     # Test includee not found.
     test_info = IncludeInfo.new(
@@ -337,19 +383,19 @@ test/include/templates/no_such_markdown.md}
     Level 0:
       Includer:
         Location: test/include/includes/includer_1.md:0
-        Include description: @[:markdown](includer_2.md)
+        Include pragma: @[:markdown](includer_2.md)
       Includee:
         File path: test/include/includes/includer_2.md
     Level 1:
       Includer:
         Location: test/include/includes/includer_0.md:0
-        Include description: @[:markdown](includer_1.md)
+        Include pragma: @[:markdown](includer_1.md)
       Includee:
         File path: test/include/includes/includer_1.md
     Level 2:
       Includer:
         Location: test/include/templates/includer_0_markdown.md:0
-        Include description: @[:markdown](../includes/includer_0.md)
+        Include pragma: @[:markdown](../includes/includer_0.md)
       Includee:
         File path: test/include/includes/includer_0.md}
     assert_equal(expected_message, e.message)
@@ -419,18 +465,27 @@ test/include/templates/no_such_markdown.md}
     label_line = lines.shift
     assert_equal(exception_label, label_line)
     backtrace_line = lines.shift
-    assert_equal(MarkdownHelper::Inclusions::BACKTRACE_LABEL, backtrace_line)
-    level_line_count = 1 + MarkdownHelper::Inclusion::LINE_COUNT
+    assert_equal('  Backtrace (innermost include first):', backtrace_line)
+    level_line_count = 6
     level_count = lines.size / level_line_count
     # Backtrace levels are innermost first, opposite of inclusions.
-    reversed_inclusions = expected_inclusions.inclusions.reverse
+    reversed_inclusions = expected_inclusions.reverse
     (0...level_count).each do |level_index|
       level_line = lines.shift
-      inclusion_lines = lines.shift(MarkdownHelper::Inclusion::LINE_COUNT)
-      assert_equal("#{MarkdownHelper::Inclusions::LEVEL_LABEL} #{level_index}:", level_line)
-      expected_inclusion = reversed_inclusions[level_index]
+      inclusion_lines = lines.shift(5)
+      assert_equal("    Level #{level_index}:", level_line)
+      expected_inclusion = reversed_inclusions.shift
       assert_lines(level_index, inclusion_lines, expected_inclusion)
     end
+  end
+
+  def assert_circular_exception(expected_inclusions, e)
+    assert_inclusion_exception(
+        MarkdownHelper::CircularIncludeError,
+        'Includes are circular:',
+        expected_inclusions,
+        e
+    )
   end
 
   def assert_includee_missing_exception(expected_inclusions, e)
@@ -447,20 +502,22 @@ test/include/templates/no_such_markdown.md}
     # Includer label.
     includee_label = actual_lines.shift
     assert_match(/^\s*Includer:$/, includee_label, level_label)
-    # Includer locatioin.
+    # Includer location.
     location = actual_lines.shift
+    label, path, line_number = location.split(':')
     message = "#{level_label} includer location"
-    assert_match(/^\s*Location:/, location, message)
-    includer_realpath =  Pathname.new(expected_inclusion.includer_file_path).realpath.to_s
+    assert_match(/^\s*Location/, label, message)
+    includer_realpath =  Pathname.new(expected_inclusion.includer_absolute_file_path).realpath.to_s
     relative_path = MarkdownHelper.path_in_project(includer_realpath)
-    r = Regexp.new(Regexp.escape("#{relative_path}:#{expected_inclusion.includer_line_number}") + '$')
-    assert_match(r, location, message)
-    # Include description.
-    description = actual_lines.shift
-    message = "#{level_label} include description"
-    assert_match(/^\s*Include description:/, description, message)
-    r = Regexp.new(Regexp.escape("#{expected_inclusion.include_description}") + '$')
-    assert_match(r, description, message)
+    r = Regexp.new(Regexp.escape(relative_path))
+    assert_match(r, path, message)
+    assert_match(/\d+/, line_number)
+    # Include pragma.
+    pragma = actual_lines.shift
+    message = "#{level_label} include pragma"
+    assert_match(/^\s*Include pragma:/, pragma, message)
+    r = Regexp.new(Regexp.escape("#{expected_inclusion.include_pragma}") + '$')
+    assert_match(r, pragma, message)
     # Includee label.
     includee_label = actual_lines.shift
     assert_match(/^\s*Includee:$/, includee_label, level_label)
@@ -468,9 +525,18 @@ test/include/templates/no_such_markdown.md}
     includee_file_path = actual_lines.shift
     message = "#{level_label} includee cited file path"
     assert_match(/^\s*File path:/, includee_file_path, message)
-    relative_path = MarkdownHelper.path_in_project(expected_inclusion.absolute_includee_file_path)
+    relative_path = MarkdownHelper.path_in_project(expected_inclusion.includee_absolute_file_path)
     r = Regexp.new(Regexp.escape("#{relative_path}") + '$')
     assert_match(r, includee_file_path, message)
+  end
+
+  def assert_template_exception(expected_file_path, e)
+    assert_io_exception(
+        Exception,
+        MarkdownHelper::Inclusions::UNREADABLE_INPUT_EXCEPTION_LABEL,
+        expected_file_path,
+        e
+    )
   end
 
 end

@@ -321,7 +321,7 @@ EOT
 
       self.includer_absolute_file_path = File.absolute_path(includer_file_path)
       unless File.exist?(self.includer_absolute_file_path)
-        fail 'Boo!'
+        fail self.includer_absolute_file_path
       end
       self.includer_real_file_path = Pathname.new(self.includer_absolute_file_path).realpath.to_s
 
@@ -351,7 +351,7 @@ EOT
        text = <<EOT
 #{indentation(indentation_level)}Includer:
 #{indentation(indentation_level+1)}Location: #{relative_inluder_file_path}:#{includer_line_number}
-#{indentation(indentation_level+1)}Include description: #{include_pragma}
+#{indentation(indentation_level+1)}Include pragma: #{include_pragma}
 #{indentation(indentation_level)}Includee:
 #{indentation(indentation_level+1)}File path: #{relative_inludee_file_path}
 EOT
