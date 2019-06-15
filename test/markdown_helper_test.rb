@@ -183,6 +183,7 @@ class MarkdownHelperTest < Minitest::Test
           )
       common_test(MarkdownHelper.new({:pristine => true}), test_info)
     end
+
     # Test invalid page TOC title.
     test_info = IncludeInfo.new(
         'invalid_title',
@@ -192,6 +193,7 @@ class MarkdownHelperTest < Minitest::Test
     assert_raises(MarkdownHelper::InvalidTocTitleError) do
       common_test(MarkdownHelper.new({:pristine => true}), test_info)
     end
+
     # Test multiple page TOC.
     test_info = IncludeInfo.new(
         'multiple',
@@ -201,15 +203,6 @@ class MarkdownHelperTest < Minitest::Test
     assert_raises(MarkdownHelper::MultiplePageTocError) do
       common_test(MarkdownHelper.new({:pristine => true}), test_info)
     end
-    # # Test misplaced page TOC.
-    # test_info = IncludeInfo.new(
-    #     'misplaced',
-    #     :md,
-    #     :page_toc,
-    #     )
-    # assert_raises(MarkdownHelper::MisplacedPageTocError) do
-    #   common_test(MarkdownHelper.new({:pristine => true}), test_info)
-    # end
 
     # Test treatment as comment.
     test_info = IncludeInfo.new(
@@ -337,36 +330,6 @@ test/include/templates/no_such_markdown.md}
         common_test(MarkdownHelper.new, test_info)
       end
       assert_circular_exception(expected_inclusions, e)
-      # e = assert_raises(MarkdownHelper::CircularIncludeError) do
-      #   common_test(MarkdownHelper.new, test_info)
-      # end
-      # expected_message = %q{Includes are circular:
-      # Backtrace (innermost include first):
-      #   Level 0:
-      #     Includer:
-      #       Location: test/include/includes/circular_2.md:0
-      #       Include description: @[:markdown](circular_0.md)
-      #     Includee:
-      #       File path: test/include/includes/circular_0.md
-      #   Level 1:
-      #     Includer:
-      #       Location: test/include/includes/circular_1.md:0
-      #       Include description: @[:markdown](circular_2.md)
-      #     Includee:
-      #       File path: test/include/includes/circular_2.md
-      #   Level 2:
-      #     Includer:
-      #       Location: test/include/includes/circular_0.md:0
-      #       Include description: @[:markdown](circular_1.md)
-      #     Includee:
-      #       File path: test/include/includes/circular_1.md
-      #   Level 3:
-      #     Includer:
-      #       Location: test/include/templates/circular_0_markdown.md:0
-      #       Include description: @[:markdown](../includes/circular_0.md)
-      #     Includee:
-      #       File path: test/include/includes/circular_0.md}
-      #   assert_equal(expected_message, e.message)
     end
 
     # Test includee not found.
