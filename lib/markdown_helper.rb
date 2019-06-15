@@ -11,7 +11,6 @@ class MarkdownHelper
   class UnreadableTemplateError < MarkdownHelperError; end
   class UnwritableMarkdownError < MarkdownHelperError; end
   class CircularIncludeError < MarkdownHelperError; end
-  class MissingIncludeeError < MarkdownHelperError; end
   class UnreadableIncludeeError < MarkdownHelperError; end
 
   INCLUDE_REGEXP = /^@\[([^\[]+)\]\(([^)]+)\)$/
@@ -98,6 +97,7 @@ class MarkdownHelper
         treatment.sub!(/^:/, '')
         case treatment
         when 'markdown'
+          check_includee(inclusion)
           check_circularity(inclusion)
           @inclusions.push(inclusion)
           includee_lines = include_markdown(includee_file_path)
@@ -174,6 +174,7 @@ class MarkdownHelper
           includee_file_path,
           @inclusions
       )
+      check_includee(inclusion)
       @inclusions.push(inclusion)
       file_marker = format('```%s```:', File.basename(includee_file_path))
       output_lines.push(file_marker)
@@ -282,6 +283,20 @@ EOT
     end
   end
 
+  def check_includee(inclusion)
+    unless File.readable?(inclusion.includee_absolute_file_path)
+      @inclusions.push(inclusion)
+      message = [
+          'Could not read includee file:',
+          MarkdownHelper.backtrace_inclusions(@inclusions),
+      ].join("\n")
+      e = MarkdownHelper::UnreadableIncludeeError.new(message)
+      e.set_backtrace([])
+      raise e
+    end
+
+  end
+
   def self.backtrace_inclusions(inclusions)
     lines = ['  Backtrace (innermost include first):']
     inclusions.reverse.each_with_index do |inclusion, i|
@@ -297,13 +312,11 @@ EOT
     attr_accessor \
       :includer_file_path,
       :includer_absolute_file_path,
-      :includer_real_file_path,
       :include_pragma,
       :treatment,
       :includer_line_number,
       :cited_includee_file_path,
-      :includee_absolute_file_path,
-      :includee_real_file_path
+      :includee_absolute_file_path
 
     def initialize(
         includer_file_path,
@@ -323,22 +336,19 @@ EOT
       unless File.exist?(self.includer_absolute_file_path)
         fail self.includer_absolute_file_path
       end
-      self.includer_real_file_path = Pathname.new(self.includer_absolute_file_path).realpath.to_s
 
       self.includee_absolute_file_path = File.absolute_path(File.join(
           File.dirname(includer_file_path),
           cited_includee_file_path,
           ))
-      unless File.readable?(self.includee_absolute_file_path)
-        message = [
-            'Could not read includee file:',
-            MarkdownHelper.backtrace_inclusions(inclusions),
-        ].join("\n")
-        e = MarkdownHelper::UnreadableIncludeeError.new(message)
-        e.set_backtrace([])
-        raise e
-      end
-      self.includee_real_file_path = Pathname.new(self.includee_absolute_file_path).realpath.to_s
+    end
+
+    def includer_real_file_path
+      Pathname.new(includer_absolute_file_path).realpath.to_s
+    end
+
+    def includee_real_file_path
+      Pathname.new(includee_absolute_file_path).realpath.to_s
     end
 
     def indentation(level)

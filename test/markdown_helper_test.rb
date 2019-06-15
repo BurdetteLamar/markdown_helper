@@ -287,7 +287,7 @@ test/include/templates/no_such_markdown.md}
     end
 
     # Test circular includes.
-    Dir.chdir(File.join(TEST_DIR_PATH, 'include/includes')) do
+    Dir.chdir(File.join(TEST_DIR_PATH, 'include', 'includes')) do
       test_info = IncludeInfo.new(
           file_stem = 'circular_0',
           file_type = 'md',
@@ -370,39 +370,59 @@ test/include/templates/no_such_markdown.md}
     end
 
     # Test includee not found.
-    test_info = IncludeInfo.new(
-                               file_stem = 'includer_0',
-                               file_type = 'md',
-                               treatment = :markdown,
-    )
-    e = assert_raises(MarkdownHelper::UnreadableIncludeeError) do
-      common_test(MarkdownHelper.new, test_info)
+    Dir.chdir(File.join(TEST_DIR_PATH, 'include', 'includes')) do
+      test_info = IncludeInfo.new(
+          file_stem = 'includer_0',
+          file_type = 'md',
+          treatment = :markdown,
+          )
+      create_template(test_info)
+      expected_inclusions = []
+      includer_file_path = File.join(
+          TEST_DIR_PATH,
+          'include/templates/includer_0_markdown.md'
+      )
+      cited_includee_file_path = '../includes/includer_0.md'
+      inclusion = MarkdownHelper::Inclusion.new(
+          includer_file_path,
+          include_pragma = "@[:markdown](#{cited_includee_file_path})",
+          includer_line_number = 1,
+          treatment,
+          cited_includee_file_path,
+          expected_inclusions,
+          )
+      expected_inclusions.push(inclusion)
+      # The three nested inclusions.
+      [
+          [0, 1],
+          [1, 2],
+          [2, 3],
+      ].each do |indexes|
+        includer_index, includee_index = *indexes
+        includer_file_name = "includer_#{includer_index}.md"
+        includee_file_name = "includer_#{includee_index}.md"
+        includer_file_path = File.join(
+            TEST_DIR_PATH,
+            "include/templates/../includes/#{includer_file_name}"
+        )
+        inclusion = MarkdownHelper::Inclusion.new(
+            includer_file_path,
+            include_pragma = "@[:markdown](#{includee_file_name})",
+            includer_line_number = 1,
+            treatment,
+            cited_includee_file_path = includee_file_name,
+            expected_inclusions,
+            )
+        expected_inclusions = expected_inclusions.push(inclusion)
+      end
+      e = assert_raises(MarkdownHelper::UnreadableIncludeeError) do
+        common_test(MarkdownHelper.new, test_info)
+      end
+      assert_includee_missing_exception(expected_inclusions, e)
     end
-    expected_message = %q{Could not read includee file:
-  Backtrace (innermost include first):
-    Level 0:
-      Includer:
-        Location: test/include/includes/includer_1.md:0
-        Include pragma: @[:markdown](includer_2.md)
-      Includee:
-        File path: test/include/includes/includer_2.md
-    Level 1:
-      Includer:
-        Location: test/include/includes/includer_0.md:0
-        Include pragma: @[:markdown](includer_1.md)
-      Includee:
-        File path: test/include/includes/includer_1.md
-    Level 2:
-      Includer:
-        Location: test/include/templates/includer_0_markdown.md:0
-        Include pragma: @[:markdown](../includes/includer_0.md)
-      Includee:
-        File path: test/include/includes/includer_0.md}
-    assert_equal(expected_message, e.message)
-
   end
 
-  # Don't call this 'test_interface' (without the leading underscroe),
+  # Don't call this 'test_interface' (without the leading underscore),
   # because that would make it an actual executable test method.
   def _test_interface(test_info)
     File.write(test_info.actual_file_path, '') if File.exist?(test_info.actual_file_path)
@@ -469,12 +489,12 @@ test/include/templates/no_such_markdown.md}
     level_line_count = 6
     level_count = lines.size / level_line_count
     # Backtrace levels are innermost first, opposite of inclusions.
-    reversed_inclusions = expected_inclusions.reverse
+    cloned_inclusions = expected_inclusions.clone
     (0...level_count).each do |level_index|
       level_line = lines.shift
       inclusion_lines = lines.shift(5)
       assert_equal("    Level #{level_index}:", level_line)
-      expected_inclusion = reversed_inclusions.shift
+      expected_inclusion = cloned_inclusions.pop
       assert_lines(level_index, inclusion_lines, expected_inclusion)
     end
   end
@@ -490,8 +510,8 @@ test/include/templates/no_such_markdown.md}
 
   def assert_includee_missing_exception(expected_inclusions, e)
     assert_inclusion_exception(
-        Exception,
-        MarkdownHelper::Inclusions::MISSING_INCLUDEE_EXCEPTION_LABEL,
+        MarkdownHelper::UnreadableIncludeeError,
+        'Could not read includee file:',
         expected_inclusions,
         e
     )
