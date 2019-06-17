@@ -110,7 +110,7 @@ You can include text that's pre-formatted.  See the [use case](markdown/use_case
 
 <!-- >>>>>> BEGIN INCLUDED FILE (code_block): SOURCE bin/usage/include.txt -->
 ```include.txt```:
-```code_block
+```
 
 Usage: markdown_helper include [options] template_file_path markdown_file_path
         --pristine                   No comments added
@@ -167,7 +167,7 @@ where:
 
 <!-- >>>>>> BEGIN INCLUDED FILE (code_block): SOURCE markdown/readme/include.md -->
 ```include.md```:
-```code_block
+```
 @[ruby](my_ruby.rb)
 
 @[:code_block](my_language.xyzzy)
