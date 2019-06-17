@@ -392,6 +392,15 @@ class MarkdownHelperTest < Minitest::Test
       common_test(MarkdownHelper.new, test_info)
     end
 
+    # Test include code block with hashmarks.
+    test_info = IncludeInfo.new(
+        file_stem = 'nested_code_with_hashmarks_page_toc',
+        file_type = 'md',
+        treatment = :markdown,
+        )
+    create_template(test_info)
+    common_test(MarkdownHelper.new, test_info)
+
   end
 
   # Don't call this 'test_interface' (without the leading underscore),
