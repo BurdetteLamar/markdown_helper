@@ -185,7 +185,7 @@ class MarkdownHelper
       @inclusions.push(inclusion)
       file_marker = format('```%s```:', File.basename(includee_file_path))
       output_lines.push(file_marker)
-      includee_lines = include_markdown(includee_file_path)
+      includee_lines = File.read(includee_file_path).split("\n")
       begin_backticks = '```'
       begin_backticks += treatment unless treatment.start_with?(':')
       output_lines.push(begin_backticks)

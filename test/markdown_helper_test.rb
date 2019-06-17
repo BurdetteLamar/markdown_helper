@@ -380,6 +380,18 @@ class MarkdownHelperTest < Minitest::Test
       end
       assert_includee_missing_exception(expected_inclusions, e)
     end
+
+    # Test include code block with includes.
+    def test_code_block_with_includes
+      test_info = IncludeInfo.new(
+          file_stem = 'code_block_with_includes',
+          file_type = 'md',
+          treatment = :code_block,
+          )
+      create_template(test_info)
+      common_test(MarkdownHelper.new, test_info)
+    end
+
   end
 
   # Don't call this 'test_interface' (without the leading underscore),
