@@ -183,7 +183,6 @@ class MarkdownHelper
       )
       check_includee(inclusion)
       @inclusions.push(inclusion)
-      treatment.sub!(':', '')
       file_marker = format('```%s```:', File.basename(includee_file_path))
       begin_backticks = '```'
       end_backticks = '```'
@@ -192,7 +191,7 @@ class MarkdownHelper
       includee_lines.unshift(begin_backticks)
       includee_lines.unshift(file_marker)
       includee_lines.push(end_backticks)
-      add_inclusion_comments(treatment, includee_file_path, includee_lines)
+      add_inclusion_comments(treatment.sub(':', ''), includee_file_path, includee_lines)
       output_lines.concat(includee_lines)
     end
   end
