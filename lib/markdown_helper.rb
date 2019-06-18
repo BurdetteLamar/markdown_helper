@@ -201,7 +201,7 @@ class MarkdownHelper
     end
   end
 
-    def parse_include(line)
+  def parse_include(line)
     match_data = line.match(INCLUDE_REGEXP)
     return [nil, nil] unless match_data
     treatment = match_data[1]
