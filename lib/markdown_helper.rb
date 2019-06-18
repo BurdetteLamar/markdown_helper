@@ -74,9 +74,6 @@ class MarkdownHelper
         ].join("\n")
         e = UnreadableTemplateError.new(message)
         e.set_backtrace([])
-        p Dir.pwd
-        p template_file_path
-        p File.join(Dir.pwd, template_file_path)
         raise e
       end
       template_lines = File.readlines(template_file_path)
