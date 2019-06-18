@@ -52,20 +52,6 @@ class MarkdownHelper
   private
 
   def generate_file(template_file_path, markdown_file_path)
-    unless File.readable?(template_file_path)
-      message = [
-          'Could not read template file:',
-          MarkdownHelper.backtrace_inclusions(@inclusions),
-      ].join("\n")
-      e = UnreadableTemplateError.new(message)
-      e.set_backtrace([])
-      raise e
-      # message = [
-      #     'Could not read template file:',
-      #     MarkdownHelper.path_in_project(template_file_path),
-      # ].join("\n")
-      # raise UnreadableTemplateError.new(message)
-    end
     template_path_in_project = MarkdownHelper.path_in_project(template_file_path)
     output_lines = []
     yield output_lines
@@ -81,6 +67,18 @@ class MarkdownHelper
   def include_markdown(template_file_path)
     Dir.chdir(File.dirname(template_file_path)) do
       markdown_lines = []
+      unless File.readable?(template_file_path)
+        message = [
+            'Could not read template file:',
+            MarkdownHelper.backtrace_inclusions(@inclusions),
+        ].join("\n")
+        e = UnreadableTemplateError.new(message)
+        e.set_backtrace([])
+        p Dir.pwd
+        p template_file_path
+        p File.join(Dir.pwd, template_file_path)
+        raise e
+      end
       template_lines = File.readlines(template_file_path)
       template_lines.each_with_index do |template_line, i|
         template_line.chomp!
