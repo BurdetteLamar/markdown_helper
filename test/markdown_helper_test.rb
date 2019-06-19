@@ -401,6 +401,15 @@ class MarkdownHelperTest < Minitest::Test
     create_template(test_info)
     common_test(MarkdownHelper.new, test_info)
 
+    # Test local and non-local includes.
+    test_info = IncludeInfo.new(
+        file_stem = 'local_and_nonlocal_includes',
+        file_type = 'md',
+        treatment = :markdown,
+        )
+    create_template(test_info)
+    common_test(MarkdownHelper.new, test_info)
+
   end
 
   # Don't call this 'test_interface' (without the leading underscore),
