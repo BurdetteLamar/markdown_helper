@@ -102,7 +102,7 @@ class MarkdownHelper
           check_includee(inclusion)
           check_circularity(inclusion)
           @inclusions.push(inclusion)
-          includee_lines = include_markdown(includee_file_path)
+          includee_lines = include_markdown(File.absolute_path(includee_file_path))
           markdown_lines.concat(includee_lines)
         when 'comment'
           text = File.read(includee_file_path)
