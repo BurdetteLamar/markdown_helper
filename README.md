@@ -1,4 +1,4 @@
-<!-- >>>>>> BEGIN GENERATED FILE (include): SOURCE README.template.md -->
+<!-- >>>>>> BEGIN GENERATED FILE (include): SOURCE markdown/readme/README.template.md -->
 # Markdown Helper
 
 [![Gem](https://img.shields.io/gem/v/markdown_helper.svg?style=flat)](http://rubygems.org/gems/markdown_helper "View this project in Rubygems")
@@ -167,7 +167,7 @@ where:
 
 <!-- >>>>>> BEGIN INCLUDED FILE (code_block): SOURCE markdown/readme/include.md -->
 ```include.md```:
-```code_block
+```
 @[ruby](my_ruby.rb)
 
 @[:code_block](my_language.xyzzy)
@@ -208,4 +208,4 @@ I have opened some enhancement Issues in the GitHub [markdown_helper](https://gi
 * [Pagination](https://github.com/BurdetteLamar/markdown_helper/issues/40):  series of markdown pages connected by prev/next navigation links.
 
 Feel free to comment on any of these, or to add more Issues (enhancement or otherwise).
-<!-- <<<<<< END GENERATED FILE (include): SOURCE README.template.md -->
+<!-- <<<<<< END GENERATED FILE (include): SOURCE markdown/readme/README.template.md -->

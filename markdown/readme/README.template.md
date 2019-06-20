@@ -106,7 +106,7 @@ where:
 
 ##### Example Include Descriptions
 
-@[code_block](include.md)
+@[:code_block](include.md)
 
 #### Page TOC
 

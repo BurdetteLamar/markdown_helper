@@ -1,4 +1,4 @@
-<!-- >>>>>> BEGIN GENERATED FILE (include): SOURCE highlight_ruby_template.md -->
+<!-- >>>>>> BEGIN GENERATED FILE (include): SOURCE markdown/readme/highlight_ruby_template.md -->
 <!-- >>>>>> BEGIN INCLUDED FILE (ruby): SOURCE markdown/readme/include.rb -->
 ```include.rb```:
 ```ruby
@@ -9,4 +9,4 @@ class RubyCode
 end
 ```
 <!-- <<<<<< END INCLUDED FILE (ruby): SOURCE markdown/readme/include.rb -->
-<!-- <<<<<< END GENERATED FILE (include): SOURCE highlight_ruby_template.md -->
+<!-- <<<<<< END GENERATED FILE (include): SOURCE markdown/readme/highlight_ruby_template.md -->
