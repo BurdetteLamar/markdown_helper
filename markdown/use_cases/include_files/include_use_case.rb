@@ -87,7 +87,7 @@ You can use the API to perform the inclusion.
 
 ##### Ruby Code
 
-@[ruby](#{RUBY_FILE_NAME})
+@[ruby](../#{RUBY_FILE_NAME})
 
 ##### Command
 

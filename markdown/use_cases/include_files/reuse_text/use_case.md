@@ -18,7 +18,6 @@ Text in includee file.
 Text in includer file.
 
 @[:markdown](includee.md)
-
 ```
 
 The treatment token ```:markdown``` specifies that the included text is to be treated as more markdown.
@@ -65,5 +64,4 @@ Here's the output file, after inclusion.
 Text in includer file.
 
 Text in includee file.
-
 ```

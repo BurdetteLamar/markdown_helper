@@ -27,7 +27,6 @@ Here's a template file that includes it:
 This file includes the code as a comment.
 
 @[:comment](hello.rb)
-
 ```
 
 The treatment token ```:comment``` specifies that the included text is to be treated as a comment.
@@ -82,6 +81,5 @@ This file includes the code as a comment.
    end
 end
 -->
-
 ```
 

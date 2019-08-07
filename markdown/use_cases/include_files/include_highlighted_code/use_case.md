@@ -27,7 +27,6 @@ Here's a template file that includes it:
 This file includes the code as highlighted code.
 
 @[ruby](hello.rb)
-
 ```
 
 The treatment token ```ruby``` specifies that the included text is to be highlighted as Ruby code.
