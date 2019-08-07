@@ -16,7 +16,7 @@ You can use the API to perform the inclusion.
 
 ##### Ruby Code
 
-@[ruby](include.rb)
+@[ruby](../include.rb)
 
 ##### Command
 

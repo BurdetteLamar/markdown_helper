@@ -27,7 +27,6 @@ Here's a template file that includes it:
 This file includes the code as a code block.
 
 @[:code_block](hello.rb)
-
 ```
 
 The treatment token ```:code_block``` specifies that the included text is to be treated as a code block.

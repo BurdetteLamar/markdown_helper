@@ -62,7 +62,6 @@ Here's a template file that includes them:
 @[:markdown](markdown_0.md)
 
 @[:markdown](markdown_1.md)
-
 ```
 
 The treatment token ```:page_toc``` specifies where the page TOC is to be inserted.
@@ -106,7 +105,9 @@ Here's the finished file with the inclusion:
 
 ```included.md```:
 ```markdown
-<!-- >>>>>> BEGIN GENERATED FILE (include): SOURCE includer.md -->
+<!-- >>>>>> BEGIN GENERATED FILE (include): SOURCE markdown/use_cases/include_files/include_page_toc/includer.md -->
+<!-- >>>>>> BEGIN INCLUDED FILE (markdown): SOURCE markdown/use_cases/include_files/include_page_toc/markdown_1.md -->
+<!-- >>>>>> BEGIN INCLUDED FILE (markdown): SOURCE markdown/use_cases/include_files/include_page_toc/markdown_0.md -->
 # Page Title
 
 ## Page Contents
@@ -131,7 +132,6 @@ Here's the finished file with the inclusion:
 
 ## Another includer level-two title.
 
-<!-- >>>>>> BEGIN INCLUDED FILE (markdown): SOURCE markdown/use_cases/include_files/include_page_toc/markdown_0.md -->
         
 ## Includee 0 level-two title.
 
@@ -142,7 +142,6 @@ Here's the finished file with the inclusion:
 ## Another includee 0 level-two title.
 <!-- <<<<<< END INCLUDED FILE (markdown): SOURCE markdown/use_cases/include_files/include_page_toc/markdown_0.md -->
 
-<!-- >>>>>> BEGIN INCLUDED FILE (markdown): SOURCE markdown/use_cases/include_files/include_page_toc/markdown_1.md -->
         
 ## Includee 1 level-two title.
 
@@ -153,14 +152,16 @@ Here's the finished file with the inclusion:
 ## Another includee 1 level-two title.
 <!-- <<<<<< END INCLUDED FILE (markdown): SOURCE markdown/use_cases/include_files/include_page_toc/markdown_1.md -->
 
-<!-- <<<<<< END GENERATED FILE (include): SOURCE includer.md -->
+<!-- <<<<<< END GENERATED FILE (include): SOURCE markdown/use_cases/include_files/include_page_toc/includer.md -->
 ```
 
 And here's the finished markdown, as rendered on this page:
 
 ---
 
-<!-- >>>>>> BEGIN GENERATED FILE (include): SOURCE includer.md -->
+<!-- >>>>>> BEGIN GENERATED FILE (include): SOURCE markdown/use_cases/include_files/include_page_toc/includer.md -->
+<!-- >>>>>> BEGIN INCLUDED FILE (markdown): SOURCE markdown/use_cases/include_files/include_page_toc/markdown_1.md -->
+<!-- >>>>>> BEGIN INCLUDED FILE (markdown): SOURCE markdown/use_cases/include_files/include_page_toc/markdown_0.md -->
 # Page Title
 
 ## Page Contents
@@ -185,7 +186,6 @@ And here's the finished markdown, as rendered on this page:
 
 ## Another includer level-two title.
 
-<!-- >>>>>> BEGIN INCLUDED FILE (markdown): SOURCE markdown/use_cases/include_files/include_page_toc/markdown_0.md -->
         
 ## Includee 0 level-two title.
 
@@ -196,7 +196,6 @@ And here's the finished markdown, as rendered on this page:
 ## Another includee 0 level-two title.
 <!-- <<<<<< END INCLUDED FILE (markdown): SOURCE markdown/use_cases/include_files/include_page_toc/markdown_0.md -->
 
-<!-- >>>>>> BEGIN INCLUDED FILE (markdown): SOURCE markdown/use_cases/include_files/include_page_toc/markdown_1.md -->
         
 ## Includee 1 level-two title.
 
@@ -207,6 +206,6 @@ And here's the finished markdown, as rendered on this page:
 ## Another includee 1 level-two title.
 <!-- <<<<<< END INCLUDED FILE (markdown): SOURCE markdown/use_cases/include_files/include_page_toc/markdown_1.md -->
 
-<!-- <<<<<< END GENERATED FILE (include): SOURCE includer.md -->
+<!-- <<<<<< END GENERATED FILE (include): SOURCE markdown/use_cases/include_files/include_page_toc/includer.md -->
 
 ---

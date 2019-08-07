@@ -29,7 +29,6 @@ Here's a template file that includes it:
 This file includes the markdown file.
 
 @[:markdown](markdown.md)
-
 ```
 
 The treatment token ```:markdown``` specifies that the included text is to be treated as markdown.
@@ -85,7 +84,6 @@ This is an unordered list:
 * One.
 * Two.
 * Three.
-
 ```
 
 And here's the finished markdown, as rendered on this page:
