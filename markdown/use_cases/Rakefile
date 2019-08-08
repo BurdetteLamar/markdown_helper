@@ -1,4 +1,3 @@
-require_relative 'include_files/include_use_case'
 require_relative '../../lib/string_helper'
 
 namespace :build do
@@ -18,7 +17,6 @@ EOT
       )
       dir_path = File.dirname(__FILE__)
       Dir.chdir(dir_path) do
-        IncludeUseCase.write_interface_file
         use_case_dirs = {
             :include_files => %w/
                 reuse_text
@@ -54,29 +52,24 @@ EOT
           # Each use case is in a separate directory.
           dir_names.each do |dir_name|
             Dir.chdir("#{section}/#{dir_name}") do
-
-              # There should be a conventionally-named ruby file to build the use case.
-              fail dir_name unless File.exist?(UseCase::BUILDER_FILE_NAME)
-
-              # There should be a conventionally-named use-case template.
-              fail dir_name unless File.exist?(UseCase::TEMPLATE_FILE_NAME)
-
               class_name = camelize(dir_name)
-              command = "ruby -I . -r #{UseCase::BUILDER_FILE_NAME} -e #{class_name}.build"
               if backtrace_cases.include?(dir_name)
+                # Generate the error.
+                command = 'markdown_helper include --pristine includer.md included.md'
+                # And capture the exception.
                 command += " 2> #{dir_name}.err"
                 begin
                   system(command)
                 rescue
                   #
                 end
-              else
-                system(command)
               end
+              command = 'markdown_helper include --pristine use_case_template.md use_case.md'
+              system(command)
 
-              title_line = File.open(UseCase::TEMPLATE_FILE_NAME).grep(/^#/).first.chomp
+              title_line = File.open('use_case_template.md').grep(/^#/).first.chomp
               title = title_line.split(/\s/, 2).pop
-              use_case_file_name = File.basename(UseCase::USE_CASE_FILE_NAME)
+              use_case_file_name = File.basename('use_case.md')
               use_case_anchor = dir_name.gsub('_', '-')
               use_case_relative_url = File.join(
                   section.to_s,
