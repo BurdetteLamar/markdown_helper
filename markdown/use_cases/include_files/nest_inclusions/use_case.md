@@ -30,14 +30,16 @@ File to do nested inclusion.
 #### Include Via <code>markdown_helper</code>
 <details>
 <summary>CLI</summary>
+
 ```sh
 markdown_helper include --pristine includer.md included.md
 ```
+
 (Option ```--pristine``` suppresses comment insertion.)
 </details>
 <details>
 <summary>API</summary>
-##### Ruby Code
+
 ```include.rb```:
 ```ruby
 require 'markdown_helper'
@@ -46,7 +48,7 @@ require 'markdown_helper'
 markdown_helper = MarkdownHelper.new(:pristine => true)
 markdown_helper.include('includer.md', 'included.md')
 ```
-```
+
 </details>
 
 #### File with Inclusion

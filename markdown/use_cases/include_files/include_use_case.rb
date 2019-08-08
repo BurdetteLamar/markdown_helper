@@ -72,16 +72,18 @@ EOT
 #### Include Via <code>markdown_helper</code>
 <details>
 <summary>CLI</summary>
+
 ```sh
 #{INCLUDE_COMMAND}
 ```
+
 @[:markdown](../pristine.md)
 </details>
 <details>
 <summary>API</summary>
-##### Ruby Code
+
 @[ruby](../#{RUBY_FILE_NAME})
-```
+
 </details>
 EOT
       )
