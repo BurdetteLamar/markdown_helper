@@ -69,8 +69,9 @@ EOT
     )
     File.open(interface_file_path, 'w') do |interface_file|
       interface_file.puts(<<EOT
-#### CLI
-
+#### Including
+<details>
+<summary>CLI</summary>
 You can use the command-line interface to perform the inclusion.
 
 ##### Command
@@ -80,9 +81,9 @@ You can use the command-line interface to perform the inclusion.
 ```
 
 @[:markdown](../pristine.md)
-
-#### API
-
+</details>
+<details>
+<summary>API</summary>
 You can use the API to perform the inclusion.
 
 ##### Ruby Code
@@ -94,6 +95,7 @@ You can use the API to perform the inclusion.
 ```sh
 #{RUBY_COMMAND}
 ```
+</details>
 EOT
       )
     end

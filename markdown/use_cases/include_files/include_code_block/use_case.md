@@ -31,8 +31,9 @@ This file includes the code as a code block.
 
 The treatment token ```:code_block``` specifies that the included text is to be treated as a code block.
 
-#### CLI
-
+#### Including
+<details>
+<summary>CLI</summary>
 You can use the command-line interface to perform the inclusion.
 
 ##### Command
@@ -42,9 +43,9 @@ markdown_helper include --pristine includer.md included.md
 ```
 
 (Option ```--pristine``` suppresses comment insertion.)
-
-#### API
-
+</details>
+<details>
+<summary>API</summary>
 You can use the API to perform the inclusion.
 
 ##### Ruby Code
@@ -63,6 +64,7 @@ markdown_helper.include('includer.md', 'included.md')
 ```sh
 ruby include.rb
 ```
+</details>
 
 #### File with Inclusion
 

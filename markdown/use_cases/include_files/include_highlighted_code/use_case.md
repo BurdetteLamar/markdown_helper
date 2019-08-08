@@ -33,8 +33,9 @@ The treatment token ```ruby``` specifies that the included text is to be highlig
 
 The treatment token can be any Ace mode mentioned in [GitHub Languages](https://github.com/github/linguist/blob/master/lib/linguist/languages.yml).  The file lists about 100 Ace modes, covering just about every language and format.
 
-#### CLI
-
+#### Including
+<details>
+<summary>CLI</summary>
 You can use the command-line interface to perform the inclusion.
 
 ##### Command
@@ -44,9 +45,9 @@ markdown_helper include --pristine includer.md included.md
 ```
 
 (Option ```--pristine``` suppresses comment insertion.)
-
-#### API
-
+</details>
+<details>
+<summary>API</summary>
 You can use the API to perform the inclusion.
 
 ##### Ruby Code
@@ -65,6 +66,7 @@ markdown_helper.include('includer.md', 'included.md')
 ```sh
 ruby include.rb
 ```
+</details>
 
 #### File with Inclusion
 

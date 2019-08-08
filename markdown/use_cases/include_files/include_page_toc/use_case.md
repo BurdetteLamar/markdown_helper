@@ -66,8 +66,9 @@ Here's a template file that includes them:
 
 The treatment token ```:page_toc``` specifies where the page TOC is to be inserted.
 
-#### CLI
-
+#### Including
+<details>
+<summary>CLI</summary>
 You can use the command-line interface to perform the inclusion.
 
 ##### Command
@@ -77,9 +78,9 @@ markdown_helper include --pristine includer.md included.md
 ```
 
 (Option ```--pristine``` suppresses comment insertion.)
-
-#### API
-
+</details>
+<details>
+<summary>API</summary>
 You can use the API to perform the inclusion.
 
 ##### Ruby Code
@@ -98,6 +99,7 @@ markdown_helper.include('includer.md', 'included.md')
 ```sh
 ruby include.rb
 ```
+</details>
 
 #### File with Inclusion
 
