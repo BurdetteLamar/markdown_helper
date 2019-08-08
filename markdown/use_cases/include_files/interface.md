@@ -1,25 +1,16 @@
-#### CLI
-
-You can use the command-line interface to perform the inclusion.
-
-##### Command
+#### Include Via <code>markdown_helper</code>
+<details>
+<summary>CLI</summary>
 
 ```sh
 markdown_helper include --pristine includer.md included.md
 ```
 
 @[:markdown](../pristine.md)
-
-#### API
-
-You can use the API to perform the inclusion.
-
-##### Ruby Code
+</details>
+<details>
+<summary>API</summary>
 
 @[ruby](../include.rb)
 
-##### Command
-
-```sh
-ruby include.rb
-```
+</details>

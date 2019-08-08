@@ -32,23 +32,18 @@ This file initiates the nested inclusions.
 @[:markdown](includer_0.md)
 ```
 
-#### CLI
-
-You can use the command-line interface to perform the inclusion.
-
-##### Command
+#### Include Via <code>markdown_helper</code>
+<details>
+<summary>CLI</summary>
 
 ```sh
 markdown_helper include --pristine includer.md included.md
 ```
 
 (Option ```--pristine``` suppresses comment insertion.)
-
-#### API
-
-You can use the API to perform the inclusion.
-
-##### Ruby Code
+</details>
+<details>
+<summary>API</summary>
 
 ```include.rb```:
 ```ruby
@@ -59,11 +54,7 @@ markdown_helper = MarkdownHelper.new(:pristine => true)
 markdown_helper.include('includer.md', 'included.md')
 ```
 
-##### Command
-
-```sh
-ruby include.rb
-```
+</details>
 
 #### Error and Backtrace
 
