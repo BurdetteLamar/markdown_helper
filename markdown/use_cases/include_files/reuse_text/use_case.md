@@ -22,25 +22,17 @@ Text in includer file.
 
 The treatment token ```:markdown``` specifies that the included text is to be treated as more markdown.
 
-#### Including
+#### Include Via <code>markdown_helper</code>
 <details>
 <summary>CLI</summary>
-You can use the command-line interface to perform the inclusion.
-
-##### Command
-
 ```sh
 markdown_helper include --pristine includer.md included.md
 ```
-
 (Option ```--pristine``` suppresses comment insertion.)
 </details>
 <details>
 <summary>API</summary>
-You can use the API to perform the inclusion.
-
 ##### Ruby Code
-
 ```include.rb```:
 ```ruby
 require 'markdown_helper'
@@ -49,11 +41,6 @@ require 'markdown_helper'
 markdown_helper = MarkdownHelper.new(:pristine => true)
 markdown_helper.include('includer.md', 'included.md')
 ```
-
-##### Command
-
-```sh
-ruby include.rb
 ```
 </details>
 
