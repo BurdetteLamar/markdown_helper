@@ -96,19 +96,18 @@ class MarkdownHelper
             includee_file_path,
             @inclusions
             )
-        treatment.sub!(/^:/, '')
         case treatment
-        when 'markdown'
+        when ':markdown'
           check_includee(inclusion)
           check_circularity(inclusion)
           @inclusions.push(inclusion)
           includee_lines = include_markdown(File.absolute_path(includee_file_path))
           markdown_lines.concat(includee_lines)
-        when 'comment'
+        when ':comment'
           text = File.read(includee_file_path)
           markdown_lines.push(MarkdownHelper.comment(text))
           @inclusions.push(inclusion)
-        when 'pre'
+        when ':pre'
           text = File.read(includee_file_path)
           markdown_lines.push(MarkdownHelper.pre(text))
           @inclusions.push(inclusion)
@@ -117,6 +116,7 @@ class MarkdownHelper
           next
         end
         @inclusions.pop
+        treatment.sub!(/^:/, '')
         add_inclusion_comments(treatment, includee_file_path, markdown_lines)
       end
       markdown_lines
