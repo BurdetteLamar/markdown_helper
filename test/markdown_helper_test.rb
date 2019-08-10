@@ -204,6 +204,15 @@ class MarkdownHelperTest < Minitest::Test
       common_test(MarkdownHelper.new({:pristine => true}), test_info)
     end
 
+    # Test markdown as code block.
+    test_info = IncludeInfo.new(
+        file_stem = 'markdown_block',
+        file_type = 'md',
+        treatment = 'markdown',
+        )
+    create_template(test_info)
+    common_test(MarkdownHelper.new, test_info)
+
     # Test treatment as comment.
     test_info = IncludeInfo.new(
         file_stem = 'comment',
