@@ -111,6 +111,10 @@ class MarkdownHelper
           text = File.read(includee_file_path)
           markdown_lines.push(MarkdownHelper.pre(text))
           @inclusions.push(inclusion)
+        when ':details'
+          text = File.read(includee_file_path)
+          markdown_lines.push(MarkdownHelper.details(text))
+          @inclusions.push(inclusion)
         else
           markdown_lines.push(template_line)
           next
@@ -220,6 +224,10 @@ class MarkdownHelper
 
   def self.pre(text)
     "<pre>\n#{text}</pre>"
+  end
+
+  def self.details(text)
+    "<details>\n#{text}</details>"
   end
 
   def self.git_clone_dir_path
