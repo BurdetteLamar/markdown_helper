@@ -76,7 +76,7 @@ You can include text that's to become a comment in the markdown.  See the [use c
 
 #### Details
 
-You can include text that's to become details in the markdown.  See the [use case](markdown/use_cases/include_files/include_text_as_details/use_case.md#include-text-as-details)
+You can include text that's to become details in the markdown.  See the [use case](markdown/use_cases/include_files/include_text_as_details/use_case.md#include-text-as-details).
 
 ### Pre-Formattted Text
 
