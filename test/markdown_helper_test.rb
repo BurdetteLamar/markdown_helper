@@ -153,6 +153,7 @@ class MarkdownHelperTest < Minitest::Test
           :code_block,
           :comment,
           :pre,
+          :details,
           file_stem.to_s,
       ].each do |treatment|
         test_info = IncludeInfo.new(
@@ -267,7 +268,8 @@ class MarkdownHelperTest < Minitest::Test
     e = assert_raises(MarkdownHelper::UnreadableTemplateError) do
       common_test(MarkdownHelper.new, test_info)
     end
-    assert_template_exception(test_info.template_file_path, e)
+    path_in_project = MarkdownHelper.path_in_project(test_info.template_file_path)
+    assert_template_exception(path_in_project, e)
 
     # Test markdown (output) open failure.
     test_info = IncludeInfo.new(

@@ -25,6 +25,7 @@ EOT
                 include_code_block
                 include_highlighted_code
                 include_page_toc
+                include_text_as_details
                 include_text_as_comment
                 include_text_as_pre
                 include_generated_text
@@ -52,16 +53,19 @@ EOT
           # Each use case is in a separate directory.
           dir_names.each do |dir_name|
             Dir.chdir("#{section}/#{dir_name}") do
-              class_name = camelize(dir_name)
-              if backtrace_cases.include?(dir_name)
-                # Generate the error.
+              if File.exist?('includer.md')
                 command = 'markdown_helper include --pristine includer.md included.md'
-                # And capture the exception.
-                command += " 2> #{dir_name}.err"
-                begin
+                if backtrace_cases.include?(dir_name)
+                  # Capture the exception.
+                  command += " 2> #{dir_name}.err"
+                  # Generate the error.
+                  begin
+                    system(command)
+                  rescue
+                    #
+                  end
+                else
                   system(command)
-                rescue
-                  #
                 end
               end
               command = 'markdown_helper include --pristine use_case_template.md use_case.md'

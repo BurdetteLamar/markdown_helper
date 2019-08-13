@@ -68,12 +68,14 @@ class MarkdownHelper
     Dir.chdir(File.dirname(template_file_path)) do
       markdown_lines = []
       unless File.readable?(template_file_path)
+        path_in_project = MarkdownHelper.path_in_project(template_file_path )
         message = [
-            'Could not read template file:',
+            "Could not read template file: #{path_in_project}",
             MarkdownHelper.backtrace_inclusions(@inclusions),
         ].join("\n")
         e = UnreadableTemplateError.new(message)
         e.set_backtrace([])
+        p @inclusions
         raise e
       end
       template_lines = File.readlines(template_file_path)
