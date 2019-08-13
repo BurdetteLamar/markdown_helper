@@ -4,18 +4,14 @@ Use file inclusion to include text as details.
 
 #### File to Be Included
 
-Here's a file containing code to be included:
+Here's a file containing text to be included:
 
-```hello.rb```:
-```ruby
-class HelloWorld
-   def initialize(name)
-      @name = name.capitalize
-   end
-   def sayHi
-      puts "Hello !"
-   end
-end
+```details.md```:
+```markdown
+<summary>My details</summary>
+- Foo
+- Bar
+- Baz
 ```
 
 #### Includer File
@@ -26,7 +22,7 @@ Here's a template file that includes it:
 ```markdown
 This file includes the code as details.
 
-@[:details](hello.rb)
+@[:details](details.md)
 ```
 
 The treatment token ```:details``` specifies that the included text is to be treated as details.
@@ -64,14 +60,10 @@ Here's the finished file with the included details:
 This file includes the code as details.
 
 <details>
-class HelloWorld
-   def initialize(name)
-      @name = name.capitalize
-   end
-   def sayHi
-      puts "Hello !"
-   end
-end
+<summary>My details</summary>
+- Foo
+- Bar
+- Baz
 </details>
 ```
 
@@ -82,13 +74,9 @@ And here are the included details, as rendered on this page.:
 This file includes the code as details.
 
 <details>
-class HelloWorld
-   def initialize(name)
-      @name = name.capitalize
-   end
-   def sayHi
-      puts "Hello !"
-   end
-end
+<summary>My details</summary>
+- Foo
+- Bar
+- Baz
 </details>
 

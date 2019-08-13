@@ -4,9 +4,9 @@ Use file inclusion to include text as details.
 
 #### File to Be Included
 
-Here's a file containing code to be included:
+Here's a file containing text to be included:
 
-@[ruby](hello.rb)
+@[markdown](details.md)
 
 #### Includer File
 
