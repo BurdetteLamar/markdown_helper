@@ -22,6 +22,7 @@ Command line creation of page TOC (table of contents), previously deprecated, is
     - [Plain Code Block](#plain-code-block)
     - [Comment](#comment)
   - [Pre-Formattted Text](#pre-formattted-text)
+  - [Details](#details)
   - [Usage](#usage)
     - [CLI](#cli)
     - [API](#api)
@@ -103,6 +104,10 @@ You can include text that's to become a comment in the markdown.  See the [use c
 ### Pre-Formattted Text
 
 You can include text that's pre-formatted.  See the [use case](markdown/use_cases/include_files/include_text_as_pre/use_case.md#include-text-as-pre).
+
+### Details
+
+You can include text that's to become details in the markdown.  See the [use case](markdown/use_cases/include_files/include_text_as_comment/use_case.md#include-text-as-details)
 
 ### Usage
 
