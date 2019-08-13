@@ -24,3 +24,8 @@ Here's the finished file with the included details:
 
 @[markdown](included.md)
 
+And here are the included details, as rendered on this page.:
+
+---
+
+@[:markdown](included.md)
