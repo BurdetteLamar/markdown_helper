@@ -1,0 +1,1 @@
+@[:details](../includes/md.md)
