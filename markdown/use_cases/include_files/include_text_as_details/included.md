@@ -2,8 +2,9 @@ This file includes the code as details.
 
 <details>
 <summary>My details</summary>
-- Foo
-- Bar
-- Baz
+This is a detail.
+
+This is another.
+
 </details>
 

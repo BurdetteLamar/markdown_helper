@@ -9,9 +9,9 @@ Here's a file containing text to be included:
 ```details.md```:
 ```markdown
 <summary>My details</summary>
-- Foo
-- Bar
-- Baz
+This is a detail.
+
+This is another.
 ```
 
 #### Includer File
@@ -61,9 +61,10 @@ This file includes the code as details.
 
 <details>
 <summary>My details</summary>
-- Foo
-- Bar
-- Baz
+This is a detail.
+
+This is another.
+
 </details>
 ```
 
@@ -75,8 +76,9 @@ This file includes the code as details.
 
 <details>
 <summary>My details</summary>
-- Foo
-- Bar
-- Baz
+This is a detail.
+
+This is another.
+
 </details>
 

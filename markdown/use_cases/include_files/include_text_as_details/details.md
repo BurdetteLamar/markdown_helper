@@ -1,4 +1,5 @@
 <summary>My details</summary>
-- Foo
-- Bar
-- Baz
+This is a detail.
+
+This is another.
+
