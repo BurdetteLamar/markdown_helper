@@ -75,7 +75,6 @@ class MarkdownHelper
         ].join("\n")
         e = UnreadableTemplateError.new(message)
         e.set_backtrace([])
-        p @inclusions
         raise e
       end
       template_lines = File.readlines(template_file_path)

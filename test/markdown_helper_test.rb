@@ -554,7 +554,7 @@ class MarkdownHelperTest < Minitest::Test
   def assert_template_exception(expected_file_path, e)
     assert_inclusion_exception(
         MarkdownHelper::UnreadableTemplateError,
-        'Could not read template file:',
+        "Could not read template file: #{expected_file_path}",
         MarkdownHelper.path_in_project(expected_file_path),
         e
     )

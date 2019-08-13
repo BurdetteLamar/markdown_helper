@@ -4,7 +4,7 @@
 
 ## What's New?
 
-Command line creation of page TOC (table of contents), previously deprecated, is removed.
+Inclusion of text as details is added.  See the [use case](markdown/use_cases/include_files/include_text_as_details/use_case.md#include-text-as-details).
 
 @[:page_toc](## Contents)
 
