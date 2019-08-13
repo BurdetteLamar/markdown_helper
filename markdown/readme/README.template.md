@@ -104,8 +104,9 @@ where:
   * Highlighting mode such as <code>[ruby]</code>, to include a highlighted code block.  This can be any Ace mode mentioned in [GitHub Languages](https://github.com/github/linguist/blob/master/lib/linguist/languages.yml).
   * <code>[:code_block]</code>, to include a plain code block.
   * <code>[:markdown]</code>, to include text markdown (to be rendered as markdown).
-  * <code>[:comment]</code>, to insert text as a markdown comment.
+  * <code>[:comment]</code>, to include text as a markdown comment.
   * <code>[:pre]</code>, to include pre-formatted text.
+  * <code>[:details]</code>, to include text as details.
 * *relative_file_path* points to the file to be included.
 
 ##### Example Include Descriptions
