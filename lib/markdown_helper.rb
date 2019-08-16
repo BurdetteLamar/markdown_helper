@@ -1,7 +1,5 @@
 require 'pathname'
 
-require 'markdown_helper/version'
-
 class MarkdownHelper
 
   attr_accessor :pristine
