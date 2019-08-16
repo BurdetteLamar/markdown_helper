@@ -4,19 +4,29 @@ require 'markdown_helper/version'
 
 class MarkdownHelper
 
+  attr_accessor :pristine
+
   class MarkdownHelperError < RuntimeError; end
   class OptionError < MarkdownHelperError; end
   class MultiplePageTocError < MarkdownHelperError; end
-  class InvalidTocTitleError < MarkdownHelperError; end
   class UnreadableTemplateError < MarkdownHelperError; end
   class UnwritableMarkdownError < MarkdownHelperError; end
+  class InvalidTocTitleError < MarkdownHelperError; end
   class CircularIncludeError < MarkdownHelperError; end
   class UnreadableIncludeeError < MarkdownHelperError; end
 
-  INCLUDE_REGEXP = /^@\[([^\[]+)\]\(([^)]+)\)$/
-  INCLUDE_MARKDOWN_REGEXP = /^@\[:markdown\]\(([^)]+)\)$/
+  def MarkdownHelper.git_clone_dir_path
+    git_dir = `git rev-parse --show-toplevel`.chomp
+    unless $?.success?
+      message = <<EOT
 
-  attr_accessor :pristine
+Markdown helper must run inside a .git project.
+That is, the working directory one of its parents must be a .git directory.
+EOT
+      raise RuntimeError.new(message)
+    end
+    git_dir
+  end
 
   def initialize(options = {})
     # Confirm that we're in a git project.
@@ -36,20 +46,46 @@ class MarkdownHelper
       send(setter_method, value)
       merged_options.delete(method)
     end
-    @inclusions = []
   end
 
   def include(template_file_path, markdown_file_path)
-    send(:generate_file, template_file_path, markdown_file_path) do |output_lines|
+    includer = MarkdownIncluder.new(:pristine => pristine)
+    includer.include(template_file_path, markdown_file_path)
+  end
+
+  def self.comment(text)
+    "<!--#{text}-->"
+  end
+
+  def self.path_in_project(file_path)
+    abs_path = File.absolute_path(file_path)
+    abs_path.sub(MarkdownHelper.git_clone_dir_path + '/', '')
+  end
+
+end
+
+class MarkdownIncluder < MarkdownHelper
+
+  attr_accessor :pristine
+
+  INCLUDE_REGEXP = /^@\[([^\[]+)\]\(([^)]+)\)$/
+  INCLUDE_MARKDOWN_REGEXP = /^@\[:markdown\]\(([^)]+)\)$/
+
+  def initialize(options = {})
+    self.pristine = options[:pristine]
+  end
+
+  def include(template_file_path, markdown_file_path)
+    @inclusions = []
+    generate_file(template_file_path, markdown_file_path) do |output_lines|
       Dir.chdir(File.dirname(template_file_path)) do
         markdown_lines = include_markdown(template_file_path)
         markdown_lines = include_page_toc(markdown_lines)
         include_all(template_file_path, markdown_lines, output_lines)
       end
     end
-  end
 
-  private
+  end
 
   def generate_file(template_file_path, markdown_file_path)
     template_path_in_project = MarkdownHelper.path_in_project(template_file_path)
@@ -64,6 +100,14 @@ class MarkdownHelper
     File.write(markdown_file_path, output)
   end
 
+  def MarkdownIncluder.pre(text)
+    "<pre>\n#{text}</pre>"
+  end
+
+  def MarkdownIncluder.details(text)
+    "<details>\n#{text}</details>"
+  end
+
   def include_markdown(template_file_path)
     Dir.chdir(File.dirname(template_file_path)) do
       markdown_lines = []
@@ -71,7 +115,7 @@ class MarkdownHelper
         path_in_project = MarkdownHelper.path_in_project(template_file_path )
         message = [
             "Could not read template file: #{path_in_project}",
-            MarkdownHelper.backtrace_inclusions(@inclusions),
+            MarkdownIncluder.backtrace_inclusions(@inclusions),
         ].join("\n")
         e = UnreadableTemplateError.new(message)
         e.set_backtrace([])
@@ -110,11 +154,11 @@ class MarkdownHelper
           @inclusions.push(inclusion)
         when ':pre'
           text = File.read(includee_file_path)
-          markdown_lines.push(MarkdownHelper.pre(text))
+          markdown_lines.push(MarkdownIncluder.pre(text))
           @inclusions.push(inclusion)
         when ':details'
           text = File.read(includee_file_path)
-          markdown_lines.push(MarkdownHelper.details(text))
+          markdown_lines.push(MarkdownIncluder.details(text))
           @inclusions.push(inclusion)
         else
           markdown_lines.push(template_line)
@@ -214,36 +258,6 @@ class MarkdownHelper
     [treatment, includee_file_path]
   end
 
-  def self.path_in_project(file_path)
-    abs_path = File.absolute_path(file_path)
-    abs_path.sub(self.git_clone_dir_path + '/', '')
-  end
-
-  def self.comment(text)
-    "<!--#{text}-->"
-  end
-
-  def self.pre(text)
-    "<pre>\n#{text}</pre>"
-  end
-
-  def self.details(text)
-    "<details>\n#{text}</details>"
-  end
-
-  def self.git_clone_dir_path
-    git_dir = `git rev-parse --show-toplevel`.chomp
-    unless $?.success?
-      message = <<EOT
-
-Markdown helper must run inside a .git project.
-That is, the working directory one of its parents must be a .git directory.
-EOT
-      raise RuntimeError.new(message)
-    end
-    git_dir
-  end
-
   class Heading
 
     attr_accessor :level, :title
@@ -286,9 +300,9 @@ EOT
       @inclusions.push(inclusion)
       message = [
           'Includes are circular:',
-          MarkdownHelper.backtrace_inclusions(@inclusions),
+          MarkdownIncluder.backtrace_inclusions(@inclusions),
       ].join("\n")
-      e = MarkdownHelper::CircularIncludeError.new(message)
+      e = CircularIncludeError.new(message)
       e.set_backtrace([])
       raise e
     end
@@ -299,9 +313,9 @@ EOT
       @inclusions.push(inclusion)
       message = [
           'Could not read includee file:',
-          MarkdownHelper.backtrace_inclusions(@inclusions),
+          MarkdownIncluder.backtrace_inclusions(@inclusions),
       ].join("\n")
-      e = MarkdownHelper::UnreadableIncludeeError.new(message)
+      e = UnreadableIncludeeError.new(message)
       e.set_backtrace([])
       raise e
     end

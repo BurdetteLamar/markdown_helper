@@ -1,3 +1,6 @@
+<!-- >>>>>> BEGIN GENERATED FILE (include): SOURCE test/include/templates/nested_headers_page_toc.md -->
+<!-- >>>>>> BEGIN INCLUDED FILE (markdown): SOURCE test/include/includes/nested_headers_1.md -->
+<!-- >>>>>> BEGIN INCLUDED FILE (markdown): SOURCE test/include/includes/nested_headers_0.md -->
 # Page Title
 
 ## Contents
@@ -27,6 +30,7 @@
 ## Another Header 2 in First Included File
 
 ### Another Header 3 in First Included File
+<!-- <<<<<< END INCLUDED FILE (markdown): SOURCE test/include/includes/nested_headers_0.md -->
 
 ## Another Header 2 on Main Page
 
@@ -39,8 +43,10 @@
 ## Another Header 2 in Second Included File
 
 ### Another Header 3 in Second Included File
+<!-- <<<<<< END INCLUDED FILE (markdown): SOURCE test/include/includes/nested_headers_1.md -->
 
 ## Yet Another Header 2 on Main Page
 
 ### Yet Another Header 3 on Main Page
 
+<!-- <<<<<< END GENERATED FILE (include): SOURCE test/include/templates/nested_headers_page_toc.md -->

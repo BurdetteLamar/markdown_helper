@@ -1,3 +1,4 @@
+<!-- >>>>>> BEGIN GENERATED FILE (include): SOURCE test/include/templates/embedded_page_toc.md -->
 # One
 
 ## Page Contents
@@ -17,3 +18,4 @@
 
 ###### Six
 
+<!-- <<<<<< END GENERATED FILE (include): SOURCE test/include/templates/embedded_page_toc.md -->
