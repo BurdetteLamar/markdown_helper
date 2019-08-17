@@ -1,50 +1,15 @@
 require 'diff-lcs'
 
 require 'test_helper'
+require 'markdown_helper/version'
 
 TEST_DIR_PATH = File.dirname(__FILE__)
 
-class MarkdownHelperTest < Minitest::Test
+class IncludeTest < Minitest::Test
 
   TEMPLATES_DIR_NAME = 'templates'
   EXPECTED_DIR_NAME = 'expected'
   ACTUAL_DIR_NAME = 'actual'
-
-  def test_version
-    refute_nil MarkdownHelper::VERSION
-  end
-
-  def test_link
-    [
-        ['# Foo', [1, '[Foo](#foo)']],
-        ['# Foo Bar', [1, '[Foo Bar](#foo-bar)']],
-        ['## Foo Bar', [2, '[Foo Bar](#foo-bar)']],
-        ['### Foo Bar', [3, '[Foo Bar](#foo-bar)']],
-        ['#### Foo Bar', [4, '[Foo Bar](#foo-bar)']],
-        ['##### Foo Bar', [5, '[Foo Bar](#foo-bar)']],
-        ['###### Foo Bar', [6, '[Foo Bar](#foo-bar)']],
-        [' # Foo Bar', [1, '[Foo Bar](#foo-bar)']],
-        ['  # Foo Bar', [1, '[Foo Bar](#foo-bar)']],
-        ['   # Foo Bar', [1, '[Foo Bar](#foo-bar)']],
-        ['#  Foo', [1, '[Foo](#foo)']],
-        ['# Foo#', [1, '[Foo#](#foo)']],
-    ].each do |pair|
-      text, expected = *pair
-      expected_level, expected_link = *expected
-      heading = MarkdownHelper::Heading.parse(text)
-      assert_equal(expected_level, heading.level)
-      assert_equal(expected_link, heading.link)
-    end
-    [
-        '',
-        '#',
-        '#Foo',
-        '####### Foo Bar',
-        '    # Foo Bar',
-    ].each do |text|
-      refute(MarkdownHelper::Heading.parse(text))
-    end
-  end
 
   class TestInfo
 
@@ -182,7 +147,7 @@ class MarkdownHelperTest < Minitest::Test
           :md,
           :page_toc,
           )
-      common_test(MarkdownHelper.new({:pristine => true}), test_info)
+      common_test(MarkdownHelper.new, test_info)
     end
 
     # Test invalid page TOC title.
@@ -191,8 +156,8 @@ class MarkdownHelperTest < Minitest::Test
         :md,
         :page_toc
     )
-    assert_raises(MarkdownHelper::InvalidTocTitleError) do
-      common_test(MarkdownHelper.new({:pristine => true}), test_info)
+    assert_raises(MarkdownIncluder::InvalidTocTitleError) do
+      common_test(MarkdownHelper.new, test_info)
     end
 
     # Test multiple page TOC.
@@ -201,8 +166,8 @@ class MarkdownHelperTest < Minitest::Test
         :md,
         :page_toc,
         )
-    assert_raises(MarkdownHelper::MultiplePageTocError) do
-      common_test(MarkdownHelper.new({:pristine => true}), test_info)
+    assert_raises(MarkdownIncluder::MultiplePageTocError) do
+      common_test(MarkdownHelper.new, test_info)
     end
 
     # Test markdown as code block.
@@ -238,7 +203,7 @@ class MarkdownHelperTest < Minitest::Test
         file_type = 'md',
         treatment = :markdown,
     )
-    common_test(MarkdownHelper.new(:pristine => true), test_info)
+    common_test(MarkdownHelper.new, test_info)
 
     # Test option pristine.
     markdown_helper = MarkdownHelper.new
@@ -302,7 +267,7 @@ class MarkdownHelperTest < Minitest::Test
           'include/templates/circular_0_markdown.md'
       )
       cited_includee_file_path  = '../includes/circular_0.md'
-      inclusion = MarkdownHelper::Inclusion.new(
+      inclusion = MarkdownIncluder::Inclusion.new(
           includer_file_path,
           include_description = "@[:markdown](#{cited_includee_file_path})",
           includer_line_number = 1,
@@ -324,7 +289,7 @@ class MarkdownHelperTest < Minitest::Test
             TEST_DIR_PATH,
             "include/templates/../includes/#{includer_file_name}"
         )
-        inclusion = MarkdownHelper::Inclusion.new(
+        inclusion = MarkdownIncluder::Inclusion.new(
             includer_file_name,
             include_description = "@[:markdown](#{includee_file_name})",
             includer_line_number = 1,
@@ -334,7 +299,7 @@ class MarkdownHelperTest < Minitest::Test
             )
         expected_inclusions = expected_inclusions.push(inclusion)
       end
-      e = assert_raises(MarkdownHelper::CircularIncludeError) do
+      e = assert_raises(MarkdownIncluder::CircularIncludeError) do
         common_test(MarkdownHelper.new, test_info)
       end
       assert_circular_exception(expected_inclusions, e)
@@ -354,7 +319,7 @@ class MarkdownHelperTest < Minitest::Test
           'include/templates/includer_0_markdown.md'
       )
       cited_includee_file_path = '../includes/includer_0.md'
-      inclusion = MarkdownHelper::Inclusion.new(
+      inclusion = MarkdownIncluder::Inclusion.new(
           includer_file_path,
           include_pragma = "@[:markdown](#{cited_includee_file_path})",
           includer_line_number = 1,
@@ -376,7 +341,7 @@ class MarkdownHelperTest < Minitest::Test
             TEST_DIR_PATH,
             "include/templates/../includes/#{includer_file_name}"
         )
-        inclusion = MarkdownHelper::Inclusion.new(
+        inclusion = MarkdownIncluder::Inclusion.new(
             includer_file_path,
             include_pragma = "@[:markdown](#{includee_file_name})",
             includer_line_number = 1,
@@ -386,22 +351,20 @@ class MarkdownHelperTest < Minitest::Test
             )
         expected_inclusions = expected_inclusions.push(inclusion)
       end
-      e = assert_raises(MarkdownHelper::UnreadableIncludeeError) do
+      e = assert_raises(MarkdownIncluder::UnreadableIncludeeError) do
         common_test(MarkdownHelper.new, test_info)
       end
       assert_includee_missing_exception(expected_inclusions, e)
     end
 
     # Test include code block with includes.
-    def test_code_block_with_includes
-      test_info = IncludeInfo.new(
-          file_stem = 'code_block_with_includes',
-          file_type = 'md',
-          treatment = :code_block,
-          )
-      create_template(test_info)
-      common_test(MarkdownHelper.new, test_info)
-    end
+    test_info = IncludeInfo.new(
+        file_stem = 'code_block_with_includes',
+        file_type = 'md',
+        treatment = :code_block,
+        )
+    create_template(test_info)
+    common_test(MarkdownHelper.new, test_info)
 
     # Test include code block with hashmarks.
     test_info = IncludeInfo.new(
@@ -502,7 +465,7 @@ class MarkdownHelperTest < Minitest::Test
 
   def assert_circular_exception(expected_inclusions, e)
     assert_inclusion_exception(
-        MarkdownHelper::CircularIncludeError,
+        MarkdownIncluder::CircularIncludeError,
         'Includes are circular:',
         expected_inclusions,
         e
@@ -511,7 +474,7 @@ class MarkdownHelperTest < Minitest::Test
 
   def assert_includee_missing_exception(expected_inclusions, e)
     assert_inclusion_exception(
-        MarkdownHelper::UnreadableIncludeeError,
+        MarkdownIncluder::UnreadableIncludeeError,
         'Could not read includee file:',
         expected_inclusions,
         e
