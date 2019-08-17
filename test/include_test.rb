@@ -5,47 +5,11 @@ require 'markdown_helper/version'
 
 TEST_DIR_PATH = File.dirname(__FILE__)
 
-class MarkdownHelperTest < Minitest::Test
+class IncludeTest < Minitest::Test
 
   TEMPLATES_DIR_NAME = 'templates'
   EXPECTED_DIR_NAME = 'expected'
   ACTUAL_DIR_NAME = 'actual'
-
-  def test_version
-    refute_nil MarkdownHelper::VERSION
-  end
-
-  def test_link
-    [
-        ['# Foo', [1, '[Foo](#foo)']],
-        ['# Foo Bar', [1, '[Foo Bar](#foo-bar)']],
-        ['## Foo Bar', [2, '[Foo Bar](#foo-bar)']],
-        ['### Foo Bar', [3, '[Foo Bar](#foo-bar)']],
-        ['#### Foo Bar', [4, '[Foo Bar](#foo-bar)']],
-        ['##### Foo Bar', [5, '[Foo Bar](#foo-bar)']],
-        ['###### Foo Bar', [6, '[Foo Bar](#foo-bar)']],
-        [' # Foo Bar', [1, '[Foo Bar](#foo-bar)']],
-        ['  # Foo Bar', [1, '[Foo Bar](#foo-bar)']],
-        ['   # Foo Bar', [1, '[Foo Bar](#foo-bar)']],
-        ['#  Foo', [1, '[Foo](#foo)']],
-        ['# Foo#', [1, '[Foo#](#foo)']],
-    ].each do |pair|
-      text, expected = *pair
-      expected_level, expected_link = *expected
-      heading = MarkdownIncluder::Heading.parse(text)
-      assert_equal(expected_level, heading.level)
-      assert_equal(expected_link, heading.link)
-    end
-    [
-        '',
-        '#',
-        '#Foo',
-        '####### Foo Bar',
-        '    # Foo Bar',
-    ].each do |text|
-      refute(MarkdownIncluder::Heading.parse(text))
-    end
-  end
 
   class TestInfo
 
