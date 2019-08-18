@@ -6,10 +6,6 @@ TEST_DIR_PATH = File.dirname(__FILE__)
 
 class IncludeTest < Minitest::Test
 
-  TEMPLATES_DIR_NAME = 'templates'
-  EXPECTED_DIR_NAME = 'expected'
-  ACTUAL_DIR_NAME = 'actual'
-
   class TestInfo
 
     attr_accessor \
@@ -30,17 +26,17 @@ class IncludeTest < Minitest::Test
       )
       self.template_file_path = File.join(
           test_dir_path,
-          TEMPLATES_DIR_NAME,
+          'templates',
           md_file_name
       )
       self.expected_file_path = File.join(
           test_dir_path,
-          EXPECTED_DIR_NAME,
+          'expected',
           md_file_name
       )
       self.actual_file_path = File.join(
           test_dir_path,
-          ACTUAL_DIR_NAME,
+          'actual',
           md_file_name
       )
     end
