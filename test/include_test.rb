@@ -14,7 +14,6 @@ class IncludeTest < Minitest::Test
   class TestInfo
 
     attr_accessor \
-      :method_under_test,
       :method_name,
       :md_file_basename,
       :md_file_name,
@@ -23,13 +22,12 @@ class IncludeTest < Minitest::Test
       :expected_file_path,
       :actual_file_path
 
-    def initialize(method_under_test)
-      self.method_under_test = method_under_test
-      self.method_name = method_under_test.to_s
+    def initialize
+      self.method_name = 'include'
       self.md_file_name = "#{md_file_basename}.md"
       self.test_dir_path = File.join(
           TEST_DIR_PATH,
-          method_under_test.to_s
+          'include'
       )
       self.template_file_path = File.join(
           test_dir_path,
@@ -72,7 +70,7 @@ class IncludeTest < Minitest::Test
       self.treatment = treatment
       self.md_file_basename = "#{file_stem}_#{treatment}"
       self.include_file_path = "../includes/#{file_stem}.#{file_type}"
-      super(:include)
+      super()
     end
 
   end
@@ -81,7 +79,7 @@ class IncludeTest < Minitest::Test
 
     def initialize(md_file_basename)
       self.md_file_basename = md_file_basename
-      super(:create_page_toc)
+      super()
     end
 
   end
@@ -405,8 +403,7 @@ class IncludeTest < Minitest::Test
   def common_test(markdown_helper, test_info)
     # API
     _test_interface(test_info) do
-      markdown_helper.send(
-          test_info.method_under_test,
+      markdown_helper.include(
           test_info.template_file_path,
           test_info.actual_file_path,
           )
@@ -416,7 +413,7 @@ class IncludeTest < Minitest::Test
     _test_interface(test_info) do
       options = markdown_helper.pristine ? '--pristine' : ''
       File.write(test_info.actual_file_path, '')
-      command = "markdown_helper #{test_info.method_under_test} #{options} #{test_info.template_file_path} #{test_info.actual_file_path}"
+      command = "markdown_helper include #{options} #{test_info.template_file_path} #{test_info.actual_file_path}"
       system(command)
     end
 
