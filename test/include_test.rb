@@ -11,32 +11,34 @@ class IncludeTest < Minitest::Test
     attr_accessor \
       :md_file_basename,
       :md_file_name,
-      :test_dir_path,
-      :template_file_path,
-      :expected_file_path,
       :actual_file_path
 
     def initialize
       self.md_file_name = "#{md_file_basename}.md"
-      self.test_dir_path = File.join(
-          TEST_DIR_PATH,
-          'include'
-      )
-      self.template_file_path = File.join(
-          test_dir_path,
-          'templates',
-          md_file_name
-      )
-      self.expected_file_path = File.join(
-          test_dir_path,
-          'expected',
-          md_file_name
-      )
       self.actual_file_path = File.join(
           test_dir_path,
           'actual',
-          md_file_name
-      )
+          md_file_name)
+    end
+
+    def test_dir_path
+      File.join(
+          TEST_DIR_PATH,
+          'include')
+    end
+
+    def template_file_path
+      File.join(
+          test_dir_path,
+          'templates',
+          md_file_name)
+    end
+
+    def expected_file_path
+      File.join(
+          test_dir_path,
+          'expected',
+          md_file_name)
     end
 
     def templates_dir_path
