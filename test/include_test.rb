@@ -1,7 +1,6 @@
 require 'diff-lcs'
 
 require 'test_helper'
-require 'markdown_helper/version'
 
 TEST_DIR_PATH = File.dirname(__FILE__)
 
