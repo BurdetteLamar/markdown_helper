@@ -72,21 +72,6 @@ class IncludeTest < Minitest::Test
 
   def test_include
 
-    # Create the template for this test.
-    def create_template(test_info)
-      File.open(test_info.template_file_path, 'w') do |file|
-        case
-        when test_info.file_stem == :nothing
-          file.puts 'This file includes nothing.'
-        else
-          # Inspect, in case it's a symbol, and remove double quotes after inspection.
-          treatment_for_include = test_info.treatment.inspect.gsub('"','')
-          include_line = "@[#{treatment_for_include}](#{test_info.include_file_path})"
-          file.puts(include_line)
-        end
-      end
-    end
-
     # Test combinations of treatments and templates.
     {
         :nothing => :txt,
@@ -368,6 +353,21 @@ class IncludeTest < Minitest::Test
     create_template(test_info)
     common_test(MarkdownHelper.new, test_info)
 
+  end
+
+  # Create the template for a test.
+  def create_template(test_info)
+    File.open(test_info.template_file_path, 'w') do |file|
+      case
+      when test_info.file_stem == :nothing
+        file.puts 'This file includes nothing.'
+      else
+        # Inspect, in case it's a symbol, and remove double quotes after inspection.
+        treatment_for_include = test_info.treatment.inspect.gsub('"','')
+        include_line = "@[#{treatment_for_include}](#{test_info.include_file_path})"
+        file.puts(include_line)
+      end
+    end
   end
 
   # Don't call this 'test_interface' (without the leading underscore),
