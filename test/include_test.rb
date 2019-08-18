@@ -9,7 +9,6 @@ class IncludeTest < Minitest::Test
   class TestInfo
 
     attr_accessor \
-      :method_name,
       :md_file_basename,
       :md_file_name,
       :test_dir_path,
@@ -18,7 +17,6 @@ class IncludeTest < Minitest::Test
       :actual_file_path
 
     def initialize
-      self.method_name = 'include'
       self.md_file_name = "#{md_file_basename}.md"
       self.test_dir_path = File.join(
           TEST_DIR_PATH,
