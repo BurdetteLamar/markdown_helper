@@ -75,15 +75,6 @@ class IncludeTest < Minitest::Test
 
   end
 
-  class CreatePageTocInfo < TestInfo
-
-    def initialize(md_file_basename)
-      self.md_file_basename = md_file_basename
-      super()
-    end
-
-  end
-
   def test_include
 
     # Create the template for this test.
