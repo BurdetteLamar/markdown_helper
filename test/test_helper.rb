@@ -164,4 +164,54 @@ module TestHelper
     assert_equal(expected_file_path, actual_file_path)
   end
 
+  # Create the template for a test.
+  def create_template(test_info)
+    File.open(test_info.template_file_path, 'w') do |file|
+      case
+      when test_info.file_stem == :nothing
+        file.puts 'This file includes nothing.'
+      else
+        # Inspect, in case it's a symbol, and remove double quotes after inspection.
+        treatment_for_include = test_info.treatment.inspect.gsub('"','')
+        include_line = "@[#{treatment_for_include}](#{test_info.include_file_path})"
+        file.puts(include_line)
+      end
+    end
+  end
+
+  # Don't call this 'test_interface' (without the leading underscore),
+  # because that would make it an actual executable test method.
+  def _test_interface(test_info)
+    File.write(test_info.actual_file_path, '') if File.exist?(test_info.actual_file_path)
+    yield
+    diffs = diff_files(test_info.expected_file_path, test_info.actual_file_path)
+    unless diffs.empty?
+      puts 'EXPECTED'
+      puts File.read(test_info.expected_file_path)
+      puts 'ACTUAL'
+      puts File.read(test_info.actual_file_path)
+      puts 'END'
+    end
+    assert_empty(diffs, test_info.actual_file_path)
+  end
+
+  def common_test(markdown_helper, test_info)
+    # API
+    _test_interface(test_info) do
+      markdown_helper.include(
+          test_info.template_file_path,
+          test_info.actual_file_path,
+          )
+    end
+
+    # CLI
+    _test_interface(test_info) do
+      options = markdown_helper.pristine ? '--pristine' : ''
+      File.write(test_info.actual_file_path, '')
+      command = "markdown_helper include #{options} #{test_info.template_file_path} #{test_info.actual_file_path}"
+      system(command)
+    end
+
+  end
+
 end
