@@ -250,7 +250,7 @@ class IncludeTest < Minitest::Test
         includee_file_name = "circular_#{includee_index}.md"
         includer_file_path = File.join(
             TestDirPath,
-            "templates/../includes/#{includer_file_name}"
+            "includes/#{includer_file_name}"
         )
         inclusion = MarkdownIncluder::Inclusion.new(
             includer_file_name,
