@@ -1,51 +1,38 @@
 require 'diff-lcs'
 
 require 'test_helper'
-require 'markdown_helper/version'
 
-TEST_DIR_PATH = File.dirname(__FILE__)
+TestDirPath = File.dirname(__FILE__)
 
 class IncludeTest < Minitest::Test
-
-  TEMPLATES_DIR_NAME = 'templates'
-  EXPECTED_DIR_NAME = 'expected'
-  ACTUAL_DIR_NAME = 'actual'
 
   class TestInfo
 
     attr_accessor \
-      :method_under_test,
-      :method_name,
       :md_file_basename,
       :md_file_name,
-      :test_dir_path,
-      :template_file_path,
-      :expected_file_path,
       :actual_file_path
 
-    def initialize(method_under_test)
-      self.method_under_test = method_under_test
-      self.method_name = method_under_test.to_s
+    def initialize
       self.md_file_name = "#{md_file_basename}.md"
-      self.test_dir_path = File.join(
-          TEST_DIR_PATH,
-          method_under_test.to_s
-      )
-      self.template_file_path = File.join(
-          test_dir_path,
-          TEMPLATES_DIR_NAME,
-          md_file_name
-      )
-      self.expected_file_path = File.join(
-          test_dir_path,
-          EXPECTED_DIR_NAME,
-          md_file_name
-      )
       self.actual_file_path = File.join(
-          test_dir_path,
-          ACTUAL_DIR_NAME,
-          md_file_name
-      )
+          TestDirPath,
+          'actual',
+          md_file_name)
+    end
+
+    def template_file_path
+      File.join(
+          TestDirPath,
+          'templates',
+          md_file_name)
+    end
+
+    def expected_file_path
+      File.join(
+          TestDirPath,
+          'expected',
+          md_file_name)
     end
 
     def templates_dir_path
@@ -72,36 +59,12 @@ class IncludeTest < Minitest::Test
       self.treatment = treatment
       self.md_file_basename = "#{file_stem}_#{treatment}"
       self.include_file_path = "../includes/#{file_stem}.#{file_type}"
-      super(:include)
-    end
-
-  end
-
-  class CreatePageTocInfo < TestInfo
-
-    def initialize(md_file_basename)
-      self.md_file_basename = md_file_basename
-      super(:create_page_toc)
+      super()
     end
 
   end
 
   def test_include
-
-    # Create the template for this test.
-    def create_template(test_info)
-      File.open(test_info.template_file_path, 'w') do |file|
-        case
-        when test_info.file_stem == :nothing
-          file.puts 'This file includes nothing.'
-        else
-          # Inspect, in case it's a symbol, and remove double quotes after inspection.
-          treatment_for_include = test_info.treatment.inspect.gsub('"','')
-          include_line = "@[#{treatment_for_include}](#{test_info.include_file_path})"
-          file.puts(include_line)
-        end
-      end
-    end
 
     # Test combinations of treatments and templates.
     {
@@ -253,7 +216,7 @@ class IncludeTest < Minitest::Test
     end
 
     # Test circular includes.
-    Dir.chdir(File.join(TEST_DIR_PATH, 'include', 'includes')) do
+    Dir.chdir(File.join(TestDirPath, 'includes')) do
       test_info = IncludeInfo.new(
           file_stem = 'circular_0',
           file_type = 'md',
@@ -263,8 +226,8 @@ class IncludeTest < Minitest::Test
       expected_inclusions = []
       # The outer inclusion.
       includer_file_path = File.join(
-          TEST_DIR_PATH,
-          'include/templates/circular_0_markdown.md'
+          TestDirPath,
+          'templates/circular_0_markdown.md'
       )
       cited_includee_file_path  = '../includes/circular_0.md'
       inclusion = MarkdownIncluder::Inclusion.new(
@@ -286,8 +249,8 @@ class IncludeTest < Minitest::Test
         includer_file_name = "circular_#{includer_index}.md"
         includee_file_name = "circular_#{includee_index}.md"
         includer_file_path = File.join(
-            TEST_DIR_PATH,
-            "include/templates/../includes/#{includer_file_name}"
+            TestDirPath,
+            "includes/#{includer_file_name}"
         )
         inclusion = MarkdownIncluder::Inclusion.new(
             includer_file_name,
@@ -306,7 +269,7 @@ class IncludeTest < Minitest::Test
     end
 
     # Test includee not found.
-    Dir.chdir(File.join(TEST_DIR_PATH, 'include', 'includes')) do
+    Dir.chdir(File.join(TestDirPath, 'includes')) do
       test_info = IncludeInfo.new(
           file_stem = 'includer_0',
           file_type = 'md',
@@ -315,8 +278,8 @@ class IncludeTest < Minitest::Test
       create_template(test_info)
       expected_inclusions = []
       includer_file_path = File.join(
-          TEST_DIR_PATH,
-          'include/templates/includer_0_markdown.md'
+          TestDirPath,
+          'templates/includer_0_markdown.md'
       )
       cited_includee_file_path = '../includes/includer_0.md'
       inclusion = MarkdownIncluder::Inclusion.new(
@@ -338,8 +301,8 @@ class IncludeTest < Minitest::Test
         includer_file_name = "includer_#{includer_index}.md"
         includee_file_name = "includer_#{includee_index}.md"
         includer_file_path = File.join(
-            TEST_DIR_PATH,
-            "include/templates/../includes/#{includer_file_name}"
+            TestDirPath,
+            "templates/../includes/#{includer_file_name}"
         )
         inclusion = MarkdownIncluder::Inclusion.new(
             includer_file_path,
@@ -386,6 +349,21 @@ class IncludeTest < Minitest::Test
 
   end
 
+  # Create the template for a test.
+  def create_template(test_info)
+    File.open(test_info.template_file_path, 'w') do |file|
+      case
+      when test_info.file_stem == :nothing
+        file.puts 'This file includes nothing.'
+      else
+        # Inspect, in case it's a symbol, and remove double quotes after inspection.
+        treatment_for_include = test_info.treatment.inspect.gsub('"','')
+        include_line = "@[#{treatment_for_include}](#{test_info.include_file_path})"
+        file.puts(include_line)
+      end
+    end
+  end
+
   # Don't call this 'test_interface' (without the leading underscore),
   # because that would make it an actual executable test method.
   def _test_interface(test_info)
@@ -405,8 +383,7 @@ class IncludeTest < Minitest::Test
   def common_test(markdown_helper, test_info)
     # API
     _test_interface(test_info) do
-      markdown_helper.send(
-          test_info.method_under_test,
+      markdown_helper.include(
           test_info.template_file_path,
           test_info.actual_file_path,
           )
@@ -416,7 +393,7 @@ class IncludeTest < Minitest::Test
     _test_interface(test_info) do
       options = markdown_helper.pristine ? '--pristine' : ''
       File.write(test_info.actual_file_path, '')
-      command = "markdown_helper #{test_info.method_under_test} #{options} #{test_info.template_file_path} #{test_info.actual_file_path}"
+      command = "markdown_helper include #{options} #{test_info.template_file_path} #{test_info.actual_file_path}"
       system(command)
     end
 
