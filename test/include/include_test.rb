@@ -2,7 +2,7 @@ require 'diff-lcs'
 
 require 'test_helper'
 
-TEST_DIR_PATH = File.dirname(__FILE__)
+TestDirPath = File.dirname(__FILE__)
 
 class IncludeTest < Minitest::Test
 
@@ -16,27 +16,21 @@ class IncludeTest < Minitest::Test
     def initialize
       self.md_file_name = "#{md_file_basename}.md"
       self.actual_file_path = File.join(
-          test_dir_path,
+          TestDirPath,
           'actual',
           md_file_name)
     end
 
-    def test_dir_path
-      File.join(
-          TEST_DIR_PATH,
-          'include')
-    end
-
     def template_file_path
       File.join(
-          test_dir_path,
+          TestDirPath,
           'templates',
           md_file_name)
     end
 
     def expected_file_path
       File.join(
-          test_dir_path,
+          TestDirPath,
           'expected',
           md_file_name)
     end
@@ -222,7 +216,7 @@ class IncludeTest < Minitest::Test
     end
 
     # Test circular includes.
-    Dir.chdir(File.join(TEST_DIR_PATH, 'include', 'includes')) do
+    Dir.chdir(File.join(TestDirPath, 'includes')) do
       test_info = IncludeInfo.new(
           file_stem = 'circular_0',
           file_type = 'md',
@@ -232,8 +226,8 @@ class IncludeTest < Minitest::Test
       expected_inclusions = []
       # The outer inclusion.
       includer_file_path = File.join(
-          TEST_DIR_PATH,
-          'include/templates/circular_0_markdown.md'
+          TestDirPath,
+          'templates/circular_0_markdown.md'
       )
       cited_includee_file_path  = '../includes/circular_0.md'
       inclusion = MarkdownIncluder::Inclusion.new(
@@ -255,8 +249,8 @@ class IncludeTest < Minitest::Test
         includer_file_name = "circular_#{includer_index}.md"
         includee_file_name = "circular_#{includee_index}.md"
         includer_file_path = File.join(
-            TEST_DIR_PATH,
-            "include/templates/../includes/#{includer_file_name}"
+            TestDirPath,
+            "templates/../includes/#{includer_file_name}"
         )
         inclusion = MarkdownIncluder::Inclusion.new(
             includer_file_name,
@@ -275,7 +269,7 @@ class IncludeTest < Minitest::Test
     end
 
     # Test includee not found.
-    Dir.chdir(File.join(TEST_DIR_PATH, 'include', 'includes')) do
+    Dir.chdir(File.join(TestDirPath, 'includes')) do
       test_info = IncludeInfo.new(
           file_stem = 'includer_0',
           file_type = 'md',
@@ -284,8 +278,8 @@ class IncludeTest < Minitest::Test
       create_template(test_info)
       expected_inclusions = []
       includer_file_path = File.join(
-          TEST_DIR_PATH,
-          'include/templates/includer_0_markdown.md'
+          TestDirPath,
+          'templates/includer_0_markdown.md'
       )
       cited_includee_file_path = '../includes/includer_0.md'
       inclusion = MarkdownIncluder::Inclusion.new(
@@ -307,8 +301,8 @@ class IncludeTest < Minitest::Test
         includer_file_name = "includer_#{includer_index}.md"
         includee_file_name = "includer_#{includee_index}.md"
         includer_file_path = File.join(
-            TEST_DIR_PATH,
-            "include/templates/../includes/#{includer_file_name}"
+            TestDirPath,
+            "templates/../includes/#{includer_file_name}"
         )
         inclusion = MarkdownIncluder::Inclusion.new(
             includer_file_path,
