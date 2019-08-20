@@ -13,7 +13,7 @@ class MarkdownIncluder < MarkdownHelper
 
   def include(template_file_path, markdown_file_path)
     @inclusions = []
-    generate_file(template_file_path, markdown_file_path) do |output_lines|
+    generate_file(:include, template_file_path, markdown_file_path) do |output_lines|
       Dir.chdir(File.dirname(template_file_path)) do
         markdown_lines = include_markdown(template_file_path)
         markdown_lines = include_page_toc(markdown_lines)
@@ -21,19 +21,6 @@ class MarkdownIncluder < MarkdownHelper
       end
     end
 
-  end
-
-  def generate_file(template_file_path, markdown_file_path)
-    template_path_in_project = MarkdownHelper.path_in_project(template_file_path)
-    output_lines = []
-    yield output_lines
-    unless pristine
-      output_lines.unshift(MarkdownHelper.comment(" >>>>>> BEGIN GENERATED FILE (include): SOURCE #{template_path_in_project} "))
-      output_lines.push(MarkdownHelper.comment(" <<<<<< END GENERATED FILE (include): SOURCE #{template_path_in_project} "))
-    end
-    output_lines.push('')
-    output = output_lines.join("\n")
-    File.write(markdown_file_path, output)
   end
 
   def MarkdownIncluder.pre(text)
