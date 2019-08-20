@@ -8,6 +8,7 @@ module TestHelper
   class TestInfo
 
     attr_accessor \
+      :method,
       :md_file_basename,
       :md_file_name,
       :actual_file_path
@@ -53,6 +54,7 @@ module TestHelper
       :include_file_path
 
     def initialize(file_stem, file_type, treatment)
+      self.method = :include
       self.file_stem = file_stem
       self.file_type = file_type
       self.treatment = treatment
@@ -198,7 +200,8 @@ module TestHelper
   def common_test(markdown_helper, test_info)
     # API
     _test_interface(test_info) do
-      markdown_helper.include(
+      markdown_helper.send(
+          test_info.method,
           test_info.template_file_path,
           test_info.actual_file_path,
           )
@@ -208,7 +211,7 @@ module TestHelper
     _test_interface(test_info) do
       options = markdown_helper.pristine ? '--pristine' : ''
       File.write(test_info.actual_file_path, '')
-      command = "markdown_helper include #{options} #{test_info.template_file_path} #{test_info.actual_file_path}"
+      command = "markdown_helper #{test_info.method} #{options} #{test_info.template_file_path} #{test_info.actual_file_path}"
       system(command)
     end
 
