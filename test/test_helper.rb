@@ -15,32 +15,45 @@ module TestHelper
 
     def initialize
       self.md_file_name = "#{md_file_basename}.md"
+      test_dir_path = File.dirname(__FILE__)
+      @method_dir_path = File.join(test_dir_path, method.to_s)
+      # Needs to be an accessor so that it can be reset.
       self.actual_file_path = File.join(
-          TestDirPath,
+          @method_dir_path,
           'actual',
-          md_file_name)
-    end
-
-    def template_file_path
-      File.join(
-          TestDirPath,
-          'templates',
           md_file_name)
     end
 
     def expected_file_path
       File.join(
-          TestDirPath,
+          @method_dir_path,
           'expected',
           md_file_name)
     end
 
-    def templates_dir_path
-      File.dirname(template_file_path)
+    def template_file_path
+      File.join(
+          @method_dir_path,
+          'templates',
+          md_file_name)
+    end
+
+    def actual_dir_path
+      File.dirname(actual_file_path)
     end
 
     def expected_dir_path
       File.dirname(expected_file_path)
+    end
+
+    def includes_dir_path
+      File.join(@method_dir_path, 'includes')
+    end
+
+    def templates_dir_path
+      File.join(
+          @method_dir_path,
+          'templates')
     end
 
   end
