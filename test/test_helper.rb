@@ -9,33 +9,31 @@ module TestHelper
 
     attr_accessor \
       :method,
-      :md_file_basename,
-      :md_file_name,
       :actual_file_path
 
-    def initialize
-      self.md_file_name = "#{md_file_basename}.md"
+    def initialize(file_name)
+      @file_name = file_name
       test_dir_path = File.dirname(__FILE__)
       @method_dir_path = File.join(test_dir_path, method.to_s)
       # Needs to be an accessor so that it can be reset.
       self.actual_file_path = File.join(
           @method_dir_path,
           'actual',
-          md_file_name)
+          @file_name)
     end
 
     def expected_file_path
       File.join(
           @method_dir_path,
           'expected',
-          md_file_name)
+          @file_name)
     end
 
     def template_file_path
       File.join(
           @method_dir_path,
           'templates',
-          md_file_name)
+          @file_name)
     end
 
     def actual_dir_path
@@ -64,7 +62,8 @@ module TestHelper
       :file_stem,
       :file_type,
       :treatment,
-      :include_file_path
+      :include_file_path,
+      :md_file_basename
 
     def initialize(file_stem, file_type, treatment)
       self.method = :include
@@ -73,7 +72,8 @@ module TestHelper
       self.treatment = treatment
       self.md_file_basename = "#{file_stem}_#{treatment}"
       self.include_file_path = "../includes/#{file_stem}.#{file_type}"
-      super()
+      file_name = "#{md_file_basename}.md"
+      super(file_name)
     end
 
   end
