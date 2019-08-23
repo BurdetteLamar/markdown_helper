@@ -2,14 +2,8 @@ require 'pathname'
 
 class MarkdownIncluder < MarkdownHelper
 
-  attr_accessor :pristine
-
   INCLUDE_REGEXP = /^@\[([^\[]+)\]\(([^)]+)\)$/
   INCLUDE_MARKDOWN_REGEXP = /^@\[:markdown\]\(([^)]+)\)$/
-
-  def initialize(options = {})
-    self.pristine = options[:pristine]
-  end
 
   def include(template_file_path, markdown_file_path)
     @inclusions = []

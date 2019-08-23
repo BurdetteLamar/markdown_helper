@@ -57,6 +57,11 @@ EOT
     File.write(markdown_file_path, output)
   end
 
+  def run_irb(template_file_path, markdown_file_path)
+    irb_runner = MarkdownIrbRunner.new(:pristine => pristine)
+    irb_runner.run_irb(template_file_path, markdown_file_path)
+  end
+
   def include(template_file_path, markdown_file_path)
     includer = MarkdownIncluder.new(:pristine => pristine)
     includer.include(template_file_path, markdown_file_path)

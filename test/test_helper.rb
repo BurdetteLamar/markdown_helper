@@ -78,6 +78,19 @@ module TestHelper
 
   end
 
+  class RunIrbInfo < TestInfo
+
+    def initialize(file_name)
+      self.method = :run_irb
+      super(file_name)
+    end
+
+    def self.templates_dir_path
+      self.new('').templates_dir_path
+    end
+
+  end
+
   def assert_template_exception(expected_file_path, e)
     assert_inclusion_exception(
         MarkdownHelper::UnreadableTemplateError,
