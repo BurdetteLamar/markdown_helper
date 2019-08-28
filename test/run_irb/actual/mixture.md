@@ -23,7 +23,7 @@ Another line of code.
 ```
 
 ```ruby
-x = 2
+x += 1
 p x
 2
 ```

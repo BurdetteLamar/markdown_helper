@@ -22,6 +22,6 @@ Another line of code.
 ```
 
 ```#run_irb
-x = 2
+x += 1
 p x
 ```
