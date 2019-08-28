@@ -64,26 +64,26 @@ C:/Ruby26-x64/lib/ruby/gems/2.6.0/gems/markdown_helper-2.3.0/bin/_include: Inclu
   Backtrace (innermost include first):
     Level 0:
       Includer:
-        Location: markdown/use_cases/include_files/diagnose_circular_includes/includer_2.md:0
+        Location: markdown/use_cases/include/diagnose_circular_includes/includer_2.md:0
         Include pragma: @[:markdown](includer_0.md)
       Includee:
-        File path: markdown/use_cases/include_files/diagnose_circular_includes/includer_0.md
+        File path: markdown/use_cases/include/diagnose_circular_includes/includer_0.md
     Level 1:
       Includer:
-        Location: markdown/use_cases/include_files/diagnose_circular_includes/includer_1.md:0
+        Location: markdown/use_cases/include/diagnose_circular_includes/includer_1.md:0
         Include pragma: @[:markdown](includer_2.md)
       Includee:
-        File path: markdown/use_cases/include_files/diagnose_circular_includes/includer_2.md
+        File path: markdown/use_cases/include/diagnose_circular_includes/includer_2.md
     Level 2:
       Includer:
-        Location: markdown/use_cases/include_files/diagnose_circular_includes/includer_0.md:0
+        Location: markdown/use_cases/include/diagnose_circular_includes/includer_0.md:0
         Include pragma: @[:markdown](includer_1.md)
       Includee:
-        File path: markdown/use_cases/include_files/diagnose_circular_includes/includer_1.md
+        File path: markdown/use_cases/include/diagnose_circular_includes/includer_1.md
     Level 3:
       Includer:
-        Location: markdown/use_cases/include_files/diagnose_circular_includes/includer.md:0
+        Location: markdown/use_cases/include/diagnose_circular_includes/includer.md:0
         Include pragma: @[:markdown](includer_0.md)
       Includee:
-        File path: markdown/use_cases/include_files/diagnose_circular_includes/includer_0.md
+        File path: markdown/use_cases/include/diagnose_circular_includes/includer_0.md
 ```

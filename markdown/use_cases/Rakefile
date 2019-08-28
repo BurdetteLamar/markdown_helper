@@ -18,7 +18,7 @@ EOT
       dir_path = File.dirname(__FILE__)
       Dir.chdir(dir_path) do
         use_case_dirs = {
-            :include_files => %w/
+            :include => %w/
                 reuse_text
                 nest_inclusions
                 include_markdown
@@ -33,6 +33,9 @@ EOT
                 diagnose_missing_includee
                 diagnose_circular_includes
             /,
+            :run_irb => %w/
+                run_irb
+            /
         }
         use_case_dirs.each_pair do |section, dir_names|
 
@@ -54,7 +57,7 @@ EOT
           dir_names.each do |dir_name|
             Dir.chdir("#{section}/#{dir_name}") do
               if File.exist?('includer.md')
-                command = 'markdown_helper include --pristine includer.md included.md'
+                command = "markdown_helper #{section} --pristine includer.md included.md"
                 if backtrace_cases.include?(dir_name)
                   # Capture the exception.
                   command += " 2> #{dir_name}.err"
@@ -67,6 +70,10 @@ EOT
                 else
                   system(command)
                 end
+              end
+              if File.exist?('template.md')
+                command = "markdown_helper #{section} --pristine template.md markdown.md"
+                system(command)
               end
               command = 'markdown_helper include --pristine use_case_template.md use_case.md'
               system(command)
