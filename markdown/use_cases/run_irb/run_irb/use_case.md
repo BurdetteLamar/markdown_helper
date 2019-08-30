@@ -2,10 +2,7 @@
 
 Use the ```run_irb``` feature to execute selected Ruby snippets in the Ruby interactive shell, ```irb```.
 
-<details>
-<summary>Why would you want to do this?</summary>
-Doing so allows you to interleave *any* markdown (usually explanatory text, but actually anything) with the Ruby snippets.
-</details>
+This allows you to interleave *any* markdown (usually explanatory text, but actually anything) with the Ruby snippets.
 
 In the example template below, snippets of Ruby are interleaved with other markdown elements.
 
