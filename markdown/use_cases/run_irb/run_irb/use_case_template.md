@@ -4,7 +4,7 @@ Use the ```run_irb``` feature to execute selected Ruby snippets in the Ruby inte
 
 <details>
 <summary>Why would you want to do this?</summary>
-Doing this allows you to interleave anything (especially explanatory text) with the Ruby snippets.
+Doing so allows you to interleave *any* markdown (usually explanatory text, but actually anything) with the Ruby snippets.
 </details>
 
 In the example template below, snippets of Ruby are interleaved with other markdown elements.
@@ -23,7 +23,12 @@ The resulting markdown (raw) shows the output from ```irb``` for each snippet:
 
 Resulting markdown (rendered):
 
+---
+
 @[:markdown](markdown.md)
+
+---
+
 
 
 
