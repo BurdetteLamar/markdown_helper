@@ -3,10 +3,6 @@
 
 [![Gem](https://img.shields.io/gem/v/markdown_helper.svg?style=flat)](http://rubygems.org/gems/markdown_helper "View this project in Rubygems")
 
-## What's New?
-
-Inclusion of text as details is added.  See the [use case](markdown/use_cases/include_files/include_text_as_details/use_case.md#include-text-as-details).
-
 ## Contents
 - [What's a Markdown Helper?](#whats-a-markdown-helper)
 - [How It Works](#how-it-works)
@@ -33,6 +29,7 @@ Inclusion of text as details is added.  See the [use case](markdown/use_cases/in
       - ["Noisy" (Not Pristine)](#noisy-not-pristine)
       - [Missing Includee File](#missing-includee-file)
       - [Circular Inclusion](#circular-inclusion)
+- [Run ```irb```](#run-irb)
 - [What Should Be Next?](#what-should-be-next)
 
 ## What's a Markdown Helper?
@@ -41,6 +38,7 @@ Class <code>MarkdownHelper</code> supports:
 
 * [File inclusion](#file-inclusion): to include text from other files, as code-block or markdown.
 * [Page TOC](#page-toc): to create and insert the table of contents for a markdown page.
+* [Run irb](#run-irb): to execute Ruby snippets in the Ruby interactive shell (```irb```) and include the output in markdown.
 
 ## How It Works
 
@@ -73,41 +71,41 @@ See all [use cases](markdown/use_cases/use_cases.md#use-cases).
 
 ### Re-use Text
 
-Keep your markdown DRY (Don't Repeat Yourself) by re-using text.  See the [use case](markdown/use_cases/include_files/reuse_text/use_case.md#reuse-text).
+Keep your markdown DRY (Don't Repeat Yourself) by re-using text.  See the [use case](markdown/use_cases/include/reuse_text/use_case.md#reuse-text).
 
 ### Include Generated Text
 
-In particular, you can include text that's built during your "readme build."  See the [use case](markdown/use_cases/include_files/include_generated_text/use_case.md#include-generated-text).
+In particular, you can include text that's built during your "readme build."  See the [use case](markdown/use_cases/include/include_generated_text/use_case.md#include-generated-text).
 
 ### Nest Inclusions
 
-You can nest inclusions.  See the [use case](markdown/use_cases/include_files/nest_inclusions/use_case.md#nest-inclusions).
+You can nest inclusions.  See the [use case](markdown/use_cases/include/nest_inclusions/use_case.md#nest-inclusions).
 
 ### Merged Text Formats
 
 #### Markdown
 
-You can include text that is to be treated simply as markdown.  See the [use case](markdown/use_cases/include_files/include_markdown/use_case.md#include-markdown).
+You can include text that is to be treated simply as markdown.  See the [use case](markdown/use_cases/include/include_markdown/use_case.md#include-markdown).
 
 #### Highlighted Code Block
 
-You can include a code block that's to be highlighted.  See the [use case](markdown/use_cases/include_files/include_highlighted_code/use_case.md#include-highlighted-code).
+You can include a code block that's to be highlighted.  See the [use case](markdown/use_cases/include/include_highlighted_code/use_case.md#include-highlighted-code).
 
 #### Plain Code Block
 
-You can also include a code block without highlighting.  See the [use case](markdown/use_cases/include_files/include_code_block/use_case.md#include-code-block).
+You can also include a code block without highlighting.  See the [use case](markdown/use_cases/include/include_code_block/use_case.md#include-code-block).
 
 #### Comment
 
-You can include text that's to become a comment in the markdown.  See the [use case](markdown/use_cases/include_files/include_text_as_comment/use_case.md#include-text-as-comment).
+You can include text that's to become a comment in the markdown.  See the [use case](markdown/use_cases/include/include_text_as_comment/use_case.md#include-text-as-comment).
 
 #### Details
 
-You can include text that's to become details in the markdown.  See the [use case](markdown/use_cases/include_files/include_text_as_details/use_case.md#include-text-as-details).
+You can include text that's to become details in the markdown.  See the [use case](markdown/use_cases/include/include_text_as_details/use_case.md#include-text-as-details).
 
 ### Pre-Formatted Text
 
-You can include text that's pre-formatted.  See the [use case](markdown/use_cases/include_files/include_text_as_pre/use_case.md#include-text-as-pre).
+You can include text that's pre-formatted.  See the [use case](markdown/use_cases/include/include_text_as_pre/use_case.md#include-text-as-pre).
 
 ### Usage
 
@@ -188,21 +186,25 @@ where:
 
 #### Page TOC
 
-You can specify the location for an automatically-generated page TOC (table of cotents).  See the [use case](markdown/use_cases/include_files/include_page_toc/use_case.md#include-page-toc).
+You can specify the location for an automatically-generated page TOC (table of cotents).  See the [use case](markdown/use_cases/include/include_page_toc/use_case.md#include-page-toc).
 
 #### Diagnostics
 
 ##### "Noisy" (Not Pristine)
 
-By default, the markdown helper inserts comments indicating inclusions.  See the [use case](markdown/use_cases/include_files/include_with_added_comments/use_case.md#include-with-added-comments).
+By default, the markdown helper inserts comments indicating inclusions.  See the [use case](markdown/use_cases/include/include_with_added_comments/use_case.md#include-with-added-comments).
 
 ##### Missing Includee File
 
-A missing includee file causes an exception that shows an inclusion backtrace.  See the [use case](markdown/use_cases/include_files/diagnose_missing_includee/use_case.md#diagnose-missing-includee).
+A missing includee file causes an exception that shows an inclusion backtrace.  See the [use case](markdown/use_cases/include/diagnose_missing_includee/use_case.md#diagnose-missing-includee).
 
 ##### Circular Inclusion
 
-A circular inclusion causes an exception that shows an inclusion backtrace.  See the [use case](markdown/use_cases/include_files/diagnose_circular_includes/use_case.md#diagnose-circular-includes).
+A circular inclusion causes an exception that shows an inclusion backtrace.  See the [use case](markdown/use_cases/include/diagnose_circular_includes/use_case.md#diagnose-circular-includes).
+
+## Run ```irb```
+
+* Execute Ruby snippets in the Ruby interactive shell (```irb```) and include the output in markdown.  See the [use case](markdown/use_cases/run_irb/run_irb/use_case.md#run-irb).
 
 ## What Should Be Next?
 
