@@ -2,10 +2,6 @@
 
 [![Gem](https://img.shields.io/gem/v/markdown_helper.svg?style=flat)](http://rubygems.org/gems/markdown_helper "View this project in Rubygems")
 
-## What's New?
-
-Inclusion of text as details is added.  See the [use case](markdown/use_cases/include_files/include_text_as_details/use_case.md#include-text-as-details).
-
 @[:page_toc](## Contents)
 
 ## What's a Markdown Helper?
@@ -14,6 +10,7 @@ Class <code>MarkdownHelper</code> supports:
 
 * [File inclusion](#file-inclusion): to include text from other files, as code-block or markdown.
 * [Page TOC](#page-toc): to create and insert the table of contents for a markdown page.
+* [Run irb](#run-irb): to execute Ruby snippets in the Ruby interactive shell (```irb```) and include the output in markdown.
 
 ## How It Works
 
@@ -130,6 +127,10 @@ A missing includee file causes an exception that shows an inclusion backtrace.  
 ##### Circular Inclusion
 
 A circular inclusion causes an exception that shows an inclusion backtrace.  See the [use case](markdown/use_cases/include_files/diagnose_circular_includes/use_case.md#diagnose-circular-includes).
+
+## Run ```irb```
+
+* Execute Ruby snippets in the Ruby interactive shell (```irb```) and include the output in markdown.  See the [use case](markdown/use_cases/run_irb/use_case.md).
 
 ## What Should Be Next?
 
