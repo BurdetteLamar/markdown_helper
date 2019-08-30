@@ -204,7 +204,7 @@ A circular inclusion causes an exception that shows an inclusion backtrace.  See
 
 ## Run ```irb```
 
-* Execute Ruby snippets in the Ruby interactive shell (```irb```) and include the output in markdown.  See the [use case](markdown/use_cases/run_irb/use_case.md).
+* Execute Ruby snippets in the Ruby interactive shell (```irb```) and include the output in markdown.  See the [use case](markdown/use_cases/run_irb/run_irb/use_case.md).
 
 ## What Should Be Next?
 
