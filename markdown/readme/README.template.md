@@ -4,6 +4,10 @@
 
 @[:page_toc](## Contents)
 
+## Installation
+
+```gem install markdown_helper```
+
 ## What's a Markdown Helper?
 
 Class <code>MarkdownHelper</code> supports:

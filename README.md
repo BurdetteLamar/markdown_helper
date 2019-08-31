@@ -4,6 +4,7 @@
 [![Gem](https://img.shields.io/gem/v/markdown_helper.svg?style=flat)](http://rubygems.org/gems/markdown_helper "View this project in Rubygems")
 
 ## Contents
+- [Installation](#installation)
 - [What's a Markdown Helper?](#whats-a-markdown-helper)
 - [How It Works](#how-it-works)
   - [Restriction: ```git``` Only](#restriction-git-only)
@@ -31,6 +32,10 @@
       - [Circular Inclusion](#circular-inclusion)
 - [Run ```irb```](#run-irb)
 - [What Should Be Next?](#what-should-be-next)
+
+## Installation
+
+```gem install markdown_helper```
 
 ## What's a Markdown Helper?
 
