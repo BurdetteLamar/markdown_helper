@@ -62,7 +62,7 @@ Here's the resulting backtrace of inclusions.
 
 ```diagnose_missing_includee.err```:
 ```
-C:/Ruby26-x64/lib/ruby/gems/2.6.0/gems/markdown_helper-2.3.0/bin/_include: Could not read includee file: (MarkdownHelper::UnreadableIncludeeError)
+C:/Ruby26-x64/lib/ruby/gems/2.6.0/gems/markdown_helper-2.4.0/bin/_include: Could not read includee file: (MarkdownHelper::UnreadableIncludeeError)
   Backtrace (innermost include first):
     Level 0:
       Includer:
