@@ -36,7 +36,7 @@ class MarkdownIrbRunner < MarkdownHelper
     Dir.mktmpdir do |dir|
       Dir.chdir(dir) do
         File.write('irb_input', irb_input)
-        command = 'irb --noecho irb_input | tail +2 | head --lines=-2 > irb_output'
+        command = 'irb --noecho --noprompt irb_input | tail +2 | head --lines=-2 > irb_output'
         system(command )
         File.read('irb_output')
       end
