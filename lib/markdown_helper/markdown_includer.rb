@@ -92,6 +92,7 @@ class MarkdownIncluder < MarkdownHelper
   def include_page_toc(template_lines)
     toc_line_index = nil
     toc_title = nil
+    anchor_counts = Hash.new(0)
     template_lines.each_with_index do |template_line, i|
       match_data = template_line.match(INCLUDE_REGEXP)
       next unless match_data
@@ -113,13 +114,16 @@ class MarkdownIncluder < MarkdownHelper
     toc_lines = [toc_title]
     first_heading_level = nil
     template_lines.each_with_index do |input_line, i|
-      next if i < toc_line_index
       line = input_line.chomp
       heading = Heading.parse(line)
       next unless heading
+      if i < toc_line_index
+        heading.link(anchor_counts)
+        next
+      end
       first_heading_level ||= heading.level
       indentation = '  ' * (heading.level - first_heading_level)
-      toc_line = "#{indentation}- #{heading.link}"
+      toc_line = "#{indentation}- #{heading.link(anchor_counts)}"
       toc_lines.push(toc_line)
     end
     template_lines.delete_at(toc_line_index)
@@ -198,16 +202,18 @@ class MarkdownIncluder < MarkdownHelper
     end
 
 
-    def link
-      remove_regexp = /[\#\(\)\[\]\{\}\.\?\+\*\`\"\']+/
+    def link(anchor_counts = Hash.new(0))
+      remove_regexp = /[\=\#\(\)\[\]\{\}\.\?\+\*\`\"\']+/
       to_hyphen_regexp = /\W+/
       anchor = title.
           gsub(remove_regexp, '').
           gsub(to_hyphen_regexp, '-').
           downcase
-      "[#{title}](##{anchor})"
+      anchor_count = anchor_counts[anchor]
+      anchor_counts[anchor] += 1
+      suffix = (anchor_count == 0) ? '' : "-#{anchor_count}"
+      "[#{title}](##{anchor}#{suffix})"
     end
-
   end
 
   def check_circularity(inclusion)

@@ -39,6 +39,7 @@ class IncludeTest < Minitest::Test
     # Test automatic page TOC.
     [
         :all_levels,
+        :dup_headers,
         :embedded,
         :gappy_levels,
         :mixed_levels,
