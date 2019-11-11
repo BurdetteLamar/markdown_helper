@@ -96,10 +96,19 @@ class IncludeTest < Minitest::Test
 
     # Test nested includes.
     test_info = IncludeInfo.new(
-        file_stem = 'nested',
-        file_type = 'md',
-        treatment = :markdown,
-    )
+      file_stem = 'nested',
+      file_type = 'md',
+      treatment = :markdown,
+      )
+    create_template(test_info)
+    common_test(MarkdownHelper.new, test_info)
+
+    # Test deeply nested includes.
+    test_info = IncludeInfo.new(
+      file_stem = 'deeply_nested',
+      file_type = 'md',
+      treatment = :markdown,
+      )
     create_template(test_info)
     common_test(MarkdownHelper.new, test_info)
 
