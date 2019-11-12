@@ -57,12 +57,12 @@ class MarkdownIncluder < MarkdownHelper
     end
   end
 
-  def include_page_toc(template_lines)
+  def include_page_toc(markdown_lines)
     toc_line_index = nil
     toc_title = nil
     anchor_counts = Hash.new(0)
-    template_lines.each_with_index do |template_line, i|
-      match_data = template_line.match(INCLUDE_REGEXP)
+    markdown_lines.each_with_index do |markdown_line, i|
+      match_data = markdown_line.match(INCLUDE_REGEXP)
       next unless match_data
       treatment = match_data[1]
       next unless treatment == ':page_toc'
@@ -78,10 +78,10 @@ class MarkdownIncluder < MarkdownHelper
         raise InvalidTocTitleError.new(message)
       end
     end
-    return template_lines unless toc_line_index
+    return markdown_lines unless toc_line_index
     toc_lines = [toc_title]
     first_heading_level = nil
-    template_lines.each_with_index do |input_line, i|
+    markdown_lines.each_with_index do |input_line, i|
       line = input_line.chomp
       heading = Heading.parse(line)
       next unless heading
@@ -94,9 +94,9 @@ class MarkdownIncluder < MarkdownHelper
       toc_line = "#{indentation}- #{heading.link(anchor_counts)}"
       toc_lines.push(toc_line)
     end
-    template_lines.delete_at(toc_line_index)
-    template_lines.insert(toc_line_index, *toc_lines)
-    template_lines
+    markdown_lines.delete_at(toc_line_index)
+    markdown_lines.insert(toc_line_index, *toc_lines)
+    markdown_lines
   end
 
   def include_all(template_file_path, template_lines, output_lines)
