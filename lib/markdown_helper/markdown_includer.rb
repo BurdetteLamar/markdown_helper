@@ -33,11 +33,7 @@ class MarkdownIncluder < MarkdownHelper
       template_lines.each_with_index do |template_line, i|
         template_line.chomp!
         treatment, includee_file_path = *parse_include(template_line)
-        if treatment.nil?
-          markdown_lines.push(template_line)
-          next
-        end
-        if treatment == ':page_toc'
+        unless treatment == ':markdown'
           markdown_lines.push(template_line)
           next
         end
@@ -49,17 +45,11 @@ class MarkdownIncluder < MarkdownHelper
             includee_file_path,
             @inclusions
         )
-        case treatment
-        when ':markdown'
-          check_includee(inclusion)
-          check_circularity(inclusion)
-          @inclusions.push(inclusion)
-          includee_lines = include_markdown(File.absolute_path(includee_file_path))
-          markdown_lines.concat(includee_lines)
-        else
-          markdown_lines.push(template_line)
-          next
-        end
+        check_includee(inclusion)
+        check_circularity(inclusion)
+        @inclusions.push(inclusion)
+        includee_lines = include_markdown(File.absolute_path(includee_file_path))
+        markdown_lines.concat(includee_lines)
         @inclusions.pop
         add_inclusion_comments(treatment, includee_file_path, markdown_lines)
       end
