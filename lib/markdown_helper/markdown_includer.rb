@@ -60,10 +60,6 @@ class MarkdownIncluder < MarkdownHelper
           text = File.read(includee_file_path)
           markdown_lines.push(MarkdownHelper.comment(text))
           @inclusions.push(inclusion)
-        when ':pre'
-          text = File.read(includee_file_path)
-          markdown_lines.push(MarkdownIncluder.pre(text))
-          @inclusions.push(inclusion)
         else
           markdown_lines.push(template_line)
           next
@@ -135,6 +131,11 @@ class MarkdownIncluder < MarkdownHelper
       check_includee(inclusion)
       @inclusions.push(inclusion)
       case treatment
+      when ':pre'
+        text = File.read(includee_file_path)
+        output_lines.push(MarkdownIncluder.pre(text))
+        add_inclusion_comments(treatment, includee_file_path, output_lines)
+        @inclusions.push(inclusion)
       when ':details'
         text = File.read(includee_file_path)
         output_lines.push(MarkdownIncluder.details(text))
