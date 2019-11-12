@@ -178,12 +178,12 @@ class IncludeTest < Minitest::Test
       expected_inclusions = []
       cited_includee_file_path  = '../includes/circular_0.md'
       inclusion = MarkdownIncluder::Inclusion.new(
-          test_info.template_file_path,
-          include_description = "@[:markdown](#{cited_includee_file_path})",
-          includer_line_number = 1,
-          treatment,
-          cited_includee_file_path,
-          expected_inclusions,
+          includer_file_path: test_info.template_file_path,
+          include_pragma: "@[:markdown](#{cited_includee_file_path})",
+          includer_line_number: 1,
+          treatment: treatment,
+          cited_includee_file_path: cited_includee_file_path,
+          inclusions: expected_inclusions,
           )
       expected_inclusions = expected_inclusions.push(inclusion)
       # The three nested inclusions.
@@ -196,12 +196,12 @@ class IncludeTest < Minitest::Test
         includer_file_name = "circular_#{includer_index}.md"
         includee_file_name = "circular_#{includee_index}.md"
         inclusion = MarkdownIncluder::Inclusion.new(
-            includer_file_name,
-            include_description = "@[:markdown](#{includee_file_name})",
-            includer_line_number = 1,
-            treatment,
-            cited_includee_file_path = includee_file_name,
-            expected_inclusions,
+            includer_file_path: includer_file_name,
+            include_pragma: "@[:markdown](#{includee_file_name})",
+            includer_line_number: 1,
+            treatment: treatment,
+            cited_includee_file_path: includee_file_name,
+            inclusions: expected_inclusions,
             )
         expected_inclusions = expected_inclusions.push(inclusion)
       end
@@ -222,12 +222,12 @@ class IncludeTest < Minitest::Test
       expected_inclusions = []
         cited_includee_file_path = '../includes/includer_0.md'
       inclusion = MarkdownIncluder::Inclusion.new(
-          test_info.template_file_path,
-          include_pragma = "@[:markdown](#{cited_includee_file_path})",
-          includer_line_number = 1,
-          treatment,
-          cited_includee_file_path,
-          expected_inclusions,
+          includer_file_path: test_info.template_file_path,
+          include_pragma: "@[:markdown](#{cited_includee_file_path})",
+          includer_line_number: 1,
+          treatment: treatment,
+          cited_includee_file_path: cited_includee_file_path,
+          inclusions: expected_inclusions,
           )
       expected_inclusions.push(inclusion)
       # The three nested inclusions.
@@ -244,12 +244,12 @@ class IncludeTest < Minitest::Test
             includer_file_name
         )
         inclusion = MarkdownIncluder::Inclusion.new(
-            includer_file_path,
-            include_pragma = "@[:markdown](#{includee_file_name})",
-            includer_line_number = 1,
-            treatment,
-            cited_includee_file_path = includee_file_name,
-            expected_inclusions,
+          includer_file_path: includer_file_path,
+            include_pragma: "@[:markdown](#{includee_file_name})",
+            includer_line_number: 1,
+            treatment: treatment,
+            cited_includee_file_path: includee_file_name,
+            inclusions: expected_inclusions,
             )
         expected_inclusions = expected_inclusions.push(inclusion)
       end

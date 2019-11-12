@@ -38,12 +38,12 @@ class MarkdownIncluder < MarkdownHelper
           next
         end
         inclusion = Inclusion.new(
-            template_file_path,
-            template_line,
-            i,
-            treatment,
-            includee_file_path,
-            @inclusions
+            includer_file_path: template_file_path,
+            include_pragma: template_line,
+            includer_line_number: i,
+            treatment: treatment,
+            cited_includee_file_path: includee_file_path,
+            inclusions: @inclusions
         )
         check_includee(inclusion)
         check_circularity(inclusion)
@@ -107,12 +107,12 @@ class MarkdownIncluder < MarkdownHelper
         next
       end
       inclusion = Inclusion.new(
-          template_file_path,
-          template_line,
-          i,
-          treatment,
-          includee_file_path,
-          @inclusions
+          includer_file_path: template_file_path,
+          include_pragma: template_line,
+          includer_line_number: i,
+          treatment: treatment,
+          cited_includee_file_path: includee_file_path,
+          inclusions: @inclusions
       )
       check_includee(inclusion)
       @inclusions.push(inclusion)
@@ -267,12 +267,12 @@ class MarkdownIncluder < MarkdownHelper
       :includee_absolute_file_path
 
     def initialize(
-        includer_file_path,
-        include_pragma,
-        includer_line_number,
-        treatment,
-        cited_includee_file_path,
-        inclusions
+        includer_file_path:,
+        include_pragma:,
+        includer_line_number:,
+        treatment:,
+        cited_includee_file_path:,
+        inclusions:
     )
       self.includer_file_path = includer_file_path
       self.include_pragma = include_pragma
