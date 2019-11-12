@@ -26,18 +26,9 @@ class MarkdownIncluder < MarkdownHelper
   end
 
   def include_markdown(template_file_path)
+    check_template(template_file_path)
     Dir.chdir(File.dirname(template_file_path)) do
       markdown_lines = []
-      unless File.readable?(template_file_path)
-        path_in_project = MarkdownHelper.path_in_project(template_file_path )
-        message = [
-            "Could not read template file: #{path_in_project}",
-            MarkdownIncluder.backtrace_inclusions(@inclusions),
-        ].join("\n")
-        e = UnreadableTemplateError.new(message)
-        e.set_backtrace([])
-        raise e
-      end
       template_lines = File.readlines(template_file_path)
       template_lines.each_with_index do |template_line, i|
         template_line.chomp!
@@ -158,6 +149,19 @@ class MarkdownIncluder < MarkdownHelper
       includee_lines.push(end_backticks)
       add_inclusion_comments(treatment.sub(':', ''), includee_file_path, includee_lines)
       output_lines.concat(includee_lines)
+    end
+  end
+
+  def check_template(template_file_path)
+    unless File.readable?(template_file_path)
+      path_in_project = MarkdownHelper.path_in_project(template_file_path )
+      message = [
+        "Could not read template file: #{path_in_project}",
+        MarkdownIncluder.backtrace_inclusions(@inclusions),
+      ].join("\n")
+      e = UnreadableTemplateError.new(message)
+      e.set_backtrace([])
+      raise e
     end
   end
 
