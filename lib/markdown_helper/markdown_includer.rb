@@ -64,16 +64,11 @@ class MarkdownIncluder < MarkdownHelper
           text = File.read(includee_file_path)
           markdown_lines.push(MarkdownIncluder.pre(text))
           @inclusions.push(inclusion)
-        when ':details'
-          text = File.read(includee_file_path)
-          markdown_lines.push(MarkdownIncluder.details(text))
-          @inclusions.push(inclusion)
         else
           markdown_lines.push(template_line)
           next
         end
         @inclusions.pop
-        treatment.sub!(/^:/, '')
         add_inclusion_comments(treatment, includee_file_path, markdown_lines)
       end
       markdown_lines
@@ -140,7 +135,11 @@ class MarkdownIncluder < MarkdownHelper
       check_includee(inclusion)
       @inclusions.push(inclusion)
       case treatment
-      when ':foo'
+      when ':details'
+        text = File.read(includee_file_path)
+        output_lines.push(MarkdownIncluder.details(text))
+        add_inclusion_comments(treatment, includee_file_path, output_lines)
+        @inclusions.push(inclusion)
       else
         file_marker = format('```%s```:', File.basename(includee_file_path))
         begin_backticks = '```'
@@ -150,7 +149,7 @@ class MarkdownIncluder < MarkdownHelper
         includee_lines.unshift(begin_backticks)
         includee_lines.unshift(file_marker)
         includee_lines.push(end_backticks)
-        add_inclusion_comments(treatment.sub(':', ''), includee_file_path, includee_lines)
+        add_inclusion_comments(treatment, includee_file_path, includee_lines)
         output_lines.concat(includee_lines)
       end
     end
@@ -170,8 +169,9 @@ class MarkdownIncluder < MarkdownHelper
   end
 
   def add_inclusion_comments(treatment, includee_file_path, lines)
-    path_in_project = MarkdownHelper.path_in_project(includee_file_path)
     unless pristine
+      path_in_project = MarkdownHelper.path_in_project(includee_file_path)
+      treatment = treatment.sub(/^:/, '')
       comment = format(' >>>>>> BEGIN INCLUDED FILE (%s): SOURCE %s ', treatment, path_in_project)
       lines.unshift(MarkdownHelper.comment(comment))
       comment = format(' <<<<<< END INCLUDED FILE (%s): SOURCE %s ', treatment, path_in_project)
