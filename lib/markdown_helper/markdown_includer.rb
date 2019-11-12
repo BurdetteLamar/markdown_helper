@@ -118,10 +118,7 @@ class MarkdownIncluder < MarkdownHelper
       @inclusions.push(inclusion)
       case treatment
       when ':comment'
-        text = File.read(includee_file_path)
-        output_lines.push(MarkdownHelper.comment(text))
-        add_inclusion_comments(treatment, includee_file_path, output_lines)
-        @inclusions.push(inclusion)
+        include_comment(includee_file_path, treatment, inclusion, output_lines)
       when ':pre'
         text = File.read(includee_file_path)
         output_lines.push(MarkdownIncluder.pre(text))
@@ -145,6 +142,13 @@ class MarkdownIncluder < MarkdownHelper
         output_lines.concat(includee_lines)
       end
     end
+  end
+
+  def include_comment(includee_file_path, treatment, inclusion, output_lines)
+    text = File.read(includee_file_path)
+    output_lines.push(MarkdownHelper.comment(text))
+    add_inclusion_comments(treatment, includee_file_path, output_lines)
+    @inclusions.push(inclusion)
   end
 
   def check_template(template_file_path)
