@@ -120,15 +120,9 @@ class MarkdownIncluder < MarkdownHelper
       when ':comment'
         include_comment(includee_file_path, treatment, inclusion, output_lines)
       when ':pre'
-        text = File.read(includee_file_path)
-        output_lines.push(MarkdownIncluder.pre(text))
-        add_inclusion_comments(treatment, includee_file_path, output_lines)
-        @inclusions.push(inclusion)
+        include_pre(includee_file_path, treatment, inclusion, output_lines)
       when ':details'
-        text = File.read(includee_file_path)
-        output_lines.push(MarkdownIncluder.details(text))
-        add_inclusion_comments(treatment, includee_file_path, output_lines)
-        @inclusions.push(inclusion)
+        include_details(includee_file_path, treatment, inclusion, output_lines)
       else
         file_marker = format('```%s```:', File.basename(includee_file_path))
         begin_backticks = '```'
@@ -147,6 +141,20 @@ class MarkdownIncluder < MarkdownHelper
   def include_comment(includee_file_path, treatment, inclusion, output_lines)
     text = File.read(includee_file_path)
     output_lines.push(MarkdownHelper.comment(text))
+    add_inclusion_comments(treatment, includee_file_path, output_lines)
+    @inclusions.push(inclusion)
+  end
+
+  def include_pre(includee_file_path, treatment, inclusion, output_lines)
+    text = File.read(includee_file_path)
+    output_lines.push(MarkdownIncluder.pre(text))
+    add_inclusion_comments(treatment, includee_file_path, output_lines)
+    @inclusions.push(inclusion)
+  end
+
+  def include_details(includee_file_path, treatment, inclusion, output_lines)
+    text = File.read(includee_file_path)
+    output_lines.push(MarkdownIncluder.details(text))
     add_inclusion_comments(treatment, includee_file_path, output_lines)
     @inclusions.push(inclusion)
   end
