@@ -9,9 +9,8 @@ class MarkdownIncluder < MarkdownHelper
     @inclusions = []
     generate_file(:include, template_file_path, markdown_file_path) do |output_lines|
       Dir.chdir(File.dirname(template_file_path)) do
-        markdown_lines = include_markdown(template_file_path)
-        markdown_lines = include_page_toc(markdown_lines)
-        include_all(template_file_path, markdown_lines, output_lines)
+        page_toc_lines = get_page_toc_lines(template_file_path)
+        include_all(template_file_path, page_toc_lines, is_nested = false, output_lines)
       end
     end
 
@@ -25,7 +24,7 @@ class MarkdownIncluder < MarkdownHelper
     "<details>\n#{text}</details>"
   end
 
-  def include_markdown(template_file_path)
+  def gather_markdown(template_file_path)
     check_template(template_file_path)
     Dir.chdir(File.dirname(template_file_path)) do
       markdown_lines = []
@@ -48,7 +47,7 @@ class MarkdownIncluder < MarkdownHelper
         check_includee(inclusion)
         check_circularity(inclusion)
         @inclusions.push(inclusion)
-        includee_lines = include_markdown(File.absolute_path(includee_file_path))
+        includee_lines = gather_markdown(File.absolute_path(includee_file_path))
         markdown_lines.concat(includee_lines)
         @inclusions.pop
         add_inclusion_comments(treatment, includee_file_path, markdown_lines)
@@ -57,7 +56,8 @@ class MarkdownIncluder < MarkdownHelper
     end
   end
 
-  def include_page_toc(markdown_lines)
+  def get_page_toc_lines(template_file_path)
+    markdown_lines = gather_markdown(template_file_path)
     toc_line_index = nil
     toc_title = nil
     anchor_counts = Hash.new(0)
@@ -94,36 +94,51 @@ class MarkdownIncluder < MarkdownHelper
       toc_line = "#{indentation}- #{heading.link(anchor_counts)}"
       toc_lines.push(toc_line)
     end
-    markdown_lines.delete_at(toc_line_index)
-    markdown_lines.insert(toc_line_index, *toc_lines)
-    markdown_lines
+    toc_lines
   end
 
-  def include_all(template_file_path, template_lines, output_lines)
-    template_lines.each_with_index do |template_line, i|
-      treatment, includee_file_path = *parse_include(template_line)
-      if treatment.nil?
-        output_lines.push(template_line)
-        next
+  def include_all(includer_file_path, page_toc_lines, is_nested, output_lines)
+    includer_dir_path = File.dirname(includer_file_path)
+    includer_file_name = File.basename(includer_file_path)
+    Dir.chdir(includer_dir_path) do
+      check_template(includer_file_path)
+      template_lines = File.readlines(includer_file_name)
+      if is_nested
+        add_inclusion_comments(':markdown', includer_file_path, template_lines)
       end
-      inclusion = Inclusion.new(
-          includer_file_path: template_file_path,
-          include_pragma: template_line,
-          includer_line_number: i,
-          treatment: treatment,
-          cited_includee_file_path: includee_file_path,
-          inclusions: @inclusions
-      )
-      check_includee(inclusion)
-      case treatment
-      when ':comment'
-        include_comment(includee_file_path, treatment, inclusion, output_lines)
-      when ':pre'
-        include_pre(includee_file_path, treatment, inclusion, output_lines)
-      when ':details'
-        include_details(includee_file_path, treatment, inclusion, output_lines)
-      else
-        include_file(includee_file_path, treatment, inclusion, output_lines)
+      template_lines.each_with_index do |template_line, i|
+        treatment, includee_file_path = *parse_include(template_line)
+        if treatment.nil?
+          output_lines.push(template_line)
+          next
+        end
+        if treatment == ':page_toc'
+          output_lines.concat(page_toc_lines)
+          next
+        end
+        inclusion = Inclusion.new(
+            includer_file_path: includer_file_path,
+            include_pragma: template_line,
+            includer_line_number: i,
+            treatment: treatment,
+            cited_includee_file_path: includee_file_path,
+            inclusions: @inclusions
+        )
+        @inclusions.push(inclusion)
+        check_includee(inclusion)
+        case treatment
+        when ':comment'
+          include_comment(includee_file_path, treatment, inclusion, output_lines)
+        when ':pre'
+          include_pre(includee_file_path, treatment, inclusion, output_lines)
+        when ':details'
+          include_details(includee_file_path, treatment, inclusion, output_lines)
+        when ':markdown'
+          include_all(includee_file_path, page_toc_lines, is_nested = true, output_lines)
+        else
+          include_file(includee_file_path, treatment, inclusion, output_lines)
+        end
+        @inclusions.pop
       end
     end
   end

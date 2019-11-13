@@ -1,6 +1,4 @@
 <!-- >>>>>> BEGIN GENERATED FILE (include): SOURCE test/include/templates/includer_page_toc.md -->
-<!-- >>>>>> BEGIN INCLUDED FILE (markdown): SOURCE test/include/includes/headers_1.md -->
-<!-- >>>>>> BEGIN INCLUDED FILE (markdown): SOURCE test/include/includes/headers_0.md -->
 ## Page Contents
 - [One](#one)
   - [Two](#two)
@@ -28,6 +26,7 @@
 
 ###### Six
 
+<!-- >>>>>> BEGIN INCLUDED FILE (markdown): SOURCE test/include/includes/headers_0.md -->
 ## Header 2 in headers_0.md
 
 ## Another header 2 in headers_0.md
@@ -38,6 +37,7 @@
 
 <!-- <<<<<< END INCLUDED FILE (markdown): SOURCE test/include/includes/headers_0.md -->
 
+<!-- >>>>>> BEGIN INCLUDED FILE (markdown): SOURCE test/include/includes/headers_1.md -->
 ## Header 2 in headers_1.md
 
 ## Another header 2 in headers_1.md

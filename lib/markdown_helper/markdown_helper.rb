@@ -48,6 +48,7 @@ EOT
     template_path_in_project = MarkdownHelper.path_in_project(template_file_path)
     output_lines = []
     yield output_lines
+    output_lines = output_lines.collect { |line| line.chomp }
     unless pristine
       output_lines.unshift(MarkdownHelper.comment(" >>>>>> BEGIN GENERATED FILE (#{method}): SOURCE #{template_path_in_project} "))
       output_lines.push(MarkdownHelper.comment(" <<<<<< END GENERATED FILE (#{method}): SOURCE #{template_path_in_project} "))
