@@ -25,8 +25,10 @@ class MarkdownIncluder < MarkdownHelper
   end
 
   def gather_markdown(template_file_path)
-    check_template(template_file_path)
-    Dir.chdir(File.dirname(template_file_path)) do
+    template_dir_path = File.dirname(template_file_path)
+    template_file_name = File.basename(template_file_path)
+    Dir.chdir(template_dir_path) do
+      check_template(template_file_name)
       markdown_lines = []
       template_lines = File.readlines(template_file_path)
       template_lines.each_with_index do |template_line, i|
@@ -100,8 +102,9 @@ class MarkdownIncluder < MarkdownHelper
   def include_all(includer_file_path, page_toc_lines, is_nested, output_lines)
     includer_dir_path = File.dirname(includer_file_path)
     includer_file_name = File.basename(includer_file_path)
+    absolute_includer_file_path = File.absolute_path(includer_file_path)
     Dir.chdir(includer_dir_path) do
-      check_template(includer_file_path)
+      check_template(includer_file_name)
       template_lines = File.readlines(includer_file_name)
       if is_nested
         add_inclusion_comments(':markdown', includer_file_path, template_lines)
@@ -117,7 +120,7 @@ class MarkdownIncluder < MarkdownHelper
           next
         end
         inclusion = Inclusion.new(
-            includer_file_path: includer_file_path,
+            includer_file_path: absolute_includer_file_path,
             include_pragma: template_line,
             includer_line_number: i,
             treatment: treatment,
@@ -176,7 +179,7 @@ class MarkdownIncluder < MarkdownHelper
 
   def check_template(template_file_path)
     unless File.readable?(template_file_path)
-      path_in_project = MarkdownHelper.path_in_project(template_file_path )
+      path_in_project = MarkdownHelper.path_in_project(template_file_path)
       message = [
         "Could not read template file: #{path_in_project}",
         MarkdownIncluder.backtrace_inclusions(@inclusions),
