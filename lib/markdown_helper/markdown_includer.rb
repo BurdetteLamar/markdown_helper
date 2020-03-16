@@ -233,15 +233,14 @@ class MarkdownIncluder < MarkdownHelper
 
 
     def link(anchor_counts = Hash.new(0))
-      remove_regexp = /[\=\#\(\)\[\]\{\}\.\?\+\*\`\"\']+/
-      to_hyphen_regexp = /\W+/
-      anchor = title.
-          gsub(remove_regexp, '').
-          gsub(to_hyphen_regexp, '-').
-          downcase
+      anchor = title.downcase
+      anchor.gsub!(/[^\p{Word}\- ]/u, '') # remove punctuation
+      anchor.gsub!(' ', '-') # replace spaces with dash
+
       anchor_count = anchor_counts[anchor]
       anchor_counts[anchor] += 1
       suffix = (anchor_count == 0) ? '' : "-#{anchor_count}"
+
       "[#{title}](##{anchor}#{suffix})"
     end
   end
